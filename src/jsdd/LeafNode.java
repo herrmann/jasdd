@@ -3,6 +3,11 @@ package jsdd;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Leaf node of a variable partition tree.
+ * 
+ * @author Ricardo Herrmann
+ */
 public class LeafNode extends VTree {
 
 	private Variable variable;

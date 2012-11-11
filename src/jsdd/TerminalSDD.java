@@ -1,5 +1,10 @@
 package jsdd;
 
-public abstract class TerminalSDD extends SDD {
+/**
+ * Superclass for all kinds of terminal SDDs (constant and literal).
+ * 
+ * @author Ricardo Herrmann
+ */
+public abstract class TerminalSDD extends AbstractSDD {
 
 }

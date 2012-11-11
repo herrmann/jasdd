@@ -1,24 +1,22 @@
 package jsdd;
 
+import java.util.Collection;
+
 import util.StringBuildable;
 
-public abstract class SDD implements Sentence, StringBuildable {
+/**
+ * Methods shared by all kinds of SDDs.
+ * 
+ * @author Ricardo Herrmann
+ */
+public interface SDD extends Sentence, StringBuildable {
 
-	public static SDD decomposition(final VTree node, final PairedBox... elements) {
-		return new DecompositionSDD(node, elements);
-	}
+	boolean isFalse();
 
-	public boolean isTrivial() {
-		return isTautology() || isUnsatisfiable();
-	}
+	SDD apply(SDD sdd, BooleanOperator op);
 
-	public abstract boolean isFalse();
+	SDD and(SDD sdd);
 
-	public abstract SDD and(SDD sdd);
-
-	@Override
-	public String toString() {
-		return toStringBuilder().toString();
-	}
+	Collection<PairedBox> expansion();
 
 }

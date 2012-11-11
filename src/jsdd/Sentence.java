@@ -1,5 +1,10 @@
 package jsdd;
 
+/**
+ * Boolean logical sentence semantics.
+ * 
+ * @author Ricardo Herrmann
+ */
 public interface Sentence {
 
 	static final String FALSE = "F";
@@ -7,5 +12,6 @@ public interface Sentence {
 
 	boolean isTautology();
 	boolean isUnsatisfiable();
+	boolean isConsistent();
 
 }

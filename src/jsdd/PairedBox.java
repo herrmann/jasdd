@@ -2,6 +2,11 @@ package jsdd;
 
 import util.StringBuildable;
 
+/**
+ * A pair of SDDs representing one element of a decomposition.
+ * 
+ * @author Ricardo Herrmann
+ */
 public class PairedBox implements Sentence, StringBuildable {
 
 	private SDD prime, sub;
@@ -71,6 +76,10 @@ public class PairedBox implements Sentence, StringBuildable {
 		this(v1, true, sub);
 	}
 
+	public PairedBox(final Literal l1, boolean s2) {
+		this(l1.getVariable(), l1.getSign(), s2);
+	}
+
 	public SDD getPrime() {
 		return prime;
 	}
@@ -115,6 +124,44 @@ public class PairedBox implements Sentence, StringBuildable {
 	@Override
 	public boolean isUnsatisfiable() {
 		return getPrime().isUnsatisfiable() || getSub().isUnsatisfiable();
+	}
+
+	@Override
+	public boolean isConsistent() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((this.prime == null) ? 0 : this.prime.hashCode());
+		result = prime * result + ((sub == null) ? 0 : sub.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		PairedBox other = (PairedBox) obj;
+		if (prime == null) {
+			if (other.prime != null)
+				return false;
+		} else if (!prime.equals(other.prime))
+			return false;
+		if (sub == null) {
+			if (other.sub != null)
+				return false;
+		} else if (!sub.equals(other.sub))
+			return false;
+		return true;
 	}
 
 }
