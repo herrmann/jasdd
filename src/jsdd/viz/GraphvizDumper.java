@@ -37,7 +37,7 @@ public class GraphvizDumper {
 		if (!decompCache.containsKey(sdd)) {
 			final int decompId = nextId;
 			decompCache.put(sdd, decompId);
-			System.out.println("  d" + decompId + " [label=\"" + vtreeMap.get(sdd.getVTree()) + "\"]");
+			System.out.println("  d" + decompId + " [shape=circle,label=\"" + vtreeMap.get(sdd.getVTree()) + "\"]");
 			int id = nextId + 1;
 			for (final PairedBox element : sdd.getElements()) {
 				id = dumpPairedBox(element, id, pboxCache, decompCache, decompId, vtreeMap);
