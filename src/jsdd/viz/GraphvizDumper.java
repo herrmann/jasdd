@@ -56,7 +56,7 @@ public class GraphvizDumper {
 	private static void dumpEdge(final VTree node, final int parentId, final int nodeId) {
 		if (node.isLeaf()) {
 			final String letter = letter(((LeafNode) node).getVariable());
-			System.out.println("  " + parentId + " -- " + letter + " [label=" + nodeId + "]");
+			System.out.println("  " + parentId + " -- " + letter + " [headlabel=" + nodeId + "]");
 		} else {
 			System.out.println("  " + parentId + " -- " + nodeId);
 		}
