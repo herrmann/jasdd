@@ -7,6 +7,11 @@ public class InternalNode extends VTree {
 
 	private VTree left, right;
 
+	public InternalNode(final Variable left, final Variable right) {
+		this.left = new LeafNode(left);
+		this.right = new LeafNode(right);
+	}
+
 	public InternalNode(final VTree left, final VTree right) {
 		this.left = left;
 		this.right = right;

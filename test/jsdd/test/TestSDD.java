@@ -3,6 +3,7 @@ package jsdd.test;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Set;
 
 import jsdd.AbstractSDD;
 import jsdd.ConstantSDD;
@@ -18,6 +19,11 @@ import jsdd.Variable;
 import org.junit.Assert;
 import org.junit.Test;
 
+/**
+ * Integration tests for SDD construction and manipulation.
+ *  
+ * @author Ricardo Herrmann
+ */
 public class TestSDD {
 
 	@Test
@@ -58,7 +64,31 @@ public class TestSDD {
 		Assert.assertEquals("[1, F]", new LiteralSDD(1).expansion().toString());
 	}
 
-	private SDD example1() {
+	@Test
+	public void vtreeVariables() {
+		final Set<Variable> expected = new HashSet<Variable>();
+		for (int i = 1; i <=4 ;i++) {
+			expected.add(new Variable(i));
+		}
+		Assert.assertEquals(expected, vtree1().variables());
+	}
+
+	@Test
+	public void andOperation() {
+		final Variable a = new Variable(1);
+		final Variable b = new Variable(2);
+		final VTree vtree = new InternalNode(a, b);
+
+		// A /\ -B
+		final SDD sdd1 = AbstractSDD.decomposition(vtree, new PairedBox(a, b, false), new PairedBox(a, false, false));
+
+		// -A /\ B
+		final SDD sdd2 = AbstractSDD.decomposition(vtree, new PairedBox(a, false, b), new PairedBox(a, false));
+
+		sdd1.and(sdd2);
+	}
+
+	private VTree vtree1() {
 		final Variable a = new Variable(1);
 		final Variable b = new Variable(2);
 		final Variable c = new Variable(3);
@@ -71,17 +101,28 @@ public class TestSDD {
 		final VTree v4 = new LeafNode(c);
 		final VTree v5 = new InternalNode(v3, v4);
 		final VTree v6 = new InternalNode(v2, v5);
+		
+		return v6;
+	}
+
+	private SDD example1() {
+		final Variable a = new Variable(1);
+		final Variable b = new Variable(2);
+		final Variable c = new Variable(3);
+		final Variable d = new Variable(4);
+
+		final InternalNode root = (InternalNode) vtree1();
 
 		final PairedBox n0 = new PairedBox(b, a);
 		final PairedBox n1 = new PairedBox(b, false, false);
 		final PairedBox n2 = new PairedBox(b, a, false);
 		final PairedBox n3 = new PairedBox(d, c);
 		final PairedBox n4 = new PairedBox(d, false, false);
-		final PairedBox n5 = new PairedBox(AbstractSDD.decomposition(v2, n0, n1), true);
-		final PairedBox n6 = new PairedBox(AbstractSDD.decomposition(v2, n1, n2), c);
-		final PairedBox n7 = new PairedBox(b, false, AbstractSDD.decomposition(v5, n3, n4));
+		final PairedBox n5 = new PairedBox(AbstractSDD.decomposition(root.getLeft(), n0, n1), true);
+		final PairedBox n6 = new PairedBox(AbstractSDD.decomposition(root.getLeft(), n1, n2), c);
+		final PairedBox n7 = new PairedBox(b, false, AbstractSDD.decomposition(root.getRight(), n3, n4));
 
-		return AbstractSDD.decomposition(v6, n5, n6, n7);
+		return AbstractSDD.decomposition(root, n5, n6, n7);
 	}
 
 	private SDD example2() {
