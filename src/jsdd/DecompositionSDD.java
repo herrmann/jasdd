@@ -25,7 +25,7 @@ public class DecompositionSDD extends AbstractSDD {
 	public DecompositionSDD(final VTree node, final PairedBox... elements) {
 		this.vtree = node;
 		for (final PairedBox element : elements) {
-			element.setParent(this);
+			element.addParent(this);
 			this.elements.add(element);
 		}
 	}
@@ -184,6 +184,11 @@ public class DecompositionSDD extends AbstractSDD {
 		} else if (!vtree.equals(other.vtree))
 			return false;
 		return true;
+	}
+
+	@Override
+	public boolean isTerminal() {
+		return false;
 	}
 
 }

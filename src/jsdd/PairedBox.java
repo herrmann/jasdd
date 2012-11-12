@@ -1,5 +1,10 @@
 package jsdd;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
 import util.StringBuildable;
 
 /**
@@ -9,7 +14,7 @@ import util.StringBuildable;
  */
 public class PairedBox implements Sentence, StringBuildable {
 
-	private DecompositionSDD parent;
+	private Set<DecompositionSDD> parents = new HashSet<DecompositionSDD>();
 	private SDD prime, sub;
 
 	public PairedBox(final SDD prime, final SDD sub) {
@@ -173,16 +178,17 @@ public class PairedBox implements Sentence, StringBuildable {
 		return true;
 	}
 
-	public DecompositionSDD getParent() {
-		return parent;
+	public Collection<DecompositionSDD> getParents() {
+		return Collections.unmodifiableCollection(parents);
 	}
 
-	/* package */ void setParent(final DecompositionSDD parent) {
-		this.parent = parent;
+	/* package */ void addParent(final DecompositionSDD parent) {
+		parents.add(parent);
 	}
 
 	public VTree getVTree() {
-		return getParent().getVTree();
+		// TODO: check if paired boxes' parent decompositions all use the same vtree.
+		return getParents().iterator().next().getVTree();
 	}
 
 }

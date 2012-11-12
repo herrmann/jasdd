@@ -16,6 +16,7 @@ public interface SDD extends Sentence, StringBuildable {
 	PairedBox getParent();
 	boolean isPrime();
 	boolean isSub();
+	boolean isTerminal();
 
 	VTree getVTree();
 

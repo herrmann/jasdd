@@ -12,4 +12,9 @@ public abstract class TerminalSDD extends AbstractSDD {
 		return getParent().getVTree();
 	}
 
+	@Override
+	public boolean isTerminal() {
+		return true;
+	}
+
 }
