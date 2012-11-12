@@ -7,4 +7,9 @@ package jsdd;
  */
 public abstract class TerminalSDD extends AbstractSDD {
 
+	@Override
+	public VTree getVTree() {
+		return getParent().getVTree();
+	}
+
 }

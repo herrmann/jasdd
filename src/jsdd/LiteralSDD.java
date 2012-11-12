@@ -33,16 +33,6 @@ public class LiteralSDD extends TerminalSDD {
 	}
 
 	@Override
-	public SDD apply(SDD sdd, BooleanOperator op) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public SDD apply(final ConstantSDD sdd, final BooleanOperator op) {
-		return op.apply(this, sdd);
-	}
-
-	@Override
 	public StringBuilder toStringBuilder() {
 		return new StringBuilder(literal.toString());
 	}
@@ -60,12 +50,6 @@ public class LiteralSDD extends TerminalSDD {
 	@Override
 	public boolean isFalse() {
 		return false;
-	}
-
-	@Override
-	public SDD and(final SDD sdd) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override
@@ -104,6 +88,35 @@ public class LiteralSDD extends TerminalSDD {
 		} else if (!literal.equals(other.literal))
 			return false;
 		return true;
+	}
+
+	@Override
+	public SDD apply(final ConstantSDD sdd, final BooleanOperator op) {
+		return sdd.apply(this, op);
+	}
+
+	@Override
+	public SDD apply(final LiteralSDD sdd, final BooleanOperator op) {
+		final Literal literal = getLiteral();
+		final Literal otherLiteral = sdd.getLiteral();
+		if (literal.equals(otherLiteral)) {
+			return new LiteralSDD(this);
+		} else if (literal.equals(otherLiteral.opposite())) {
+			return new ConstantSDD(false);
+		} else {
+			// TODO: Respect vtree
+			if (op.equals(new AndOperator())) {
+				return new DecompositionSDD(null, new PairedBox(literal, otherLiteral), new PairedBox(literal.opposite(), false));
+			}
+		}
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public SDD apply(final DecompositionSDD sdd, final BooleanOperator op) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

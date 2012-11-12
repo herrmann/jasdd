@@ -9,11 +9,16 @@ import util.StringBuildable;
  */
 public class PairedBox implements Sentence, StringBuildable {
 
+	private DecompositionSDD parent;
 	private SDD prime, sub;
 
 	public PairedBox(final SDD prime, final SDD sub) {
 		this.prime = prime;
 		this.sub = sub;
+		((AbstractSDD) prime).markPrime();
+		((AbstractSDD) prime).setParent(this);
+		((AbstractSDD) sub).markSub();
+		((AbstractSDD) sub).setParent(this);
 	}
 
 	public PairedBox(final Variable v1, final boolean s1, final Variable v2, final boolean s2) {
@@ -78,6 +83,10 @@ public class PairedBox implements Sentence, StringBuildable {
 
 	public PairedBox(final Literal l1, boolean s2) {
 		this(l1.getVariable(), l1.getSign(), s2);
+	}
+
+	public PairedBox(final Literal l1, final Literal l2) {
+		this(l1.getVariable(), l1.getSign(), l2.getVariable(), l2.getSign());
 	}
 
 	public SDD getPrime() {
@@ -162,6 +171,18 @@ public class PairedBox implements Sentence, StringBuildable {
 		} else if (!sub.equals(other.sub))
 			return false;
 		return true;
+	}
+
+	public DecompositionSDD getParent() {
+		return parent;
+	}
+
+	/* package */ void setParent(final DecompositionSDD parent) {
+		this.parent = parent;
+	}
+
+	public VTree getVTree() {
+		return getParent().getVTree();
 	}
 
 }

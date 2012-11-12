@@ -1,7 +1,6 @@
 package jsdd;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -14,16 +13,26 @@ import java.util.List;
  */
 public class DecompositionSDD extends AbstractSDD {
 
-	private VTree node;
+	private VTree vtree;
 	private List<PairedBox> elements = new ArrayList<PairedBox>();
 
-	public DecompositionSDD(final VTree node, final PairedBox... elements) {
-		this.node = node;
-		this.elements.addAll(Arrays.asList(elements));
+	public DecompositionSDD(final DecompositionSDD sdd) {
+		this.vtree = sdd.getVTree();
+		this.elements = (List<PairedBox>) sdd.getElements();
+		// TODO: Deep copy
 	}
 
-	public VTree getNode() {
-		return node;
+	public DecompositionSDD(final VTree node, final PairedBox... elements) {
+		this.vtree = node;
+		for (final PairedBox element : elements) {
+			element.setParent(this);
+			this.elements.add(element);
+		}
+	}
+
+	@Override
+	public VTree getVTree() {
+		return vtree;
 	}
 
 	public Collection<PairedBox> getElements() {
@@ -92,13 +101,18 @@ public class DecompositionSDD extends AbstractSDD {
 	}
 
 	@Override
-	public SDD and(SDD sdd) {
+	public SDD apply(final ConstantSDD sdd, final BooleanOperator op) {
+		return apply(this, op);
+	}
+
+	@Override
+	public SDD apply(final LiteralSDD sdd, final BooleanOperator op) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@SuppressWarnings("unused")
-	public SDD apply(final SDD sdd, final BooleanOperator op) {
+	@Override
+	public SDD apply(final DecompositionSDD sdd, final BooleanOperator op) {
 		if (false) {
 			// TODO: check if it is in cache
 			return null;
@@ -113,7 +127,7 @@ public class DecompositionSDD extends AbstractSDD {
 					}
 				}
 			}
-			return new DecompositionSDD(node, (PairedBox[]) elements.toArray());
+			return new DecompositionSDD(vtree, (PairedBox[]) elements.toArray());
 		}
 	}
 
@@ -134,31 +148,40 @@ public class DecompositionSDD extends AbstractSDD {
 		int result = 1;
 		result = prime * result
 				+ ((elements == null) ? 0 : elements.hashCode());
-		result = prime * result + ((node == null) ? 0 : node.hashCode());
+		result = prime * result + ((vtree == null) ? 0 : vtree.hashCode());
 		return result;
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
+	public boolean equals(final Object obj) {
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
-		DecompositionSDD other = (DecompositionSDD) obj;
+		}
+		final DecompositionSDD other = (DecompositionSDD) obj;
 		if (elements == null) {
-			if (other.elements != null)
+			if (other.elements != null) {
 				return false;
-		} else if ((other.elements != null && elements.size() != other.elements
-				.size())
-				|| !new HashSet<PairedBox>(elements)
-						.equals(new HashSet<PairedBox>(other.elements)))
-			return false;
-		if (node == null) {
-			if (other.node != null)
+			}
+		} else {
+			final boolean sameSize = other.elements != null && elements.size() != other.elements.size();
+			if (!sameSize) {
 				return false;
-		} else if (!node.equals(other.node))
+			}
+			final boolean sameSet = new HashSet<PairedBox>(elements).equals(new HashSet<PairedBox>(other.elements));
+			if (!sameSet) {
+				return false;
+			}
+		}
+		if (vtree == null) {
+			if (other.vtree != null)
+				return false;
+		} else if (!vtree.equals(other.vtree))
 			return false;
 		return true;
 	}

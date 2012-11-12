@@ -41,7 +41,7 @@ public class TestSDD {
 	@Test
 	public void correctConstruction1() {
 		final DecompositionSDD sdd = (DecompositionSDD) example1();
-		final VTree vtree = sdd.getNode();
+		final VTree vtree = sdd.getVTree();
 		Assert.assertTrue(!vtree.isRightLinear());
 		Assert.assertEquals("((2, 1), (4, 3))", vtree.toString());
 	}
@@ -49,7 +49,7 @@ public class TestSDD {
 	@Test
 	public void correctConstruction2() {
 		final DecompositionSDD sdd = (DecompositionSDD) example2();
-		final VTree vtree = sdd.getNode();
+		final VTree vtree = sdd.getVTree();
 		Assert.assertTrue(vtree.isRightLinear());
 		Assert.assertEquals("(1, (2, (3, 4)))", vtree.toString());
 	}
@@ -71,6 +71,35 @@ public class TestSDD {
 			expected.add(new Variable(i));
 		}
 		Assert.assertEquals(expected, vtree1().variables());
+	}
+
+	@Test
+	public void vtreeLinking() {
+		final Variable a = new Variable(1);
+		final Variable b = new Variable(2);
+		final Variable c = new Variable(3);
+		final Variable d = new Variable(4);
+
+		final InternalNode root = (InternalNode) vtree1();
+
+		final PairedBox n0 = new PairedBox(b, a);
+		final PairedBox n1 = new PairedBox(b, false, false);
+		final PairedBox n2 = new PairedBox(b, a, false);
+		final PairedBox n3 = new PairedBox(d, c);
+		final PairedBox n4 = new PairedBox(d, false, false);
+		final PairedBox n5 = new PairedBox(AbstractSDD.decomposition(root.getLeft(), n0, n1), true);
+		final PairedBox n6 = new PairedBox(AbstractSDD.decomposition(root.getLeft(), n1, n2), c);
+		final PairedBox n7 = new PairedBox(b, false, AbstractSDD.decomposition(root.getRight(), n3, n4));
+
+		final SDD sdd = AbstractSDD.decomposition(root, n5, n6, n7);
+
+		Assert.assertEquals(root.getLeft(), n0.getVTree());
+		Assert.assertEquals(root.getLeft(), n0.getPrime().getVTree());
+		Assert.assertEquals(root.getLeft(), n0.getSub().getVTree());
+		Assert.assertEquals(root.getLeft(), n1.getSub().getVTree());
+		Assert.assertEquals(root.getLeft(), n1.getSub().getVTree());
+		Assert.assertEquals(root, n7.getVTree());
+		Assert.assertEquals(root, sdd.getVTree());
 	}
 
 	@Test

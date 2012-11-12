@@ -7,10 +7,6 @@ package jsdd;
  */
 public interface BooleanOperator {
 
-	SDD apply(ConstantSDD s1, ConstantSDD s2);
-
-	SDD apply(ConstantSDD s1, LiteralSDD s2);
-
-	SDD apply(LiteralSDD s1, ConstantSDD s2);
+	boolean apply(boolean s1, boolean s2);
 
 }
