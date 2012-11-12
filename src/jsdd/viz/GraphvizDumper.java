@@ -30,46 +30,51 @@ public class GraphvizDumper {
 	}
 
 	private static void dumpDecomposition(final DecompositionSDD sdd, final Map<VTree, Integer> vtreeMap) {
-		dumpDecomposition(sdd, 0, new HashMap<PairedBox, Integer>(), vtreeMap);
+		dumpDecomposition(sdd, 0, new HashMap<PairedBox, Integer>(), new HashMap<DecompositionSDD, Integer>(), vtreeMap);
 	}
 
-	private static int dumpDecomposition(final DecompositionSDD sdd, final int nextId, final Map<PairedBox, Integer> visited, final Map<VTree, Integer> vtreeMap) {
-		final int decompId = nextId;
-		System.out.println("  d" + decompId + " [label=\"" + vtreeMap.get(sdd.getVTree()) + "\"]");
-		int id = nextId + 1;
-		for (final PairedBox element : sdd.getElements()) {
-			id = dumpPairedBox(element, id, visited, decompId, vtreeMap);
+	private static int dumpDecomposition(final DecompositionSDD sdd, final int nextId, final Map<PairedBox, Integer> pboxCache, final Map<DecompositionSDD, Integer> decompCache, final Map<VTree, Integer> vtreeMap) {
+		if (!decompCache.containsKey(sdd)) {
+			final int decompId = nextId;
+			decompCache.put(sdd, decompId);
+			System.out.println("  d" + decompId + " [label=\"" + vtreeMap.get(sdd.getVTree()) + "\"]");
+			int id = nextId + 1;
+			for (final PairedBox element : sdd.getElements()) {
+				id = dumpPairedBox(element, id, pboxCache, decompCache, decompId, vtreeMap);
+			}
+			return id;
+		} else {
+			return nextId;
 		}
-		return id;
 	}
 
-	private static int dumpPairedBox(final PairedBox element, final int nextId, final Map<PairedBox, Integer> visited, final int decompId, final Map<VTree, Integer> vtreeMap) {
-		if (!visited.containsKey(element)) {
+	private static int dumpPairedBox(final PairedBox element, final int nextId, final Map<PairedBox, Integer> pboxCache, final Map<DecompositionSDD, Integer> decompCache, final int decompId, final Map<VTree, Integer> vtreeMap) {
+		if (!pboxCache.containsKey(element)) {
 			final SDD prime = element.getPrime();
 			final SDD sub = element.getSub();
 			final String primeLabel = label(prime);
 			final String subLabel = label(sub);
 			int leftId = nextId;
 			if (!prime.isTerminal()) {
-				leftId = dumpDecomposition((DecompositionSDD) prime, nextId, visited, vtreeMap);
+				leftId = dumpDecomposition((DecompositionSDD) prime, nextId, pboxCache, decompCache, vtreeMap);
 			}
 			int rightId = leftId;
 			if (!sub.isTerminal()) {
-				rightId = dumpDecomposition((DecompositionSDD) sub, leftId, visited, vtreeMap);
+				rightId = dumpDecomposition((DecompositionSDD) sub, leftId, pboxCache, decompCache, vtreeMap);
 			}
 			final int elementId = rightId + 1;
-			visited.put(element, elementId);
+			pboxCache.put(element, elementId);
 			System.out.println("  e" + elementId + " [shape=record,label=\"<f0> " + primeLabel + "|<f1> " + subLabel + "\"]");
 			if (!prime.isTerminal()) {
-				System.out.println("  e" + elementId + ":f0 -> d" + nextId);
+				System.out.println("  e" + elementId + ":f0 -> d" + decompCache.get(prime));
 			}
 			if (!sub.isTerminal()) {
-				System.out.println("  e" + elementId + ":f1 -> d" + nextId);
+				System.out.println("  e" + elementId + ":f1 -> d" + decompCache.get(sub));
 			}
 			System.out.println("  d" + decompId + " -> e" + elementId);
 			return elementId;
 		} else {
-			final int elementId = visited.get(element);
+			final int elementId = pboxCache.get(element);
 			System.out.println("  d" + decompId + " -> e" + elementId);
 			return nextId;
 		}
