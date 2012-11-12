@@ -121,7 +121,6 @@ public class TestSDD {
 	@Test
 	public void graphvizOutput() {
 		final SDD sdd = example1();
-		GraphvizDumper.dump(sdd.getVTree());
 		GraphvizDumper.dump((DecompositionSDD) sdd);
 	}
 

@@ -1,9 +1,7 @@
 package jsdd.viz;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import jsdd.ConstantSDD;
 import jsdd.DecompositionSDD;
@@ -25,24 +23,27 @@ public class GraphvizDumper {
 
 	public static void dump(final DecompositionSDD sdd) {
 		System.out.println("digraph sdd {");
-		dumpDecomposition(sdd);
+		final Map<VTree, Integer> vtreeMap = new HashMap<VTree, Integer>();
+		dumpVTreeNode(sdd.getVTree(), vtreeMap);
+		dumpDecomposition(sdd, vtreeMap);
 		System.out.println("}");
 	}
 
-	private static void dumpDecomposition(final DecompositionSDD sdd) {
-		dumpDecomposition(sdd, 0, new HashMap<PairedBox, Integer>());
+	private static void dumpDecomposition(final DecompositionSDD sdd, final Map<VTree, Integer> vtreeMap) {
+		dumpDecomposition(sdd, 0, new HashMap<PairedBox, Integer>(), vtreeMap);
 	}
 
-	private static int dumpDecomposition(final DecompositionSDD sdd, final int nextId, final Map<PairedBox, Integer> visited) {
+	private static int dumpDecomposition(final DecompositionSDD sdd, final int nextId, final Map<PairedBox, Integer> visited, final Map<VTree, Integer> vtreeMap) {
 		final int decompId = nextId;
+		System.out.println("  d" + decompId + " [label=\"" + vtreeMap.get(sdd.getVTree()) + "\"]");
 		int id = nextId + 1;
 		for (final PairedBox element : sdd.getElements()) {
-			id = dumpPairedBox(element, id, visited, decompId);
+			id = dumpPairedBox(element, id, visited, decompId, vtreeMap);
 		}
 		return id;
 	}
 
-	private static int dumpPairedBox(final PairedBox element, final int nextId, final Map<PairedBox, Integer> visited, final int decompId) {
+	private static int dumpPairedBox(final PairedBox element, final int nextId, final Map<PairedBox, Integer> visited, final int decompId, final Map<VTree, Integer> vtreeMap) {
 		if (!visited.containsKey(element)) {
 			final SDD prime = element.getPrime();
 			final SDD sub = element.getSub();
@@ -50,26 +51,26 @@ public class GraphvizDumper {
 			final String subLabel = label(sub);
 			int leftId = nextId;
 			if (!prime.isTerminal()) {
-				leftId = dumpDecomposition((DecompositionSDD) prime, nextId, visited);
+				leftId = dumpDecomposition((DecompositionSDD) prime, nextId, visited, vtreeMap);
 			}
 			int rightId = leftId;
 			if (!sub.isTerminal()) {
-				rightId = dumpDecomposition((DecompositionSDD) sub, leftId, visited);
+				rightId = dumpDecomposition((DecompositionSDD) sub, leftId, visited, vtreeMap);
 			}
 			final int elementId = rightId + 1;
 			visited.put(element, elementId);
 			System.out.println("  e" + elementId + " [shape=record,label=\"<f0> " + primeLabel + "|<f1> " + subLabel + "\"]");
 			if (!prime.isTerminal()) {
-				System.out.println("  e" + elementId + ":f0 -> v" + nextId);
+				System.out.println("  e" + elementId + ":f0 -> d" + nextId);
 			}
 			if (!sub.isTerminal()) {
-				System.out.println("  e" + elementId + ":f1 -> v" + nextId);
+				System.out.println("  e" + elementId + ":f1 -> d" + nextId);
 			}
-			System.out.println("  v" + decompId + " -> e" + elementId);
+			System.out.println("  d" + decompId + " -> e" + elementId);
 			return elementId;
 		} else {
 			final int elementId = visited.get(element);
-			System.out.println("  v" + decompId + " -> e" + elementId);
+			System.out.println("  d" + decompId + " -> e" + elementId);
 			return nextId;
 		}
 	}
@@ -87,41 +88,48 @@ public class GraphvizDumper {
 		}
 	}
 
-	private static void dumpEdges(final DecompositionSDD sdd) {
-		// TODO Auto-generated method stub
-	}
-
 	public static void dump(final VTree vtree) {
-		System.out.println("graph vtree {");
-		System.out.println("  node [shape=none]");
+		System.out.println("digraph vtree {");
 		dumpVTreeNode(vtree);
 		System.out.println("}");
 	}
 
 	private static void dumpVTreeNode(final VTree vtree) {
-		dumpVTreeNode(vtree, 0);
+		dumpVTreeNode(vtree, 0, null);
 	}
 
-	private static int dumpVTreeNode(final VTree vtree, final int nextId) {
+	private static void dumpVTreeNode(final VTree vtree, final Map<VTree, Integer> vtreeMap) {
+		final int nodeId = dumpVTreeNode(vtree, 0, vtreeMap);
+		if (vtreeMap != null) {
+			vtreeMap.put(vtree, nodeId);
+		}
+	}
+
+	private static int dumpVTreeNode(final VTree vtree, final int nextId, final Map<VTree, Integer> vtreeMap) {
 		if (!vtree.isLeaf()) {
 			final InternalNode node = (InternalNode) vtree;
-			final int leftId = dumpVTreeNode(node.getLeft(), nextId);
-			final int rightId = dumpVTreeNode(node.getRight(), leftId + 1);
+			final int leftId = dumpVTreeNode(node.getLeft(), nextId, vtreeMap);
+			final int rightId = dumpVTreeNode(node.getRight(), leftId + 1, vtreeMap);
 			final int parentId = rightId + 1;
-			dumpEdge(node.getLeft(), parentId, leftId);
-			dumpEdge(node.getRight(), parentId, rightId);
+			System.out.println("  v" + parentId + " [shape=none,label=\"" + parentId + "\"]");
+			dumpEdge(node.getLeft(), parentId, leftId, vtreeMap);
+			dumpEdge(node.getRight(), parentId, rightId, vtreeMap);
 			return parentId;
 		} else {
 			return nextId;
 		}
 	}
 
-	private static void dumpEdge(final VTree node, final int parentId, final int nodeId) {
+	private static void dumpEdge(final VTree node, final int parentId, final int nodeId, final Map<VTree, Integer> vtreeMap) {
+		if (vtreeMap != null) {
+			vtreeMap.put(node, nodeId);
+		}
 		if (node.isLeaf()) {
 			final String letter = letter(((LeafNode) node).getVariable());
-			System.out.println("  " + parentId + " -- " + letter + " [headlabel=" + nodeId + "]");
+			System.out.println("  v" + letter + " [shape=none,label=\"" + letter + "\"]");
+			System.out.println("  v" + parentId + " -> v" + letter + " [arrowhead=none,headlabel=" + nodeId + "]");
 		} else {
-			System.out.println("  " + parentId + " -- " + nodeId);
+			System.out.println("  v" + parentId + " -> v" + nodeId + " [arrowhead=none]");
 		}
 	}
 
