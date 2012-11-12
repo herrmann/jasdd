@@ -15,6 +15,7 @@ import jsdd.PairedBox;
 import jsdd.SDD;
 import jsdd.VTree;
 import jsdd.Variable;
+import jsdd.viz.GraphvizDumper;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -115,6 +116,13 @@ public class TestSDD {
 		final SDD sdd2 = AbstractSDD.decomposition(vtree, new PairedBox(a, false, b), new PairedBox(a, false));
 
 		sdd1.and(sdd2);
+	}
+
+	@Test
+	public void graphvizOutput() {
+		final SDD sdd = example1();
+		GraphvizDumper.dump(sdd.getVTree());
+		GraphvizDumper.dump((DecompositionSDD) sdd);
 	}
 
 	private VTree vtree1() {
