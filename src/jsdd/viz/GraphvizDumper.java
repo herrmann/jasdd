@@ -1,8 +1,18 @@
 package jsdd.viz;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import jsdd.ConstantSDD;
 import jsdd.DecompositionSDD;
 import jsdd.InternalNode;
 import jsdd.LeafNode;
+import jsdd.Literal;
+import jsdd.LiteralSDD;
+import jsdd.PairedBox;
+import jsdd.SDD;
 import jsdd.VTree;
 import jsdd.Variable;
 
@@ -15,13 +25,66 @@ public class GraphvizDumper {
 
 	public static void dump(final DecompositionSDD sdd) {
 		System.out.println("digraph sdd {");
-		dumpNodes(sdd);
-		dumpEdges(sdd);
+		dumpDecomposition(sdd);
 		System.out.println("}");
 	}
 
-	private static void dumpNodes(final DecompositionSDD sdd) {
-		// TODO Auto-generated method stub
+	private static void dumpDecomposition(final DecompositionSDD sdd) {
+		dumpDecomposition(sdd, 0, new HashMap<PairedBox, Integer>());
+	}
+
+	private static int dumpDecomposition(final DecompositionSDD sdd, final int nextId, final Map<PairedBox, Integer> visited) {
+		final int decompId = nextId;
+		int id = nextId + 1;
+		for (final PairedBox element : sdd.getElements()) {
+			id = dumpPairedBox(element, id, visited, decompId);
+		}
+		return id;
+	}
+
+	private static int dumpPairedBox(final PairedBox element, final int nextId, final Map<PairedBox, Integer> visited, final int decompId) {
+		if (!visited.containsKey(element)) {
+			final SDD prime = element.getPrime();
+			final SDD sub = element.getSub();
+			final String primeLabel = label(prime);
+			final String subLabel = label(sub);
+			int leftId = nextId;
+			if (!prime.isTerminal()) {
+				leftId = dumpDecomposition((DecompositionSDD) prime, nextId, visited);
+			}
+			int rightId = leftId;
+			if (!sub.isTerminal()) {
+				rightId = dumpDecomposition((DecompositionSDD) sub, leftId, visited);
+			}
+			final int elementId = rightId + 1;
+			visited.put(element, elementId);
+			System.out.println("  e" + elementId + " [shape=record,label=\"<f0> " + primeLabel + "|<f1> " + subLabel + "\"]");
+			if (!prime.isTerminal()) {
+				System.out.println("  e" + elementId + ":f0 -> v" + nextId);
+			}
+			if (!sub.isTerminal()) {
+				System.out.println("  e" + elementId + ":f1 -> v" + nextId);
+			}
+			System.out.println("  v" + decompId + " -> e" + elementId);
+			return elementId;
+		} else {
+			final int elementId = visited.get(element);
+			System.out.println("  v" + decompId + " -> e" + elementId);
+			return nextId;
+		}
+	}
+
+	private static String label(final SDD sdd) {
+		if (sdd.isTerminal()) {
+			if (sdd instanceof ConstantSDD) {
+				return sdd.toString();
+			} else {
+				final Literal literal = ((LiteralSDD) sdd).getLiteral();
+				return (literal.getSign() ? "" : "-") + letter(literal.getVariable());
+			}
+		} else {
+			return "o";
+		}
 	}
 
 	private static void dumpEdges(final DecompositionSDD sdd) {
