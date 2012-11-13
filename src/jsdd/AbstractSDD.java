@@ -42,7 +42,7 @@ public abstract class AbstractSDD implements SDD {
 	}
 
 	public static SDD decomposition(final VTree node, final PairedBox... elements) {
-		return new DecompositionSDD(node, elements);
+		return new DecompositionSDD((InternalNode) node, elements);
 	}
 
 	public boolean isTrivial() {

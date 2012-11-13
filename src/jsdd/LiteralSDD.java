@@ -109,12 +109,12 @@ public class LiteralSDD extends TerminalSDD {
 				return new ConstantSDD(true);
 			}
 		} else {
-			// TODO: Respect vtree
+			// TODO: Respect and match vtrees
 			if (op.equals(new AndOperator())) {
-				return new DecompositionSDD(null, new PairedBox(literal, otherLiteral), new PairedBox(literal.opposite(), false));
+				return new DecompositionSDD(getVTree(), new PairedBox(literal, otherLiteral), new PairedBox(literal.opposite(), false));
 			}
 			if (op.equals(new OrOperator())) {
-				return new DecompositionSDD(null, new PairedBox(literal, true), new PairedBox(literal.opposite(), otherLiteral));
+				return new DecompositionSDD(getVTree(), new PairedBox(literal, true), new PairedBox(literal.opposite(), otherLiteral));
 			}
 		}
 		// TODO Auto-generated method stub

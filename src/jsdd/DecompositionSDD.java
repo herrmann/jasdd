@@ -19,7 +19,7 @@ import jsdd.viz.GraphvizDumper;
  */
 public class DecompositionSDD extends AbstractSDD {
 
-	private VTree vtree;
+	private InternalNode vtree;
 	private List<PairedBox> elements = new ArrayList<PairedBox>();
 
 	public DecompositionSDD(final DecompositionSDD sdd) {
@@ -29,16 +29,39 @@ public class DecompositionSDD extends AbstractSDD {
 	}
 
 	public DecompositionSDD(final VTree node, final PairedBox... elements) {
+		this((InternalNode) node, elements);
+	}
+
+	public DecompositionSDD(final InternalNode node, final PairedBox... elements) {
 		this.vtree = node;
 		for (final PairedBox element : elements) {
 			element.addParent(this);
+			// fixVSubTree(element.getPrime(), node.getLeft());
+			// fixVSubTree(element.getSub(), node.getRight());
 			this.elements.add(element);
 		}
 	}
 
+	private void fixVSubTree(final SDD sdd, final VTree correctNode) {
+		if (sdd instanceof DecompositionSDD) {
+			final VTree vtree = sdd.getVTree();
+			if (vtree != null) {
+				if (!vtree.equals(correctNode)) {
+					throw new IllegalArgumentException("Decomposition element doesn't respect the decomposition's vtree");
+				}
+			} else {
+				((DecompositionSDD) sdd).setVTree((InternalNode) correctNode);
+			}
+		}
+	}
+
 	@Override
-	public VTree getVTree() {
+	public InternalNode getVTree() {
 		return vtree;
+	}
+
+	private void setVTree(final InternalNode vtree) {
+		this.vtree = vtree;
 	}
 
 	public Collection<PairedBox> getElements() {
@@ -131,8 +154,14 @@ public class DecompositionSDD extends AbstractSDD {
 			for (final PairedBox e1 : expansion()) {
 				for (final PairedBox e2 : sdd.expansion()) {
 					SDD prime = e1.getPrime().and(e2.getPrime());
+					if (prime instanceof DecompositionSDD) {
+						((DecompositionSDD) prime).setVTree((InternalNode) sdd.getVTree().getLeft());
+					}
 					if (prime.isConsistent()) {
 						final SDD sub = e1.getSub().apply(e2.getSub(), op);
+						if (sub instanceof DecompositionSDD) {
+							((DecompositionSDD) sub).setVTree((InternalNode) sdd.getVTree().getRight());
+						}
 						// Apply compression
 						if (subs.containsKey(sub)) {
 							final PairedBox elem = subs.get(sub);
@@ -147,7 +176,7 @@ public class DecompositionSDD extends AbstractSDD {
 			}
 			final PairedBox[] elems = new PairedBox[elements.size()];
 			elements.toArray(elems);
-			return new DecompositionSDD(vtree, elems);
+			return new DecompositionSDD(sdd.getVTree(), elems);
 		}
 	}
 
