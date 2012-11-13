@@ -127,7 +127,9 @@ public class DecompositionSDD extends AbstractSDD {
 					}
 				}
 			}
-			return new DecompositionSDD(vtree, (PairedBox[]) elements.toArray());
+			final PairedBox[] elems = new PairedBox[elements.size()];
+			elements.toArray(elems);
+			return new DecompositionSDD(vtree, elems);
 		}
 	}
 
