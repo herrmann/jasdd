@@ -26,6 +26,7 @@ public interface SDD extends Sentence, StringBuildable {
 	SDD apply(DecompositionSDD sdd, BooleanOperator op);
 
 	SDD and(SDD sdd);
+	SDD or(SDD sdd);
 
 	Collection<PairedBox> expansion();
 

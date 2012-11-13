@@ -73,4 +73,9 @@ public abstract class AbstractSDD implements SDD {
 		return apply(sdd, new AndOperator());
 	}
 
+	@Override
+	public SDD or(final SDD sdd) {
+		return apply(sdd, new OrOperator());
+	}
+
 }

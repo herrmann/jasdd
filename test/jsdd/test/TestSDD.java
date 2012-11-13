@@ -104,18 +104,35 @@ public class TestSDD {
 	}
 
 	@Test
-	public void andOperation() {
+	public void simpleDecompositionAndSimpleDecomposition() {
 		final Variable a = new Variable(1);
 		final Variable b = new Variable(2);
 		final VTree vtree = new InternalNode(a, b);
 
 		// A /\ -B
 		final SDD sdd1 = AbstractSDD.decomposition(vtree, new PairedBox(a, b, false), new PairedBox(a, false, false));
-
+		
 		// -A /\ B
 		final SDD sdd2 = AbstractSDD.decomposition(vtree, new PairedBox(a, false, b), new PairedBox(a, false));
 
-		sdd1.and(sdd2);
+		final SDD result = sdd1.and(sdd2);
+		Assert.assertEquals("F", result.toString());
+	}
+
+	@Test
+	public void simpleDecompositionOrSimpleDecomposition() {
+		final Variable a = new Variable(1);
+		final Variable b = new Variable(2);
+		final VTree vtree = new InternalNode(a, b);
+
+		// A /\ -B
+		final SDD sdd1 = AbstractSDD.decomposition(vtree, new PairedBox(a, b, false), new PairedBox(a, false, false));
+		
+		// -A /\ B
+		final SDD sdd2 = AbstractSDD.decomposition(vtree, new PairedBox(a, false, b), new PairedBox(a, false));
+
+		final SDD result = sdd1.or(sdd2);
+		Assert.assertEquals("(1) /\\ {-2} \\/ (-1) /\\ {2}", result.toString());
 	}
 
 	@Test

@@ -49,6 +49,13 @@ public class ConstantSDD extends TerminalSDD {
 				return new ConstantSDD(false);
 			}
 		}
+		if (op.equals(new OrOperator())) {
+			if (getSign()) {
+				return new ConstantSDD(true);
+			} else {
+				return new LiteralSDD(sdd);
+			}
+		}
 		return null;
 	}
 
@@ -59,6 +66,13 @@ public class ConstantSDD extends TerminalSDD {
 				return new DecompositionSDD(sdd);
 			} else {
 				return new ConstantSDD(false);
+			}
+		}
+		if (op.equals(new OrOperator())) {
+			if (getSign()) {
+				return new ConstantSDD(true);
+			} else {
+				return new DecompositionSDD(sdd);
 			}
 		}
 		return null;

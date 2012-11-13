@@ -102,11 +102,19 @@ public class LiteralSDD extends TerminalSDD {
 		if (literal.equals(otherLiteral)) {
 			return new LiteralSDD(this);
 		} else if (literal.equals(otherLiteral.opposite())) {
-			return new ConstantSDD(false);
+			if (op.equals(new AndOperator())) {
+				return new ConstantSDD(false);
+			}
+			if (op.equals(new OrOperator())) {
+				return new ConstantSDD(true);
+			}
 		} else {
 			// TODO: Respect vtree
 			if (op.equals(new AndOperator())) {
 				return new DecompositionSDD(null, new PairedBox(literal, otherLiteral), new PairedBox(literal.opposite(), false));
+			}
+			if (op.equals(new OrOperator())) {
+				return new DecompositionSDD(null, new PairedBox(literal, true), new PairedBox(literal.opposite(), otherLiteral));
 			}
 		}
 		// TODO Auto-generated method stub

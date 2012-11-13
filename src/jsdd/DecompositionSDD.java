@@ -5,8 +5,10 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import jsdd.viz.GraphvizDumper;
 
@@ -74,6 +76,9 @@ public class DecompositionSDD extends AbstractSDD {
 					sb.append(element.toStringBuilder());
 				}
 			}
+			if (first) {
+				sb.append(FALSE);
+			}
 		}
 		return sb;
 	}
@@ -122,12 +127,21 @@ public class DecompositionSDD extends AbstractSDD {
 			return null;
 		} else {
 			final List<PairedBox> elements = new ArrayList<PairedBox>();
+			final Map<SDD, PairedBox> subs = new HashMap<SDD, PairedBox>();
 			for (final PairedBox e1 : expansion()) {
 				for (final PairedBox e2 : sdd.expansion()) {
-					final SDD prime = e1.getPrime().and(e2.getPrime());
+					SDD prime = e1.getPrime().and(e2.getPrime());
 					if (prime.isConsistent()) {
 						final SDD sub = e1.getSub().apply(e2.getSub(), op);
-						elements.add(new PairedBox(prime, sub));
+						// Apply compression
+						if (subs.containsKey(sub)) {
+							final PairedBox elem = subs.get(sub);
+							elements.remove(elem);
+							prime = elem.getPrime().or(prime);
+						}
+						final PairedBox element = new PairedBox(prime, sub);
+						elements.add(element);
+						subs.put(sub, element);
 					}
 				}
 			}
