@@ -29,4 +29,9 @@ public interface SDD extends Sentence, StringBuildable {
 
 	Collection<PairedBox> expansion();
 
+	/**
+	 * For debugging purposes only.
+	 */
+	void dump();
+
 }

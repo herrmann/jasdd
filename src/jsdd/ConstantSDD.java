@@ -103,4 +103,9 @@ public class ConstantSDD extends TerminalSDD {
 		return true;
 	}
 
+	@Override
+	public void dump() {
+		// TODO Auto-generated method stub
+	}
+
 }

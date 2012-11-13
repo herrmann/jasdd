@@ -1,10 +1,14 @@
 package jsdd;
 
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+
+import jsdd.viz.GraphvizDumper;
 
 /**
  * SDD for a (X,Y)-decomposition of a boolean function.
@@ -191,6 +195,18 @@ public class DecompositionSDD extends AbstractSDD {
 	@Override
 	public boolean isTerminal() {
 		return false;
+	}
+
+	/**
+	 * For debugging purposes only: the model should not rely on the visualization package.
+	 */
+	@Override
+	public void dump() {
+		try {
+			GraphvizDumper.setOutput(new PrintStream("sdd.dot"));
+		} catch (final FileNotFoundException e) {
+		}
+		GraphvizDumper.dump(this);
 	}
 
 }

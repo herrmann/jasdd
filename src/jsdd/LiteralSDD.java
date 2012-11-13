@@ -119,4 +119,9 @@ public class LiteralSDD extends TerminalSDD {
 		return null;
 	}
 
+	@Override
+	public void dump() {
+		// TODO Auto-generated method stub
+	}
+
 }
