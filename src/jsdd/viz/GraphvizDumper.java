@@ -30,6 +30,7 @@ public class GraphvizDumper {
 
 	public static void dump(final DecompositionSDD sdd) {
 		out.println("digraph sdd {");
+		out.println("  graph [ordering=\"out\"]");
 		final Map<VTree, Integer> vtreeMap = new HashMap<VTree, Integer>();
 		dumpVTreeNode(sdd.getVTree(), vtreeMap);
 		dumpDecomposition(sdd, vtreeMap);
