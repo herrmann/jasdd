@@ -141,6 +141,25 @@ public class TestSDD {
 		GraphvizDumper.dump((DecompositionSDD) sdd);
 	}
 
+	@Test
+	public void simpleCompression() {
+		final Variable a = new Variable(1);
+		final Variable b = new Variable(2);
+		final Variable c = new Variable(3);
+		
+		final VTree va = new LeafNode(a);
+		final VTree vb = new LeafNode(b);
+		final VTree vc = new LeafNode(c);
+		final VTree v1 = new InternalNode(va, vb);
+		final VTree v0 = new InternalNode(v1, vc);
+		
+		final SDD aOrC = AbstractSDD.decomposition(v0, new PairedBox(a, true), new PairedBox(a, false, c));
+		final SDD bOrC = AbstractSDD.decomposition(v0, new PairedBox(b, true), new PairedBox(b, false, c));
+		
+		final SDD result = aOrC.or(bOrC);
+		Assert.assertEquals("1 \\/ (-1) /\\ {2} \\/ ((-1) /\\ {-2}) /\\ {3}", result.toString());
+	}
+
 	private VTree vtree1() {
 		final Variable a = new Variable(1);
 		final Variable b = new Variable(2);
