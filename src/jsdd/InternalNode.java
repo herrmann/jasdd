@@ -3,6 +3,11 @@ package jsdd;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * An internal node of a variable partitioning tree.
+ *  
+ * @author Ricardo Herrmann
+ */
 public class InternalNode extends VTree {
 
 	private VTree left, right;

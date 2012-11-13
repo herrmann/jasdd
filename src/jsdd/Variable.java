@@ -1,5 +1,10 @@
 package jsdd;
 
+/**
+ * Representation of a logical boolean variable.
+ * 
+ * @author Ricardo Herrmann
+ */
 public class Variable {
 
 	private int index;
