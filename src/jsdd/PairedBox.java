@@ -42,6 +42,10 @@ public class PairedBox implements Sentence, StringBuildable {
 		this(s1, v2, true);
 	}
 
+	public PairedBox(final boolean s1, final Literal l2) {
+		this(s1, l2.getVariable(), l2.getSign());
+	}
+
 	public PairedBox(final Variable v1, final boolean s1, final Variable v2) {
 		this(v1, s1, v2, true);
 	}

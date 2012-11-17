@@ -123,8 +123,7 @@ public class LiteralSDD extends TerminalSDD {
 
 	@Override
 	public SDD apply(final DecompositionSDD sdd, final BooleanOperator op) {
-		// TODO Auto-generated method stub
-		return null;
+		return sdd.apply(this, op);
 	}
 
 	@Override

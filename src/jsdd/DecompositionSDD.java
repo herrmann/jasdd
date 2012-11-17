@@ -139,8 +139,17 @@ public class DecompositionSDD extends AbstractSDD {
 
 	@Override
 	public SDD apply(final LiteralSDD sdd, final BooleanOperator op) {
-		// TODO Auto-generated method stub
-		return null;
+		final Variable variable = sdd.getLiteral().getVariable();
+		DecompositionSDD decomp;
+		if (getVTree().getLeft().variables().contains(variable)) {
+			final Literal literal = sdd.getLiteral();
+			decomp = new DecompositionSDD(getVTree(),
+					new PairedBox(variable, literal.getSign()),
+					new PairedBox(variable, false, literal.opposite().getSign()));
+		} else {
+			decomp = new DecompositionSDD(getVTree(), new PairedBox(true, sdd.getLiteral()));
+		}
+		return apply(decomp, op);
 	}
 
 	@Override
