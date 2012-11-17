@@ -1,7 +1,9 @@
 package jsdd.viz;
 
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import jsdd.ConstantSDD;
@@ -46,10 +48,17 @@ public class GraphvizDumper {
 			final int decompId = nextId;
 			decompCache.put(sdd, decompId);
 			out.println("  d" + decompId + " [shape=circle,label=\"" + vtreeMap.get(sdd.getVTree()) + "\"]");
+			final List<Integer> ids = new ArrayList<Integer>();
 			int id = nextId + 1;
 			for (final PairedBox element : sdd.getElements()) {
 				id = dumpPairedBox(element, id, pboxCache, decompCache, decompId, vtreeMap);
+				ids.add(pboxCache.get(element));
 			}
+			out.print("  { rank=same;");
+			for (final int eid : ids) {
+				out.print(" e" + eid + ";");
+			}
+			out.println(" }");
 			return id;
 		} else {
 			return nextId;
