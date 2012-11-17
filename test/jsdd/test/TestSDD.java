@@ -184,6 +184,11 @@ public class TestSDD {
 		Assert.assertEquals("F", result.toString());
 	}
 
+	@Test
+	public void normalization() {
+		exampleNormalized();
+	}
+
 	private VTree vtree1() {
 		final Variable a = new Variable(1);
 		final Variable b = new Variable(2);
@@ -221,6 +226,32 @@ public class TestSDD {
 		final PairedBox n7 = new PairedBox(b, false, AbstractSDD.decomposition(vr, n3, n4));
 
 		return AbstractSDD.decomposition(root, n5, n6, n7);
+	}
+
+	private SDD exampleNormalized() {
+		final Variable a = new Variable(1);
+		final Variable b = new Variable(2);
+		final Variable c = new Variable(3);
+		final Variable d = new Variable(4);
+
+		final InternalNode root = (InternalNode) vtree1();
+		final InternalNode vl = (InternalNode) root.getLeft();
+		final InternalNode vr = (InternalNode) root.getRight();
+
+		final PairedBox n0 = new PairedBox(b, a);
+		final PairedBox n1 = new PairedBox(b, false, false);
+		final PairedBox n2 = new PairedBox(b, a, false);
+		final PairedBox n3 = new PairedBox(true, c);
+		final PairedBox n4 = new PairedBox(b, false, true);
+		final PairedBox n5 = new PairedBox(b, false);
+		final PairedBox n6 = new PairedBox(d, c);
+		final PairedBox n7 = new PairedBox(d, false, false);
+
+		final PairedBox n8 = new PairedBox(AbstractSDD.decomposition(vl, n0, n1), true);
+		final PairedBox n9 = new PairedBox(AbstractSDD.decomposition(vl, n1, n2), AbstractSDD.decomposition(vr, n3));
+		final PairedBox n10 = new PairedBox(AbstractSDD.decomposition(vl, n4, n5), AbstractSDD.decomposition(vr, n6, n7));
+
+		return AbstractSDD.decomposition(root, n8, n9, n10);
 	}
 
 	private SDD exampleBDD() {
