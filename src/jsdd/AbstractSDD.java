@@ -41,8 +41,8 @@ public abstract class AbstractSDD implements SDD {
 		return hasParent() && !prime;
 	}
 
-	public static SDD decomposition(final VTree node, final PairedBox... elements) {
-		return new DecompositionSDD((InternalNode) node, elements);
+	public static SDD decomposition(final InternalNode node, final PairedBox... elements) {
+		return new DecompositionSDD(node, elements);
 	}
 
 	public boolean isTrivial() {

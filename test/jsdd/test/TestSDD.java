@@ -41,7 +41,7 @@ public class TestSDD {
 
 	@Test
 	public void correctConstruction1() {
-		final DecompositionSDD sdd = (DecompositionSDD) example1();
+		final DecompositionSDD sdd = (DecompositionSDD) exampleDarwiche();
 		final VTree vtree = sdd.getVTree();
 		Assert.assertTrue(!vtree.isRightLinear());
 		Assert.assertEquals("((2, 1), (4, 3))", vtree.toString());
@@ -49,7 +49,7 @@ public class TestSDD {
 
 	@Test
 	public void correctConstruction2() {
-		final DecompositionSDD sdd = (DecompositionSDD) example2();
+		final DecompositionSDD sdd = (DecompositionSDD) exampleBDD();
 		final VTree vtree = sdd.getVTree();
 		Assert.assertTrue(vtree.isRightLinear());
 		Assert.assertEquals("(1, (2, (3, 4)))", vtree.toString());
@@ -82,15 +82,17 @@ public class TestSDD {
 		final Variable d = new Variable(4);
 
 		final InternalNode root = (InternalNode) vtree1();
+		final InternalNode vl = (InternalNode) root.getLeft();
+		final InternalNode vr = (InternalNode) root.getRight();
 
 		final PairedBox n0 = new PairedBox(b, a);
 		final PairedBox n1 = new PairedBox(b, false, false);
 		final PairedBox n2 = new PairedBox(b, a, false);
 		final PairedBox n3 = new PairedBox(d, c);
 		final PairedBox n4 = new PairedBox(d, false, false);
-		final PairedBox n5 = new PairedBox(AbstractSDD.decomposition(root.getLeft(), n0, n1), true);
-		final PairedBox n6 = new PairedBox(AbstractSDD.decomposition(root.getLeft(), n1, n2), c);
-		final PairedBox n7 = new PairedBox(b, false, AbstractSDD.decomposition(root.getRight(), n3, n4));
+		final PairedBox n5 = new PairedBox(AbstractSDD.decomposition(vl, n0, n1), true);
+		final PairedBox n6 = new PairedBox(AbstractSDD.decomposition(vl, n1, n2), c);
+		final PairedBox n7 = new PairedBox(b, false, AbstractSDD.decomposition(vr, n3, n4));
 
 		final SDD sdd = AbstractSDD.decomposition(root, n5, n6, n7);
 
@@ -107,7 +109,7 @@ public class TestSDD {
 	public void simpleDecompositionAndSimpleDecomposition() {
 		final Variable a = new Variable(1);
 		final Variable b = new Variable(2);
-		final VTree vtree = new InternalNode(a, b);
+		final InternalNode vtree = new InternalNode(a, b);
 
 		// A /\ -B
 		final SDD sdd1 = AbstractSDD.decomposition(vtree, new PairedBox(a, b, false), new PairedBox(a, false, false));
@@ -123,7 +125,7 @@ public class TestSDD {
 	public void simpleDecompositionOrSimpleDecomposition() {
 		final Variable a = new Variable(1);
 		final Variable b = new Variable(2);
-		final VTree vtree = new InternalNode(a, b);
+		final InternalNode vtree = new InternalNode(a, b);
 
 		// A /\ -B
 		final SDD sdd1 = AbstractSDD.decomposition(vtree, new PairedBox(a, b, false), new PairedBox(a, false, false));
@@ -137,7 +139,7 @@ public class TestSDD {
 
 	@Test
 	public void graphvizOutput() {
-		final SDD sdd = example1();
+		final SDD sdd = exampleDarwiche();
 		GraphvizDumper.dump((DecompositionSDD) sdd);
 	}
 
@@ -151,7 +153,7 @@ public class TestSDD {
 		final VTree vb = new LeafNode(b);
 		final VTree vc = new LeafNode(c);
 		final VTree v1 = new InternalNode(va, vb);
-		final VTree v0 = new InternalNode(v1, vc);
+		final InternalNode v0 = new InternalNode(v1, vc);
 		
 		final SDD aOrC = AbstractSDD.decomposition(v0, new PairedBox(a, true), new PairedBox(a, false, c));
 		final SDD bOrC = AbstractSDD.decomposition(v0, new PairedBox(b, true), new PairedBox(b, false, c));
@@ -164,7 +166,7 @@ public class TestSDD {
 	public void primeLiteralAndDecomposition() {
 		final Variable a = new Variable(1);
 		final Variable b = new Variable(2);
-		final VTree vtree = new InternalNode(a, b);
+		final InternalNode vtree = new InternalNode(a, b);
 		final SDD sdd1 = new LiteralSDD(a);
 		final SDD sdd2 = AbstractSDD.decomposition(vtree, new PairedBox(a, b, false), new PairedBox(a, false, false));
 		final SDD result = sdd1.and(sdd2);
@@ -175,7 +177,7 @@ public class TestSDD {
 	public void subLiteralAndDecomposition() {
 		final Variable a = new Variable(1);
 		final Variable b = new Variable(2);
-		final VTree vtree = new InternalNode(a, b);
+		final InternalNode vtree = new InternalNode(a, b);
 		final SDD sdd1 = new LiteralSDD(b);
 		final SDD sdd2 = AbstractSDD.decomposition(vtree, new PairedBox(a, b, false), new PairedBox(a, false, false));
 		final SDD result = sdd1.and(sdd2);
@@ -199,46 +201,48 @@ public class TestSDD {
 		return v6;
 	}
 
-	private SDD example1() {
+	private SDD exampleDarwiche() {
 		final Variable a = new Variable(1);
 		final Variable b = new Variable(2);
 		final Variable c = new Variable(3);
 		final Variable d = new Variable(4);
 
 		final InternalNode root = (InternalNode) vtree1();
+		final InternalNode vl = (InternalNode) root.getLeft();
+		final InternalNode vr = (InternalNode) root.getRight();
 
 		final PairedBox n0 = new PairedBox(b, a);
 		final PairedBox n1 = new PairedBox(b, false, false);
 		final PairedBox n2 = new PairedBox(b, a, false);
 		final PairedBox n3 = new PairedBox(d, c);
 		final PairedBox n4 = new PairedBox(d, false, false);
-		final PairedBox n5 = new PairedBox(AbstractSDD.decomposition(root.getLeft(), n0, n1), true);
-		final PairedBox n6 = new PairedBox(AbstractSDD.decomposition(root.getLeft(), n1, n2), c);
-		final PairedBox n7 = new PairedBox(b, false, AbstractSDD.decomposition(root.getRight(), n3, n4));
+		final PairedBox n5 = new PairedBox(AbstractSDD.decomposition(vl, n0, n1), true);
+		final PairedBox n6 = new PairedBox(AbstractSDD.decomposition(vl, n1, n2), c);
+		final PairedBox n7 = new PairedBox(b, false, AbstractSDD.decomposition(vr, n3, n4));
 
 		return AbstractSDD.decomposition(root, n5, n6, n7);
 	}
 
-	private SDD example2() {
+	private SDD exampleBDD() {
 		final Variable a = new Variable(1);
 		final Variable b = new Variable(2);
 		final Variable c = new Variable(3);
 		final Variable d = new Variable(4);
 
-		final VTree v0 = new LeafNode(a);
-		final VTree v1 = new LeafNode(b);
-		final VTree v2 = new LeafNode(c);
-		final VTree v3 = new LeafNode(d);
-		final VTree v4 = new InternalNode(v2, v3);
-		final VTree v5 = new InternalNode(v1, v4);
-		final VTree v6 = new InternalNode(v0, v5);
+		final LeafNode v0 = new LeafNode(a);
+		final LeafNode v1 = new LeafNode(b);
+		final LeafNode v2 = new LeafNode(c);
+		final LeafNode v3 = new LeafNode(d);
+		final InternalNode v4 = new InternalNode(v2, v3);
+		final InternalNode v5 = new InternalNode(v1, v4);
+		final InternalNode v6 = new InternalNode(v0, v5);
 
 		final PairedBox n0 = new PairedBox(c, d);
 		final PairedBox n1 = new PairedBox(c, false, false);
 		final PairedBox n2 = new PairedBox(b, true);
 		final SDD d0 = AbstractSDD.decomposition(v4, n0, n1);
 		final PairedBox n3 = new PairedBox(b, false, d0);
-		final PairedBox n4 = new PairedBox(a, AbstractSDD.decomposition(v2, n2, n3));
+		final PairedBox n4 = new PairedBox(a, AbstractSDD.decomposition(v5, n2, n3));
 		final PairedBox n5 = new PairedBox(a, false, d0);
 
 		return AbstractSDD.decomposition(v6, n4, n5);
