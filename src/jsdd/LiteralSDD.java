@@ -28,6 +28,10 @@ public class LiteralSDD extends TerminalSDD {
 		this.literal = new Literal(variable, sign);
 	}
 
+	public LiteralSDD(final Variable variable) {
+		this(variable, true);
+	}
+
 	public Literal getLiteral() {
 		return literal;
 	}

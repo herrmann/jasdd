@@ -160,6 +160,28 @@ public class TestSDD {
 		Assert.assertEquals("1 \\/ (-1) /\\ {2} \\/ ((-1) /\\ {-2}) /\\ {3}", result.toString());
 	}
 
+	@Test
+	public void primeLiteralAndDecomposition() {
+		final Variable a = new Variable(1);
+		final Variable b = new Variable(2);
+		final VTree vtree = new InternalNode(a, b);
+		final SDD sdd1 = new LiteralSDD(a);
+		final SDD sdd2 = AbstractSDD.decomposition(vtree, new PairedBox(a, b, false), new PairedBox(a, false, false));
+		final SDD result = sdd1.and(sdd2);
+		Assert.assertEquals("(1) /\\ {-2}", result.toString());
+	}
+
+	@Test
+	public void subLiteralAndDecomposition() {
+		final Variable a = new Variable(1);
+		final Variable b = new Variable(2);
+		final VTree vtree = new InternalNode(a, b);
+		final SDD sdd1 = new LiteralSDD(b);
+		final SDD sdd2 = AbstractSDD.decomposition(vtree, new PairedBox(a, b, false), new PairedBox(a, false, false));
+		final SDD result = sdd1.and(sdd2);
+		Assert.assertEquals("F", result.toString());
+	}
+
 	private VTree vtree1() {
 		final Variable a = new Variable(1);
 		final Variable b = new Variable(2);
