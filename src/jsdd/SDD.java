@@ -13,7 +13,7 @@ public interface SDD extends Sentence, StringBuildable {
 
 	boolean isFalse();
 
-	PairedBox getParent();
+	Element getParent();
 	boolean isPrime();
 	boolean isSub();
 	boolean isTerminal();
@@ -28,7 +28,7 @@ public interface SDD extends Sentence, StringBuildable {
 	SDD and(SDD sdd);
 	SDD or(SDD sdd);
 
-	Collection<PairedBox> expansion();
+	Collection<Element> expansion();
 	SDD trimmed();
 
 	/**

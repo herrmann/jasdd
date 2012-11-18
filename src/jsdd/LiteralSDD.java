@@ -57,10 +57,10 @@ public class LiteralSDD extends TerminalSDD {
 	}
 
 	@Override
-	public Collection<PairedBox> expansion() {
-		final Collection<PairedBox> expansion = new ArrayList<PairedBox>(2);
-		expansion.add(new PairedBox(getLiteral(), true));
-		expansion.add(new PairedBox(getLiteral().opposite(), false));
+	public Collection<Element> expansion() {
+		final Collection<Element> expansion = new ArrayList<Element>(2);
+		expansion.add(new Element(getLiteral(), true));
+		expansion.add(new Element(getLiteral().opposite(), false));
 		return expansion;
 	}
 
@@ -115,10 +115,10 @@ public class LiteralSDD extends TerminalSDD {
 		} else {
 			// TODO: Respect and match vtrees
 			if (op.equals(new AndOperator())) {
-				return new DecompositionSDD(getVTree(), new PairedBox(literal, otherLiteral), new PairedBox(literal.opposite(), false));
+				return new DecompositionSDD(getVTree(), new Element(literal, otherLiteral), new Element(literal.opposite(), false));
 			}
 			if (op.equals(new OrOperator())) {
-				return new DecompositionSDD(getVTree(), new PairedBox(literal, true), new PairedBox(literal.opposite(), otherLiteral));
+				return new DecompositionSDD(getVTree(), new Element(literal, true), new Element(literal.opposite(), otherLiteral));
 			}
 		}
 		// TODO Auto-generated method stub

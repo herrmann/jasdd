@@ -13,7 +13,7 @@ import jsdd.DecompositionSDD;
 import jsdd.InternalNode;
 import jsdd.LeafNode;
 import jsdd.LiteralSDD;
-import jsdd.PairedBox;
+import jsdd.Element;
 import jsdd.SDD;
 import jsdd.VTree;
 import jsdd.Variable;
@@ -88,14 +88,14 @@ public class TestSDD {
 		final InternalNode vl = (InternalNode) root.getLeft();
 		final InternalNode vr = (InternalNode) root.getRight();
 
-		final PairedBox n0 = new PairedBox(b, a);
-		final PairedBox n1 = new PairedBox(b, false, false);
-		final PairedBox n2 = new PairedBox(b, a, false);
-		final PairedBox n3 = new PairedBox(d, c);
-		final PairedBox n4 = new PairedBox(d, false, false);
-		final PairedBox n5 = new PairedBox(AbstractSDD.decomposition(vl, n0, n1), true);
-		final PairedBox n6 = new PairedBox(AbstractSDD.decomposition(vl, n1, n2), c);
-		final PairedBox n7 = new PairedBox(b, false, AbstractSDD.decomposition(vr, n3, n4));
+		final Element n0 = new Element(b, a);
+		final Element n1 = new Element(b, false, false);
+		final Element n2 = new Element(b, a, false);
+		final Element n3 = new Element(d, c);
+		final Element n4 = new Element(d, false, false);
+		final Element n5 = new Element(AbstractSDD.decomposition(vl, n0, n1), true);
+		final Element n6 = new Element(AbstractSDD.decomposition(vl, n1, n2), c);
+		final Element n7 = new Element(b, false, AbstractSDD.decomposition(vr, n3, n4));
 
 		final SDD sdd = AbstractSDD.decomposition(root, n5, n6, n7);
 
@@ -115,10 +115,10 @@ public class TestSDD {
 		final InternalNode vtree = new InternalNode(a, b);
 
 		// A /\ -B
-		final SDD sdd1 = AbstractSDD.decomposition(vtree, new PairedBox(a, b, false), new PairedBox(a, false, false));
+		final SDD sdd1 = AbstractSDD.decomposition(vtree, new Element(a, b, false), new Element(a, false, false));
 		
 		// -A /\ B
-		final SDD sdd2 = AbstractSDD.decomposition(vtree, new PairedBox(a, false, b), new PairedBox(a, false));
+		final SDD sdd2 = AbstractSDD.decomposition(vtree, new Element(a, false, b), new Element(a, false));
 
 		final SDD result = sdd1.and(sdd2);
 		Assert.assertEquals("F", result.toString());
@@ -131,10 +131,10 @@ public class TestSDD {
 		final InternalNode vtree = new InternalNode(a, b);
 
 		// A /\ -B
-		final SDD sdd1 = AbstractSDD.decomposition(vtree, new PairedBox(a, b, false), new PairedBox(a, false, false));
+		final SDD sdd1 = AbstractSDD.decomposition(vtree, new Element(a, b, false), new Element(a, false, false));
 		
 		// -A /\ B
-		final SDD sdd2 = AbstractSDD.decomposition(vtree, new PairedBox(a, false, b), new PairedBox(a, false));
+		final SDD sdd2 = AbstractSDD.decomposition(vtree, new Element(a, false, b), new Element(a, false));
 
 		final SDD result = sdd1.or(sdd2);
 		Assert.assertEquals("(1) /\\ {-2} \\/ (-1) /\\ {2}", result.toString());
@@ -167,8 +167,8 @@ public class TestSDD {
 		final VTree v1 = new InternalNode(va, vb);
 		final InternalNode v0 = new InternalNode(v1, vc);
 		
-		final SDD aOrC = AbstractSDD.decomposition(v0, new PairedBox(a, true), new PairedBox(a, false, c));
-		final SDD bOrC = AbstractSDD.decomposition(v0, new PairedBox(b, true), new PairedBox(b, false, c));
+		final SDD aOrC = AbstractSDD.decomposition(v0, new Element(a, true), new Element(a, false, c));
+		final SDD bOrC = AbstractSDD.decomposition(v0, new Element(b, true), new Element(b, false, c));
 		
 		final SDD result = aOrC.or(bOrC);
 		Assert.assertEquals("1 \\/ (-1) /\\ {2} \\/ ((-1) /\\ {-2}) /\\ {3}", result.toString());
@@ -180,7 +180,7 @@ public class TestSDD {
 		final Variable b = new Variable(2);
 		final InternalNode vtree = new InternalNode(a, b);
 		final SDD sdd1 = new LiteralSDD(a);
-		final SDD sdd2 = AbstractSDD.decomposition(vtree, new PairedBox(a, b, false), new PairedBox(a, false, false));
+		final SDD sdd2 = AbstractSDD.decomposition(vtree, new Element(a, b, false), new Element(a, false, false));
 		final SDD result = sdd1.and(sdd2);
 		Assert.assertEquals("(1) /\\ {-2}", result.toString());
 	}
@@ -191,7 +191,7 @@ public class TestSDD {
 		final Variable b = new Variable(2);
 		final InternalNode vtree = new InternalNode(a, b);
 		final SDD sdd1 = new LiteralSDD(b);
-		final SDD sdd2 = AbstractSDD.decomposition(vtree, new PairedBox(a, b, false), new PairedBox(a, false, false));
+		final SDD sdd2 = AbstractSDD.decomposition(vtree, new Element(a, b, false), new Element(a, false, false));
 		final SDD result = sdd1.and(sdd2);
 		Assert.assertEquals("F", result.toString());
 	}
@@ -249,14 +249,14 @@ public class TestSDD {
 		final InternalNode vl = (InternalNode) root.getLeft();
 		final InternalNode vr = (InternalNode) root.getRight();
 
-		final PairedBox n0 = new PairedBox(b, a);
-		final PairedBox n1 = new PairedBox(b, false, false);
-		final PairedBox n2 = new PairedBox(b, a, false);
-		final PairedBox n3 = new PairedBox(d, c);
-		final PairedBox n4 = new PairedBox(d, false, false);
-		final PairedBox n5 = new PairedBox(AbstractSDD.decomposition(vl, n0, n1), true);
-		final PairedBox n6 = new PairedBox(AbstractSDD.decomposition(vl, n1, n2), c);
-		final PairedBox n7 = new PairedBox(b, false, AbstractSDD.decomposition(vr, n3, n4));
+		final Element n0 = new Element(b, a);
+		final Element n1 = new Element(b, false, false);
+		final Element n2 = new Element(b, a, false);
+		final Element n3 = new Element(d, c);
+		final Element n4 = new Element(d, false, false);
+		final Element n5 = new Element(AbstractSDD.decomposition(vl, n0, n1), true);
+		final Element n6 = new Element(AbstractSDD.decomposition(vl, n1, n2), c);
+		final Element n7 = new Element(b, false, AbstractSDD.decomposition(vr, n3, n4));
 
 		return AbstractSDD.decomposition(root, n5, n6, n7);
 	}
@@ -271,18 +271,18 @@ public class TestSDD {
 		final InternalNode vl = (InternalNode) root.getLeft();
 		final InternalNode vr = (InternalNode) root.getRight();
 
-		final PairedBox n0 = new PairedBox(b, a);
-		final PairedBox n1 = new PairedBox(b, false, false);
-		final PairedBox n2 = new PairedBox(b, a, false);
-		final PairedBox n3 = new PairedBox(true, c);
-		final PairedBox n4 = new PairedBox(b, false, true);
-		final PairedBox n5 = new PairedBox(b, false);
-		final PairedBox n6 = new PairedBox(d, c);
-		final PairedBox n7 = new PairedBox(d, false, false);
+		final Element n0 = new Element(b, a);
+		final Element n1 = new Element(b, false, false);
+		final Element n2 = new Element(b, a, false);
+		final Element n3 = new Element(true, c);
+		final Element n4 = new Element(b, false, true);
+		final Element n5 = new Element(b, false);
+		final Element n6 = new Element(d, c);
+		final Element n7 = new Element(d, false, false);
 
-		final PairedBox n8 = new PairedBox(AbstractSDD.decomposition(vl, n0, n1), true);
-		final PairedBox n9 = new PairedBox(AbstractSDD.decomposition(vl, n1, n2), AbstractSDD.decomposition(vr, n3));
-		final PairedBox n10 = new PairedBox(AbstractSDD.decomposition(vl, n4, n5), AbstractSDD.decomposition(vr, n6, n7));
+		final Element n8 = new Element(AbstractSDD.decomposition(vl, n0, n1), true);
+		final Element n9 = new Element(AbstractSDD.decomposition(vl, n1, n2), AbstractSDD.decomposition(vr, n3));
+		final Element n10 = new Element(AbstractSDD.decomposition(vl, n4, n5), AbstractSDD.decomposition(vr, n6, n7));
 
 		return AbstractSDD.decomposition(root, n8, n9, n10);
 	}
@@ -301,13 +301,13 @@ public class TestSDD {
 		final InternalNode v5 = new InternalNode(v1, v4);
 		final InternalNode v6 = new InternalNode(v0, v5);
 
-		final PairedBox n0 = new PairedBox(c, d);
-		final PairedBox n1 = new PairedBox(c, false, false);
-		final PairedBox n2 = new PairedBox(b, true);
+		final Element n0 = new Element(c, d);
+		final Element n1 = new Element(c, false, false);
+		final Element n2 = new Element(b, true);
 		final SDD d0 = AbstractSDD.decomposition(v4, n0, n1);
-		final PairedBox n3 = new PairedBox(b, false, d0);
-		final PairedBox n4 = new PairedBox(a, AbstractSDD.decomposition(v5, n2, n3));
-		final PairedBox n5 = new PairedBox(a, false, d0);
+		final Element n3 = new Element(b, false, d0);
+		final Element n4 = new Element(a, AbstractSDD.decomposition(v5, n2, n3));
+		final Element n5 = new Element(a, false, d0);
 
 		return AbstractSDD.decomposition(v6, n4, n5);
 	}

@@ -20,21 +20,21 @@ import jsdd.viz.GraphvizDumper;
 public class DecompositionSDD extends AbstractSDD {
 
 	private InternalNode vtree;
-	private List<PairedBox> elements = new ArrayList<PairedBox>();
+	private List<Element> elements = new ArrayList<Element>();
 
 	public DecompositionSDD(final DecompositionSDD sdd) {
 		this.vtree = sdd.getVTree();
-		this.elements = (List<PairedBox>) sdd.getElements();
+		this.elements = (List<Element>) sdd.getElements();
 		// TODO: Deep copy
 	}
 
-	public DecompositionSDD(final VTree node, final PairedBox... elements) {
+	public DecompositionSDD(final VTree node, final Element... elements) {
 		this((InternalNode) node, elements);
 	}
 
-	public DecompositionSDD(final InternalNode node, final PairedBox... elements) {
+	public DecompositionSDD(final InternalNode node, final Element... elements) {
 		this.vtree = node;
-		for (final PairedBox element : elements) {
+		for (final Element element : elements) {
 			element.addParent(this);
 			// fixVSubTree(element.getPrime(), node.getLeft());
 			// fixVSubTree(element.getSub(), node.getRight());
@@ -64,13 +64,13 @@ public class DecompositionSDD extends AbstractSDD {
 		this.vtree = vtree;
 	}
 
-	public Collection<PairedBox> getElements() {
+	public Collection<Element> getElements() {
 		return elements;
 	}
 
 	public boolean isStronglyDeterministic() {
-		for (final PairedBox i : elements) {
-			for (final PairedBox j : elements) {
+		for (final Element i : elements) {
+			for (final Element j : elements) {
 				if (!i.equals(j)) {
 					final SDD pi = i.getPrime();
 					final SDD pj = j.getPrime();
@@ -90,7 +90,7 @@ public class DecompositionSDD extends AbstractSDD {
 			sb.append(TRUE);
 		} else {
 			boolean first = true;
-			for (final PairedBox element : elements) {
+			for (final Element element : elements) {
 				if (!element.isUnsatisfiable()) {
 					if (!first) {
 						sb.append(" \\/ ");
@@ -108,7 +108,7 @@ public class DecompositionSDD extends AbstractSDD {
 
 	@Override
 	public boolean isTautology() {
-		for (final PairedBox element : elements) {
+		for (final Element element : elements) {
 			if (element.isTautology()) {
 				return true;
 			}
@@ -118,7 +118,7 @@ public class DecompositionSDD extends AbstractSDD {
 
 	@Override
 	public boolean isUnsatisfiable() {
-		for (final PairedBox element : elements) {
+		for (final Element element : elements) {
 			if (!element.isUnsatisfiable()) {
 				return false;
 			}
@@ -144,10 +144,10 @@ public class DecompositionSDD extends AbstractSDD {
 		if (getVTree().getLeft().variables().contains(variable)) {
 			final Literal literal = sdd.getLiteral();
 			decomp = new DecompositionSDD(getVTree(),
-					new PairedBox(variable, literal.getSign()),
-					new PairedBox(variable, false, literal.opposite().getSign()));
+					new Element(variable, literal.getSign()),
+					new Element(variable, false, literal.opposite().getSign()));
 		} else {
-			decomp = new DecompositionSDD(getVTree(), new PairedBox(true, sdd.getLiteral()));
+			decomp = new DecompositionSDD(getVTree(), new Element(true, sdd.getLiteral()));
 		}
 		return apply(decomp, op);
 	}
@@ -158,10 +158,10 @@ public class DecompositionSDD extends AbstractSDD {
 			// TODO: check if it is in cache
 			return null;
 		} else {
-			final List<PairedBox> elements = new ArrayList<PairedBox>();
-			final Map<SDD, PairedBox> subs = new HashMap<SDD, PairedBox>();
-			for (final PairedBox e1 : expansion()) {
-				for (final PairedBox e2 : sdd.expansion()) {
+			final List<Element> elements = new ArrayList<Element>();
+			final Map<SDD, Element> subs = new HashMap<SDD, Element>();
+			for (final Element e1 : expansion()) {
+				for (final Element e2 : sdd.expansion()) {
 					SDD prime = e1.getPrime().and(e2.getPrime());
 					if (prime instanceof DecompositionSDD) {
 						((DecompositionSDD) prime).setVTree((InternalNode) sdd.getVTree().getLeft());
@@ -173,17 +173,17 @@ public class DecompositionSDD extends AbstractSDD {
 						}
 						// Apply compression
 						if (subs.containsKey(sub)) {
-							final PairedBox elem = subs.get(sub);
+							final Element elem = subs.get(sub);
 							elements.remove(elem);
 							prime = elem.getPrime().or(prime);
 						}
-						final PairedBox element = new PairedBox(prime, sub);
+						final Element element = new Element(prime, sub);
 						elements.add(element);
 						subs.put(sub, element);
 					}
 				}
 			}
-			final PairedBox[] elems = new PairedBox[elements.size()];
+			final Element[] elems = new Element[elements.size()];
 			elements.toArray(elems);
 			return new DecompositionSDD(sdd.getVTree(), elems);
 		}
@@ -191,8 +191,8 @@ public class DecompositionSDD extends AbstractSDD {
 
 	@Override
 	public SDD trimmed() {
-		final List<PairedBox> elements = new ArrayList<PairedBox>();
-		for (final PairedBox element : getElements()) {
+		final List<Element> elements = new ArrayList<Element>();
+		for (final Element element : getElements()) {
 			elements.add(element.trimmed());
 		}
 		if (elements.size() == 1 && elements.get(0).getPrime().equals(new ConstantSDD(true))) {
@@ -200,14 +200,14 @@ public class DecompositionSDD extends AbstractSDD {
 		} else if (elements.size() == 2 && elements.get(0).getSub().equals(new ConstantSDD(true)) && elements.get(1).getSub().equals(new ConstantSDD(false))) {
 			return elements.get(0).getPrime().trimmed();
 		} else {
-			final PairedBox[] elems = new PairedBox[elements.size()];
+			final Element[] elems = new Element[elements.size()];
 			elements.toArray(elems);
 			return new DecompositionSDD(getVTree(), elems);
 		}
 	}
 
 	@Override
-	public Collection<PairedBox> expansion() {
+	public Collection<Element> expansion() {
 		return Collections.unmodifiableCollection(elements);
 	}
 
@@ -248,7 +248,7 @@ public class DecompositionSDD extends AbstractSDD {
 			if (!sameSize) {
 				return false;
 			}
-			final boolean sameSet = new HashSet<PairedBox>(elements).equals(new HashSet<PairedBox>(other.elements));
+			final boolean sameSet = new HashSet<Element>(elements).equals(new HashSet<Element>(other.elements));
 			if (!sameSet) {
 				return false;
 			}

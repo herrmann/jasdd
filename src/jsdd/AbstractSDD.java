@@ -8,10 +8,10 @@ package jsdd;
 public abstract class AbstractSDD implements SDD {
 
 	private boolean prime;
-	private PairedBox parent;
+	private Element parent;
 
 	@Override
-	public PairedBox getParent() {
+	public Element getParent() {
 		return parent;
 	}
 
@@ -19,7 +19,7 @@ public abstract class AbstractSDD implements SDD {
 		return parent != null;
 	}
 
-	/* package */ void setParent(final PairedBox parent) {
+	/* package */ void setParent(final Element parent) {
 		this.parent = parent;
 	}
 
@@ -41,7 +41,7 @@ public abstract class AbstractSDD implements SDD {
 		return hasParent() && !prime;
 	}
 
-	public static SDD decomposition(final InternalNode node, final PairedBox... elements) {
+	public static SDD decomposition(final InternalNode node, final Element... elements) {
 		return new DecompositionSDD(node, elements);
 	}
 

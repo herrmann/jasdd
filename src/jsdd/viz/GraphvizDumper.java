@@ -12,7 +12,7 @@ import jsdd.InternalNode;
 import jsdd.LeafNode;
 import jsdd.Literal;
 import jsdd.LiteralSDD;
-import jsdd.PairedBox;
+import jsdd.Element;
 import jsdd.SDD;
 import jsdd.VTree;
 import jsdd.Variable;
@@ -41,19 +41,19 @@ public class GraphvizDumper {
 	}
 
 	private static void dumpDecomposition(final DecompositionSDD sdd, final Map<VTree, Integer> vtreeMap) {
-		dumpDecomposition(sdd, 0, new HashMap<PairedBox, Integer>(), new HashMap<DecompositionSDD, Integer>(), vtreeMap);
+		dumpDecomposition(sdd, 0, new HashMap<Element, Integer>(), new HashMap<DecompositionSDD, Integer>(), vtreeMap);
 	}
 
-	private static int dumpDecomposition(final DecompositionSDD sdd, final int nextId, final Map<PairedBox, Integer> pboxCache, final Map<DecompositionSDD, Integer> decompCache, final Map<VTree, Integer> vtreeMap) {
+	private static int dumpDecomposition(final DecompositionSDD sdd, final int nextId, final Map<Element, Integer> elemCache, final Map<DecompositionSDD, Integer> decompCache, final Map<VTree, Integer> vtreeMap) {
 		if (!decompCache.containsKey(sdd)) {
 			final int decompId = nextId;
 			decompCache.put(sdd, decompId);
 			out.println("  d" + decompId + " [shape=circle,label=\"" + vtreeMap.get(sdd.getVTree()) + "\"]");
 			final List<Integer> ids = new ArrayList<Integer>();
 			int id = nextId + 1;
-			for (final PairedBox element : sdd.getElements()) {
-				id = dumpPairedBox(element, id, pboxCache, decompCache, decompId, vtreeMap);
-				ids.add(pboxCache.get(element));
+			for (final Element element : sdd.getElements()) {
+				id = dumpPairedBox(element, id, elemCache, decompCache, decompId, vtreeMap);
+				ids.add(elemCache.get(element));
 			}
 			out.print("  { rank=same;");
 			for (final int eid : ids) {
@@ -66,22 +66,22 @@ public class GraphvizDumper {
 		}
 	}
 
-	private static int dumpPairedBox(final PairedBox element, final int nextId, final Map<PairedBox, Integer> pboxCache, final Map<DecompositionSDD, Integer> decompCache, final int decompId, final Map<VTree, Integer> vtreeMap) {
-		if (!pboxCache.containsKey(element)) {
+	private static int dumpPairedBox(final Element element, final int nextId, final Map<Element, Integer> elemCache, final Map<DecompositionSDD, Integer> decompCache, final int decompId, final Map<VTree, Integer> vtreeMap) {
+		if (!elemCache.containsKey(element)) {
 			final SDD prime = element.getPrime();
 			final SDD sub = element.getSub();
 			final String primeLabel = label(prime);
 			final String subLabel = label(sub);
 			int leftId = nextId;
 			if (!prime.isTerminal()) {
-				leftId = dumpDecomposition((DecompositionSDD) prime, nextId, pboxCache, decompCache, vtreeMap);
+				leftId = dumpDecomposition((DecompositionSDD) prime, nextId, elemCache, decompCache, vtreeMap);
 			}
 			int rightId = leftId;
 			if (!sub.isTerminal()) {
-				rightId = dumpDecomposition((DecompositionSDD) sub, leftId, pboxCache, decompCache, vtreeMap);
+				rightId = dumpDecomposition((DecompositionSDD) sub, leftId, elemCache, decompCache, vtreeMap);
 			}
 			final int elementId = rightId + 1;
-			pboxCache.put(element, elementId);
+			elemCache.put(element, elementId);
 			out.println("  e" + elementId + " [shape=record,label=\"<f0> " + primeLabel + "|<f1> " + subLabel + "\"]");
 			if (!prime.isTerminal()) {
 				out.println("  e" + elementId + ":f0 -> d" + decompCache.get(prime));
@@ -92,7 +92,7 @@ public class GraphvizDumper {
 			out.println("  d" + decompId + " -> e" + elementId);
 			return elementId;
 		} else {
-			final int elementId = pboxCache.get(element);
+			final int elementId = elemCache.get(element);
 			out.println("  d" + decompId + " -> e" + elementId);
 			return nextId;
 		}

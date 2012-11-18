@@ -89,9 +89,9 @@ public class ConstantSDD extends TerminalSDD {
 	}
 
 	@Override
-	public Collection<PairedBox> expansion() {
-		final Collection<PairedBox> expansion = new ArrayList<PairedBox>(1);
-		expansion.add(new PairedBox(true, getSign()));
+	public Collection<Element> expansion() {
+		final Collection<Element> expansion = new ArrayList<Element>(1);
+		expansion.add(new Element(true, getSign()));
 		return expansion;
 	}
 

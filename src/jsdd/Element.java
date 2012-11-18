@@ -12,12 +12,12 @@ import util.StringBuildable;
  * 
  * @author Ricardo Herrmann
  */
-public class PairedBox implements Sentence, StringBuildable {
+public class Element implements Sentence, StringBuildable {
 
 	private Set<DecompositionSDD> parents = new HashSet<DecompositionSDD>();
 	private SDD prime, sub;
 
-	public PairedBox(final SDD prime, final SDD sub) {
+	public Element(final SDD prime, final SDD sub) {
 		this.prime = prime;
 		this.sub = sub;
 		((AbstractSDD) prime).markPrime();
@@ -26,75 +26,75 @@ public class PairedBox implements Sentence, StringBuildable {
 		((AbstractSDD) sub).setParent(this);
 	}
 
-	public PairedBox(final Variable v1, final boolean s1, final Variable v2, final boolean s2) {
+	public Element(final Variable v1, final boolean s1, final Variable v2, final boolean s2) {
 		this(new LiteralSDD(v1, s1), new LiteralSDD(v2, s2));
 	}
 
-	public PairedBox(final Variable v1, final Variable v2) {
+	public Element(final Variable v1, final Variable v2) {
 		this(v1, true, v2, true);
 	}
 
-	public PairedBox(final Variable v1, final boolean s2) {
+	public Element(final Variable v1, final boolean s2) {
 		this(v1, true, s2);
 	}
 
-	public PairedBox(final boolean s1, final Variable v2) {
+	public Element(final boolean s1, final Variable v2) {
 		this(s1, v2, true);
 	}
 
-	public PairedBox(final boolean s1, final Literal l2) {
+	public Element(final boolean s1, final Literal l2) {
 		this(s1, l2.getVariable(), l2.getSign());
 	}
 
-	public PairedBox(final Variable v1, final boolean s1, final Variable v2) {
+	public Element(final Variable v1, final boolean s1, final Variable v2) {
 		this(v1, s1, v2, true);
 	}
 
-	public PairedBox(final Variable v1, final Variable v2, final boolean s2) {
+	public Element(final Variable v1, final Variable v2, final boolean s2) {
 		this(v1, true, v2, s2);
 	}
 
-	public PairedBox(final Variable v1, final boolean s1, final boolean s2) {
+	public Element(final Variable v1, final boolean s1, final boolean s2) {
 		this(new LiteralSDD(v1, s1), new ConstantSDD(s2));
 	}
 
-	public PairedBox(final boolean s1, final Variable v2, final boolean s2) {
+	public Element(final boolean s1, final Variable v2, final boolean s2) {
 		this(new ConstantSDD(s1), new LiteralSDD(v2, s2));
 	}
 
-	public PairedBox(final boolean s1, final boolean s2) {
+	public Element(final boolean s1, final boolean s2) {
 		this(new ConstantSDD(s1), new ConstantSDD(s2));
 	}
 
-	public PairedBox(final SDD prime, final boolean s2) {
+	public Element(final SDD prime, final boolean s2) {
 		this(prime, new ConstantSDD(s2));
 	}
 
-	public PairedBox(final boolean s1, final SDD sub) {
+	public Element(final boolean s1, final SDD sub) {
 		this(new ConstantSDD(s1), sub);
 	}
 
-	public PairedBox(final SDD prime, final Variable v2, final boolean s2) {
+	public Element(final SDD prime, final Variable v2, final boolean s2) {
 		this(prime, new LiteralSDD(v2, s2));
 	}
 
-	public PairedBox(final SDD prime, final Variable v2) {
+	public Element(final SDD prime, final Variable v2) {
 		this(prime, v2, true);
 	}
 
-	public PairedBox(final Variable v1, final boolean s1, final SDD sub) {
+	public Element(final Variable v1, final boolean s1, final SDD sub) {
 		this(new LiteralSDD(v1, s1), sub);
 	}
 
-	public PairedBox(final Variable v1, final SDD sub) {
+	public Element(final Variable v1, final SDD sub) {
 		this(v1, true, sub);
 	}
 
-	public PairedBox(final Literal l1, boolean s2) {
+	public Element(final Literal l1, boolean s2) {
 		this(l1.getVariable(), l1.getSign(), s2);
 	}
 
-	public PairedBox(final Literal l1, final Literal l2) {
+	public Element(final Literal l1, final Literal l2) {
 		this(l1.getVariable(), l1.getSign(), l2.getVariable(), l2.getSign());
 	}
 
@@ -168,7 +168,7 @@ public class PairedBox implements Sentence, StringBuildable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		PairedBox other = (PairedBox) obj;
+		Element other = (Element) obj;
 		if (prime == null) {
 			if (other.prime != null)
 				return false;
@@ -195,8 +195,8 @@ public class PairedBox implements Sentence, StringBuildable {
 		return getParents().iterator().next().getVTree();
 	}
 
-	public PairedBox trimmed() {
-		return new PairedBox(getPrime().trimmed(), getSub().trimmed());
+	public Element trimmed() {
+		return new Element(getPrime().trimmed(), getSub().trimmed());
 	}
 
 }
