@@ -17,6 +17,7 @@ import jsdd.PairedBox;
 import jsdd.SDD;
 import jsdd.VTree;
 import jsdd.Variable;
+import jsdd.VariableRegistry;
 import jsdd.viz.GraphvizDumper;
 
 import org.junit.Assert;
@@ -203,6 +204,18 @@ public class TestSDD {
 	@Test
 	public void trimming() {
 		((DecompositionSDD) exampleNormalized()).trimmed();
+	}
+
+	@Test
+	public void namedVTreeVariables() {
+		final String[] names = new String[] { "C", "PL", "APU", "BPU", "ADR", "BDR", "BO" };
+		final VariableRegistry vars = new VariableRegistry();
+		final VTree vtree = VTree.buildRightLinear(vars, names);
+		try {
+			GraphvizDumper.setOutput(new PrintStream("sdd.dot"));
+		} catch (final FileNotFoundException e) {
+		}
+		GraphvizDumper.dump(vtree, vars);
 	}
 
 	private VTree vtree1() {
