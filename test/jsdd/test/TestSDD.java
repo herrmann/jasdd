@@ -1,5 +1,7 @@
 package jsdd.test;
 
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -144,6 +146,15 @@ public class TestSDD {
 	}
 
 	@Test
+	public void graphvizVTreeOutput() {
+		try {
+			GraphvizDumper.setOutput(new PrintStream("sdd.dot"));
+		} catch (final FileNotFoundException e) {
+		}
+		GraphvizDumper.dump(bigVTree());
+	}
+
+	@Test
 	public void simpleCompression() {
 		final Variable a = new Variable(1);
 		final Variable b = new Variable(2);
@@ -204,6 +215,10 @@ public class TestSDD {
 		final VTree v6 = new InternalNode(v2, v5);
 		
 		return v6;
+	}
+
+	private VTree bigVTree() {
+		return new InternalNode(1, new InternalNode(2, new InternalNode(new InternalNode(3, 4), new InternalNode(5, 6))));
 	}
 
 	private SDD exampleDarwiche() {
