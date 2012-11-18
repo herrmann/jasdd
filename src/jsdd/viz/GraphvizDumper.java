@@ -16,6 +16,7 @@ import jsdd.PairedBox;
 import jsdd.SDD;
 import jsdd.VTree;
 import jsdd.Variable;
+import jsdd.VariableRegistry;
 
 /**
  * Conversion of SDDs to Graphviz dot format.
@@ -34,7 +35,7 @@ public class GraphvizDumper {
 		out.println("digraph sdd {");
 		out.println("  graph [ordering=\"out\"]");
 		final Map<VTree, Integer> vtreeMap = new HashMap<VTree, Integer>();
-		dumpVTreeNode(sdd.getVTree(), vtreeMap);
+		dumpVTreeNode(sdd.getVTree(), vtreeMap, new VariableRegistry());
 		dumpDecomposition(sdd, vtreeMap);
 		out.println("}");
 	}
@@ -110,34 +111,40 @@ public class GraphvizDumper {
 		}
 	}
 
-	public static void dump(final VTree vtree) {
+	public static void dump(final VTree vtree, final VariableRegistry vars) {
 		out.println("digraph vtree {");
-		dumpVTreeNode(vtree);
+		dumpVTreeNode(vtree, vars);
 		out.println("}");
 	}
 
-	private static void dumpVTreeNode(final VTree vtree) {
-		dumpVTreeNode(vtree, 0, null);
+	public static void dump(final VTree vtree) {
+		out.println("digraph vtree {");
+		dumpVTreeNode(vtree, new VariableRegistry());
+		out.println("}");
 	}
 
-	private static void dumpVTreeNode(final VTree vtree, final Map<VTree, Integer> vtreeMap) {
-		final int nodeId = dumpVTreeNode(vtree, 0, vtreeMap);
+	private static void dumpVTreeNode(final VTree vtree, final VariableRegistry vars) {
+		dumpVTreeNode(vtree, 0, null, vars);
+	}
+
+	private static void dumpVTreeNode(final VTree vtree, final Map<VTree, Integer> vtreeMap, final VariableRegistry vars) {
+		final int nodeId = dumpVTreeNode(vtree, 0, vtreeMap, vars);
 		if (vtreeMap != null) {
 			vtreeMap.put(vtree, nodeId);
 		}
 	}
 
-	private static int dumpVTreeNode(final VTree vtree, final int nextId, final Map<VTree, Integer> vtreeMap) {
+	private static int dumpVTreeNode(final VTree vtree, final int nextId, final Map<VTree, Integer> vtreeMap, final VariableRegistry vars) {
 		if (!vtree.isLeaf()) {
 			final InternalNode node = (InternalNode) vtree;
-			final int leftId = dumpVTreeNode(node.getLeft(), nextId, vtreeMap);
-			final int rightId = dumpVTreeNode(node.getRight(), leftId + 1, vtreeMap);
+			final int leftId = dumpVTreeNode(node.getLeft(), nextId, vtreeMap, vars);
+			final int rightId = dumpVTreeNode(node.getRight(), leftId + 1, vtreeMap, vars);
 			final int parentId = rightId + 1;
 			out.println("  v" + parentId + " [shape=none,label=\"" + parentId + "\"]");
-			dumpEdge(node.getLeft(), parentId, leftId, vtreeMap);
-			dumpEdge(node.getRight(), parentId, rightId, vtreeMap);
-			final String leftName = nodeName(node.getLeft(), leftId);
-			final String rightName = nodeName(node.getRight(), rightId);
+			dumpEdge(node.getLeft(), parentId, leftId, vtreeMap, vars);
+			dumpEdge(node.getRight(), parentId, rightId, vtreeMap, vars);
+			final String leftName = nodeName(node.getLeft(), leftId, vars);
+			final String rightName = nodeName(node.getRight(), rightId, vars);
 			out.println("  v" + leftName + "_" + rightName + " [label=\"\",width=.1,style=invis]");
 			out.println("  v" + leftName + " -> v" + leftName + "_" + rightName + " [style=invis]");
 			out.println("  {rank=same v" + leftName + " -> v" + leftName + "_" + rightName + " -> v" + rightName + " [style=invis]}");
@@ -147,22 +154,27 @@ public class GraphvizDumper {
 		}
 	}
 
-	private static void dumpEdge(final VTree node, final int parentId, final int nodeId, final Map<VTree, Integer> vtreeMap) {
+	private static void dumpEdge(final VTree node, final int parentId, final int nodeId, final Map<VTree, Integer> vtreeMap, final VariableRegistry vars) {
 		if (vtreeMap != null) {
 			vtreeMap.put(node, nodeId);
 		}
 		if (node.isLeaf()) {
-			final String letter = letter(((LeafNode) node).getVariable());
-			out.println("  v" + letter + " [shape=none,label=\"" + letter + "\"]");
-			out.println("  v" + parentId + " -> v" + letter + " [arrowhead=none,headlabel=" + nodeId + "]");
+			final String name = nodeName(node, nodeId, vars);
+			out.println("  v" + name + " [shape=none,label=\"" + name + "\"]");
+			out.println("  v" + parentId + " -> v" + name + " [arrowhead=none,headlabel=" + nodeId + "]");
 		} else {
 			out.println("  v" + parentId + " -> v" + nodeId + " [arrowhead=none]");
 		}
 	}
 
-	private static String nodeName(final VTree node, final int nodeId) {
+	private static String nodeName(final VTree node, final int nodeId, final VariableRegistry vars) {
 		if (node.isLeaf()) {
-			return letter(((LeafNode) node).getVariable());
+			final Variable var = ((LeafNode) node).getVariable();
+			if (vars.exists(var)) {
+				return vars.name(var);
+			} else {
+				return letter(var);
+			}
 		} else {
 			return Integer.valueOf(nodeId).toString();
 		}
