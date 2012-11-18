@@ -136,6 +136,11 @@ public class GraphvizDumper {
 			out.println("  v" + parentId + " [shape=none,label=\"" + parentId + "\"]");
 			dumpEdge(node.getLeft(), parentId, leftId, vtreeMap);
 			dumpEdge(node.getRight(), parentId, rightId, vtreeMap);
+			final String leftName = nodeName(node.getLeft(), leftId);
+			final String rightName = nodeName(node.getRight(), rightId);
+			out.println("  v" + leftName + "_" + rightName + " [label=\"\",width=.1,style=invis]");
+			out.println("  v" + leftName + " -> v" + leftName + "_" + rightName + " [style=invis]");
+			out.println("  {rank=same v" + leftName + " -> v" + leftName + "_" + rightName + " -> v" + rightName + " [style=invis]}");
 			return parentId;
 		} else {
 			return nextId;
@@ -152,6 +157,14 @@ public class GraphvizDumper {
 			out.println("  v" + parentId + " -> v" + letter + " [arrowhead=none,headlabel=" + nodeId + "]");
 		} else {
 			out.println("  v" + parentId + " -> v" + nodeId + " [arrowhead=none]");
+		}
+	}
+
+	private static String nodeName(final VTree node, final int nodeId) {
+		if (node.isLeaf()) {
+			return letter(((LeafNode) node).getVariable());
+		} else {
+			return Integer.valueOf(nodeId).toString();
 		}
 	}
 
