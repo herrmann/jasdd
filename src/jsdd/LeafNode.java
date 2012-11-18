@@ -16,6 +16,10 @@ public class LeafNode extends VTree {
 		this.variable = variable;
 	}
 
+	public LeafNode(final int index) {
+		this(new Variable(index));
+	}
+
 	@Override
 	public boolean isLeaf() {
 		return true;
