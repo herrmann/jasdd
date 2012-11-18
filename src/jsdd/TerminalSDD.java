@@ -17,4 +17,6 @@ public abstract class TerminalSDD extends AbstractSDD {
 		return true;
 	}
 
+	public abstract boolean getSign();
+
 }

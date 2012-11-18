@@ -200,6 +200,11 @@ public class TestSDD {
 		exampleNormalized();
 	}
 
+	@Test
+	public void trimming() {
+		((DecompositionSDD) exampleNormalized()).trimmed();
+	}
+
 	private VTree vtree1() {
 		final Variable a = new Variable(1);
 		final Variable b = new Variable(2);

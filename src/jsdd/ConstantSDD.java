@@ -16,6 +16,11 @@ public class ConstantSDD extends TerminalSDD {
 		this.sign = sign;
 	}
 
+	public ConstantSDD(final ConstantSDD sdd) {
+		this(sdd.getSign());
+	}
+
+	@Override
 	public boolean getSign() {
 		return sign;
 	}
@@ -120,6 +125,11 @@ public class ConstantSDD extends TerminalSDD {
 	@Override
 	public void dump() {
 		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public SDD trimmed() {
+		return new ConstantSDD(this);
 	}
 
 }

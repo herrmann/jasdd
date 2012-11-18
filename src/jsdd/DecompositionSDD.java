@@ -190,6 +190,23 @@ public class DecompositionSDD extends AbstractSDD {
 	}
 
 	@Override
+	public SDD trimmed() {
+		final List<PairedBox> elements = new ArrayList<PairedBox>();
+		for (final PairedBox element : getElements()) {
+			elements.add(element.trimmed());
+		}
+		if (elements.size() == 1 && elements.get(0).getPrime().equals(new ConstantSDD(true))) {
+			return elements.get(0).getSub().trimmed();
+		} else if (elements.size() == 2 && elements.get(0).getSub().equals(new ConstantSDD(true)) && elements.get(1).getSub().equals(new ConstantSDD(false))) {
+			return elements.get(0).getPrime().trimmed();
+		} else {
+			final PairedBox[] elems = new PairedBox[elements.size()];
+			elements.toArray(elems);
+			return new DecompositionSDD(getVTree(), elems);
+		}
+	}
+
+	@Override
 	public Collection<PairedBox> expansion() {
 		return Collections.unmodifiableCollection(elements);
 	}

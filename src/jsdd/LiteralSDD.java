@@ -135,4 +135,14 @@ public class LiteralSDD extends TerminalSDD {
 		// TODO Auto-generated method stub
 	}
 
+	@Override
+	public SDD trimmed() {
+		return new LiteralSDD(this);
+	}
+
+	@Override
+	public boolean getSign() {
+		return getLiteral().getSign();
+	}
+
 }

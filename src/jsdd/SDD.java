@@ -29,6 +29,7 @@ public interface SDD extends Sentence, StringBuildable {
 	SDD or(SDD sdd);
 
 	Collection<PairedBox> expansion();
+	SDD trimmed();
 
 	/**
 	 * For debugging purposes only.

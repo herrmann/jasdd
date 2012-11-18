@@ -195,4 +195,8 @@ public class PairedBox implements Sentence, StringBuildable {
 		return getParents().iterator().next().getVTree();
 	}
 
+	public PairedBox trimmed() {
+		return new PairedBox(getPrime().trimmed(), getSub().trimmed());
+	}
+
 }
