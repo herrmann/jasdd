@@ -218,6 +218,34 @@ public class TestSDD {
 		GraphvizDumper.dump(vtree, vars);
 	}
 
+	@Test
+	public void exampleSemiADD() {
+		final VariableRegistry vars = new VariableRegistry();
+		final Variable c = vars.register("C");
+		final Variable pl = vars.register("PL");
+		final Variable apu = vars.register("APU");
+		final Variable bpu = vars.register("BPU");
+		final Variable adr = vars.register("ADR");
+		final Variable bdr = vars.register("BDR");
+		final Variable bo = vars.register("BO");
+		final Variable cprime = vars.register("C'");
+		final InternalNode boPart = new InternalNode(bo, cprime);
+		final InternalNode bdrPart = new InternalNode(bdr, boPart);
+		final InternalNode adrPart = new InternalNode(adr, bdrPart);
+		final InternalNode bpuPart = new InternalNode(bpu, adrPart);
+		final InternalNode apuPart = new InternalNode(apu, bpuPart);
+		final InternalNode plPart = new InternalNode(pl, apuPart);
+		final InternalNode cPart = new InternalNode(c, plPart);
+		final SDD boNode = new DecompositionSDD(boPart, new Element(bo, true), new Element(bo, false, false));
+		final SDD bdrNode = new DecompositionSDD(bdrPart, new Element(bdr, boNode), new Element(bdr, false, false));
+		final SDD adrNode = new DecompositionSDD(adrPart, new Element(adr, bdrNode), new Element(adr, false, false));
+		final SDD bpuNode = new DecompositionSDD(bpuPart, new Element(bpu, boNode), new Element(bpu, false, adrNode));
+		final SDD apuNode = new DecompositionSDD(apuPart, new Element(apu, bpuNode), new Element(apu, false, adrNode));
+		final SDD plNode = new DecompositionSDD(plPart, new Element(pl, apuNode), new Element(pl, false, adrNode));
+		final SDD cNode = new DecompositionSDD(cPart, new Element(c, true), new Element(c, false, plNode));
+		cNode.dump();
+	}
+
 	private VTree vtree1() {
 		final Variable a = new Variable(1);
 		final Variable b = new Variable(2);
