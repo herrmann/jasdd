@@ -34,6 +34,14 @@ public class InternalNode extends VTree {
 		this(new LeafNode(leftIndex), right);
 	}
 
+	public InternalNode(final Variable leftVar, final VTree right) {
+		this(new LeafNode(leftVar.getIndex()), right);
+	}
+
+	public InternalNode(final VTree left, final Variable rightVar) {
+		this(left, new LeafNode(rightVar.getIndex()));
+	}
+
 	@Override
 	public boolean isLeaf() {
 		return false;
