@@ -221,7 +221,7 @@ public class TestSDD {
 		final ArrayList<String> names = new ArrayList<String>();
 		for (int x = 1; x <= 2; x++) {
 			for (int y = 1; y <= 2; y++) {
-				final String name = "alive__x" + x + "_y" + y;
+				final String name = "alive(x" + x + ",y" + y + ")";
 				names.add(name);
 			}
 		}
@@ -237,12 +237,12 @@ public class TestSDD {
 		final InternalNode l3 = (InternalNode) l2.getRight();
 		final InternalNode l4 = (InternalNode) l3.getRight();
 		
-		final DecompositionSDD a22 = new DecompositionSDD(l4, new Element(vars.register("alive__x2_y2"), true), new Element(vars.register("alive__x2_y2"), false, false));
-		final DecompositionSDD a212 = new DecompositionSDD(l3, new Element(vars.register("alive__x2_y1"), true), new Element(vars.register("alive__x2_y1"), false, a22));
-		final DecompositionSDD a211 = new DecompositionSDD(l3, new Element(vars.register("alive__x2_y1"), a22), new Element(vars.register("alive__x2_y1"), false, false));
-		final DecompositionSDD a122 = new DecompositionSDD(l2, new Element(vars.register("alive__x1_y2"), a212), new Element(vars.register("alive__x1_y2"), false, a211));
-		final DecompositionSDD a121 = new DecompositionSDD(l2, new Element(vars.register("alive__x1_y2"), a211), new Element(vars.register("alive__x1_y2"), false, false));
-		final DecompositionSDD a11 = new DecompositionSDD(l1, new Element(vars.register("alive__x1_y1"), a122), new Element(vars.register("alive__x1_y1"), false, a121));
+		final DecompositionSDD a22 = new DecompositionSDD(l4, new Element(vars.register("alive(x2,y2)"), true), new Element(vars.register("alive(x2,y2)"), false, false));
+		final DecompositionSDD a212 = new DecompositionSDD(l3, new Element(vars.register("alive(x2,y1)"), true), new Element(vars.register("alive(x2,y1)"), false, a22));
+		final DecompositionSDD a211 = new DecompositionSDD(l3, new Element(vars.register("alive(x2,y1)"), a22), new Element(vars.register("alive(x2,y1)"), false, false));
+		final DecompositionSDD a122 = new DecompositionSDD(l2, new Element(vars.register("alive(x1,y2)"), a212), new Element(vars.register("alive(x1,y2)"), false, a211));
+		final DecompositionSDD a121 = new DecompositionSDD(l2, new Element(vars.register("alive(x1,y2)"), a211), new Element(vars.register("alive(x1,y2)"), false, false));
+		final DecompositionSDD a11 = new DecompositionSDD(l1, new Element(vars.register("alive(x1,y1)"), a122), new Element(vars.register("alive(x1,y1)"), false, a121));
 
 		GraphvizDumper.dump(a11, vars, "sdd.gv");
 	}
