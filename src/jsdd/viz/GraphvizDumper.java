@@ -111,11 +111,7 @@ public class GraphvizDumper {
 			} else {
 				final Literal literal = ((LiteralSDD) sdd).getLiteral();
 				final Variable var = literal.getVariable();
-				if (vars.exists(var)) {
-					return vars.name(var);
-				} else {
-					return (literal.getSign() ? "" : "-") + letter(literal.getVariable());
-				}
+				return (literal.getSign() ? "" : "~") + (vars.exists(var) ? vars.name(var) : letter(literal.getVariable()));
 			}
 		} else {
 			return "o";
