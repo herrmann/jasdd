@@ -150,11 +150,9 @@ public class GraphvizDumper {
 			out.println("  v" + parentId + " [shape=none,label=\"" + parentId + "\"]");
 			dumpEdge(node.getLeft(), parentId, leftId, vtreeMap, vars);
 			dumpEdge(node.getRight(), parentId, rightId, vtreeMap, vars);
-			final String leftName = nodeName(node.getLeft(), leftId, vars);
-			final String rightName = nodeName(node.getRight(), rightId, vars);
-			out.println("  v" + leftName + "_" + rightName + " [label=\"\",width=.1,style=invis]");
-			out.println("  v" + leftName + " -> v" + leftName + "_" + rightName + " [style=invis]");
-			out.println("  {rank=same v" + leftName + " -> v" + leftName + "_" + rightName + " -> v" + rightName + " [style=invis]}");
+			out.println("  v" + leftId + "_" + rightId + " [label=\"\",width=.1,style=invis]");
+			out.println("  v" + leftId + " -> v" + leftId + "_" + rightId + " [style=invis]");
+			out.println("  {rank=same v" + leftId + " -> v" + leftId + "_" + rightId + " -> v" + rightId + " [style=invis]}");
 			return parentId;
 		} else {
 			return nextId;
@@ -167,8 +165,8 @@ public class GraphvizDumper {
 		}
 		if (node.isLeaf()) {
 			final String name = nodeName(node, nodeId, vars);
-			out.println("  v" + name + " [shape=none,label=\"" + name + "\"]");
-			out.println("  v" + parentId + " -> v" + name + " [arrowhead=none,headlabel=" + nodeId + "]");
+			out.println("  v" + nodeId + " [shape=none,label=\"" + name + "\"]");
+			out.println("  v" + parentId + " -> v" + nodeId + " [arrowhead=none,headlabel=" + nodeId + "]");
 		} else {
 			out.println("  v" + parentId + " -> v" + nodeId + " [arrowhead=none]");
 		}
