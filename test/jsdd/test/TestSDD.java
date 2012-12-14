@@ -207,15 +207,11 @@ public class TestSDD {
 	}
 
 	@Test
-	public void namedVTreeVariables() {
+	public void namedVTreeVariables() throws FileNotFoundException {
 		final String[] names = new String[] { "C", "PL", "APU", "BPU", "ADR", "BDR", "BO" };
 		final VariableRegistry vars = new VariableRegistry();
 		final VTree vtree = VTree.buildRightLinear(vars, names);
-		try {
-			GraphvizDumper.setOutput(new PrintStream("sdd.dot"));
-		} catch (final FileNotFoundException e) {
-		}
-		GraphvizDumper.dump(vtree, vars);
+		GraphvizDumper.dump(vtree, vars, "sdd.gv");
 	}
 
 	@Test
