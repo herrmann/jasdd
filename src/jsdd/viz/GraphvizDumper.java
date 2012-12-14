@@ -47,10 +47,10 @@ public class GraphvizDumper {
 	}
 
 	private static void dumpDecomposition(final DecompositionSDD sdd, final Map<VTree, Integer> vtreeMap, final VariableRegistry vars) {
-		dumpDecomposition(sdd, 0, new HashMap<Element, Integer>(), new HashMap<DecompositionSDD, Integer>(), vtreeMap);
+		dumpDecomposition(sdd, 0, new HashMap<Element, Integer>(), new HashMap<DecompositionSDD, Integer>(), vtreeMap, vars);
 	}
 
-	private static int dumpDecomposition(final DecompositionSDD sdd, final int nextId, final Map<Element, Integer> elemCache, final Map<DecompositionSDD, Integer> decompCache, final Map<VTree, Integer> vtreeMap) {
+	private static int dumpDecomposition(final DecompositionSDD sdd, final int nextId, final Map<Element, Integer> elemCache, final Map<DecompositionSDD, Integer> decompCache, final Map<VTree, Integer> vtreeMap, final VariableRegistry vars) {
 		if (!decompCache.containsKey(sdd)) {
 			final int decompId = nextId;
 			decompCache.put(sdd, decompId);
@@ -58,7 +58,7 @@ public class GraphvizDumper {
 			final List<Integer> ids = new ArrayList<Integer>();
 			int id = nextId + 1;
 			for (final Element element : sdd.getElements()) {
-				id = dumpPairedBox(element, id, elemCache, decompCache, decompId, vtreeMap);
+				id = dumpPairedBox(element, id, elemCache, decompCache, decompId, vtreeMap, vars);
 				ids.add(elemCache.get(element));
 			}
 			out.print("  { rank=same;");
@@ -72,19 +72,19 @@ public class GraphvizDumper {
 		}
 	}
 
-	private static int dumpPairedBox(final Element element, final int nextId, final Map<Element, Integer> elemCache, final Map<DecompositionSDD, Integer> decompCache, final int decompId, final Map<VTree, Integer> vtreeMap) {
+	private static int dumpPairedBox(final Element element, final int nextId, final Map<Element, Integer> elemCache, final Map<DecompositionSDD, Integer> decompCache, final int decompId, final Map<VTree, Integer> vtreeMap, final VariableRegistry vars) {
 		if (!elemCache.containsKey(element)) {
 			final SDD prime = element.getPrime();
 			final SDD sub = element.getSub();
-			final String primeLabel = label(prime);
-			final String subLabel = label(sub);
+			final String primeLabel = label(prime, vars);
+			final String subLabel = label(sub, vars);
 			int leftId = nextId;
 			if (!prime.isTerminal()) {
-				leftId = dumpDecomposition((DecompositionSDD) prime, nextId, elemCache, decompCache, vtreeMap);
+				leftId = dumpDecomposition((DecompositionSDD) prime, nextId, elemCache, decompCache, vtreeMap, vars);
 			}
 			int rightId = leftId;
 			if (!sub.isTerminal()) {
-				rightId = dumpDecomposition((DecompositionSDD) sub, leftId, elemCache, decompCache, vtreeMap);
+				rightId = dumpDecomposition((DecompositionSDD) sub, leftId, elemCache, decompCache, vtreeMap, vars);
 			}
 			final int elementId = rightId + 1;
 			elemCache.put(element, elementId);
@@ -104,13 +104,18 @@ public class GraphvizDumper {
 		}
 	}
 
-	private static String label(final SDD sdd) {
+	private static String label(final SDD sdd, final VariableRegistry vars) {
 		if (sdd.isTerminal()) {
 			if (sdd instanceof ConstantSDD) {
 				return sdd.toString();
 			} else {
 				final Literal literal = ((LiteralSDD) sdd).getLiteral();
-				return (literal.getSign() ? "" : "-") + letter(literal.getVariable());
+				final Variable var = literal.getVariable();
+				if (vars.exists(var)) {
+					return vars.name(var);
+				} else {
+					return (literal.getSign() ? "" : "-") + letter(literal.getVariable());
+				}
 			}
 		} else {
 			return "o";
