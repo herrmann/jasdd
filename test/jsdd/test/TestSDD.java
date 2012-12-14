@@ -3,17 +3,19 @@ package jsdd.test;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import jsdd.AbstractSDD;
 import jsdd.ConstantSDD;
 import jsdd.DecompositionSDD;
+import jsdd.Element;
 import jsdd.InternalNode;
 import jsdd.LeafNode;
 import jsdd.LiteralSDD;
-import jsdd.Element;
 import jsdd.SDD;
 import jsdd.VTree;
 import jsdd.Variable;
@@ -212,6 +214,32 @@ public class TestSDD {
 		final VariableRegistry vars = new VariableRegistry();
 		final VTree vtree = VTree.buildRightLinear(vars, names);
 		GraphvizDumper.dump(vtree, vars, "sdd.gv");
+	}
+
+	@Test
+	public void gameOfLife() throws FileNotFoundException {
+		final ArrayList<String> names = new ArrayList<String>();
+		for (int x = 1; x <= 2; x++) {
+			for (int y = 1; y <= 2; y++) {
+				final String name = "alive__x" + x + "_y" + y;
+				names.add(name);
+			}
+		}
+		names.add("value");
+		final String[] names2 = new String[names.size()];
+		names.toArray(names2);
+		final VariableRegistry vars = new VariableRegistry();
+
+		final InternalNode vtree = (InternalNode) VTree.buildRightLinear(vars, names2);
+
+		final DecompositionSDD a22 = new DecompositionSDD(vtree, new Element(vars.register("alive__x2_y2"), true), new Element(vars.register("alive__x2_y2"), false, false));
+		final DecompositionSDD a212 = new DecompositionSDD(vtree, new Element(vars.register("alive__x2_y1"), true), new Element(vars.register("alive__x2_y1"), false, a22));
+		final DecompositionSDD a211 = new DecompositionSDD(vtree, new Element(vars.register("alive__x2_y1"), a22), new Element(vars.register("alive__x2_y1"), false, false));
+		final DecompositionSDD a122 = new DecompositionSDD(vtree.getRight(), new Element(vars.register("alive__x1_y2"), a212), new Element(vars.register("alive__x1_y2"), false, a211));
+		final DecompositionSDD a121 = new DecompositionSDD(vtree.getRight(), new Element(vars.register("alive__x1_y2"), a211), new Element(vars.register("alive__x1_y2"), false, false));
+		final DecompositionSDD a11 = new DecompositionSDD(vtree, new Element(vars.register("alive__x1_y1"), a122), new Element(vars.register("alive__x1_y1"), false, a121));
+
+		GraphvizDumper.dump(a11, vars, "sdd.gv");
 	}
 
 	@Test

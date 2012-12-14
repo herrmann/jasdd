@@ -32,16 +32,21 @@ public class GraphvizDumper {
 		out = output;
 	}
 
-	public static void dump(final DecompositionSDD sdd) {
+	public static void dump(final DecompositionSDD sdd, final VariableRegistry vars, final String fileName) throws FileNotFoundException {
+		GraphvizDumper.setOutput(new PrintStream(fileName));
+		dump(sdd, vars);
+	}
+
+	public static void dump(final DecompositionSDD sdd, final VariableRegistry vars) {
 		out.println("digraph sdd {");
 		out.println("  graph [ordering=\"out\"]");
 		final Map<VTree, Integer> vtreeMap = new HashMap<VTree, Integer>();
-		dumpVTreeNode(sdd.getVTree(), vtreeMap, new VariableRegistry());
-		dumpDecomposition(sdd, vtreeMap);
+		dumpVTreeNode(sdd.getVTree(), vtreeMap, vars);
+		dumpDecomposition(sdd, vtreeMap, vars);
 		out.println("}");
 	}
 
-	private static void dumpDecomposition(final DecompositionSDD sdd, final Map<VTree, Integer> vtreeMap) {
+	private static void dumpDecomposition(final DecompositionSDD sdd, final Map<VTree, Integer> vtreeMap, final VariableRegistry vars) {
 		dumpDecomposition(sdd, 0, new HashMap<Element, Integer>(), new HashMap<DecompositionSDD, Integer>(), vtreeMap);
 	}
 
@@ -188,6 +193,14 @@ public class GraphvizDumper {
 	public static void dump(final VTree vtree, final VariableRegistry vars, final String fileName) throws FileNotFoundException {
 		GraphvizDumper.setOutput(new PrintStream(fileName));
 		dump(vtree, vars);
+	}
+
+	public static void dump(final DecompositionSDD sdd) {
+		dump(sdd, new VariableRegistry());
+	}
+
+	public static void dump(final DecompositionSDD sdd, final String fileName) throws FileNotFoundException {
+		dump(sdd, new VariableRegistry(), fileName);
 	}
 
 }
