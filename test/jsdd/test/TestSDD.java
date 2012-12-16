@@ -217,7 +217,7 @@ public class TestSDD {
 	}
 
 	@Test
-	public void gameOfLife() throws FileNotFoundException {
+	public void rightLinearGameOfLife() throws FileNotFoundException {
 		final ArrayList<String> names = new ArrayList<String>();
 		for (int x = 1; x <= 2; x++) {
 			for (int y = 1; y <= 2; y++) {
@@ -245,6 +245,36 @@ public class TestSDD {
 		final DecompositionSDD a11 = new DecompositionSDD(l1, new Element(vars.register("alive(x1,y1)"), a122), new Element(vars.register("alive(x1,y1)"), false, a121));
 
 		GraphvizDumper.dump(a11, vars, "sdd.gv");
+	}
+
+	@Test
+	public void pseudoRightLinearGameOfLife() throws FileNotFoundException {
+		final VariableRegistry vars = new VariableRegistry();
+		final VTree x1y1 = VTree.register(vars, "alive(x1,y1)");
+		final VTree x1y2 = VTree.register(vars, "alive(x1,y2)");
+		final InternalNode left = new InternalNode(x1y1, x1y2);
+		final InternalNode right = (InternalNode) VTree.buildRightLinear(vars, "alive(x2,y1)", "alive(x2,y2)", "value");
+		final InternalNode root = new InternalNode(left,  right);
+
+		final DecompositionSDD a22 = new DecompositionSDD(right.getRight(), new Element(vars.register("alive(x2,y2)"), true), new Element(vars.register("alive(x2,y2)"), false, false));
+		final DecompositionSDD a212 = new DecompositionSDD(right, new Element(vars.register("alive(x2,y1)"), true), new Element(vars.register("alive(x2,y1)"), false, a22));
+		final DecompositionSDD a211 = new DecompositionSDD(right, new Element(vars.register("alive(x2,y1)"), a22), new Element(vars.register("alive(x2,y1)"), false, false));
+
+		final DecompositionSDD part1 = new DecompositionSDD(left,
+			new Element(vars.register("alive(x1,y1)"), vars.register("alive(x1,y2)")),
+			new Element(vars.register("alive(x1,y1)"), false, false));
+		
+		final DecompositionSDD part2 = new DecompositionSDD(left,
+				new Element(vars.register("alive(x1,y1)"), vars.register("alive(x1,y2)"), false),
+				new Element(vars.register("alive(x1,y1)"), false, vars.register("alive(x1,y2)")));
+			
+		final DecompositionSDD part3 = new DecompositionSDD(left,
+				new Element(vars.register("alive(x1,y1)"), false),
+				new Element(vars.register("alive(x1,y1)"), false, vars.register("alive(x1,y2)"), false));
+
+		final DecompositionSDD sdd = new DecompositionSDD(root, new Element(part1, a212), new Element(part2, a211), new Element(part3, false));
+
+		GraphvizDumper.dump(sdd, vars, "sdd.gv");
 	}
 
 	@Test
