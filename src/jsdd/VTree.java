@@ -38,4 +38,9 @@ public abstract class VTree implements StringBuildable {
 		}
 	}
 
+	public static VTree register(final VariableRegistry vars, final String name) {
+		final Variable var = vars.register(name);
+		return new LeafNode(var);
+	}
+
 }
