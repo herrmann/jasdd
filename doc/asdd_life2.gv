@@ -1,0 +1,90 @@
+digraph sdd {
+  graph [ordering="out"]
+  v2 [shape=none,label="2"]
+  v0 [shape=none,label="alive(x1,y1)"]
+  v2 -> v0 [arrowhead=none,headlabel=0]
+  v1 [shape=none,label="alive(x1,y2)"]
+  v2 -> v1 [arrowhead=none,headlabel=1]
+  v0_1 [label="",width=.1,style=invis]
+  v0 -> v0_1 [style=invis]
+  {rank=same v0 -> v0_1 -> v1 [style=invis]}
+  v6 [shape=none,label="6"]
+  v4 [shape=none,label="alive(x2,y2)"]
+  v6 -> v4 [arrowhead=none,headlabel=4]
+  v5 [shape=none,label="value"]
+  v6 -> v5 [arrowhead=none,headlabel=5]
+  v4_5 [label="",width=.1,style=invis]
+  v4 -> v4_5 [style=invis]
+  {rank=same v4 -> v4_5 -> v5 [style=invis]}
+  v7 [shape=none,label="7"]
+  v3 [shape=none,label="alive(x2,y1)"]
+  v7 -> v3 [arrowhead=none,headlabel=3]
+  v7 -> v6 [arrowhead=none]
+  v3_6 [label="",width=.1,style=invis]
+  v3 -> v3_6 [style=invis]
+  {rank=same v3 -> v3_6 -> v6 [style=invis]}
+  v8 [shape=none,label="8"]
+  v8 -> v2 [arrowhead=none]
+  v8 -> v7 [arrowhead=none]
+  v2_7 [label="",width=.1,style=invis]
+  v2 -> v2_7 [style=invis]
+  {rank=same v2 -> v2_7 -> v7 [style=invis]}
+  d0 [shape=circle,label="8"]
+  d1 [shape=circle,label="2"]
+  e3 [shape=record,label="<f0> alive(x1,y1)|<f1> alive(x1,y2)"]
+  d1 -> e3
+  e4 [shape=record,label="<f0> ~alive(x1,y1)|<f1> F"]
+  d1 -> e4
+  { rank=same; e3; e4; }
+  d4 [shape=circle,label="7"]
+  e6 [shape=record,label="<f0> alive(x2,y1)|<f1> o"]
+  d4 -> e6
+  d6 [shape=circle,label="6"]
+  e8 [shape=record,label="<f0> alive(x2,y2)|<f1> o"]
+  d6 -> e8
+  e9 [shape=record,label="<f0> ~alive(x2,y2)|<f1> o"]
+  d6 -> e9
+  { rank=same; e8; e9; }
+  e10 [shape=record,label="<f0> ~alive(x2,y1)|<f1> o"]
+  e10:f1 -> d6
+  d4 -> e10
+  { rank=same; e6; e10; }
+  e11 [shape=record,label="<f0> o|<f1> o"]
+  e11:f0 -> d1
+  e11:f1 -> d4
+  d0 -> e11
+  d11 [shape=circle,label="2"]
+  e13 [shape=record,label="<f0> alive(x1,y1)|<f1> ~alive(x1,y2)"]
+  d11 -> e13
+  e14 [shape=record,label="<f0> ~alive(x1,y1)|<f1> alive(x1,y2)"]
+  d11 -> e14
+  { rank=same; e13; e14; }
+  d14 [shape=circle,label="7"]
+  e16 [shape=record,label="<f0> alive(x2,y1)|<f1> o"]
+  e16:f1 -> d6
+  d14 -> e16
+  e17 [shape=record,label="<f0> ~alive(x2,y1)|<f1> o"]
+  d14 -> e17
+  { rank=same; e16; e17; }
+  e18 [shape=record,label="<f0> o|<f1> o"]
+  e18:f0 -> d11
+  e18:f1 -> d14
+  d0 -> e18
+  d18 [shape=circle,label="2"]
+  e20 [shape=record,label="<f0> alive(x1,y1)|<f1> F"]
+  d18 -> e20
+  e21 [shape=record,label="<f0> ~alive(x1,y1)|<f1> ~alive(x1,y2)"]
+  d18 -> e21
+  { rank=same; e20; e21; }
+  e22 [shape=record,label="<f0> o|<f1> o"]
+  e22:f0 -> d18
+  d0 -> e22
+  { rank=same; e11; e18; e22; }
+  value1 [label="0.1"]
+  value2 [label="0.9"]
+  e9:f1 -> value1
+  e17:f1 -> value1
+  e22:f1 -> value1
+  e6:f1 -> value2
+  e8:f1 -> value2
+}
