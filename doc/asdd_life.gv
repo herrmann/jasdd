@@ -32,52 +32,52 @@ digraph sdd {
   d0 [shape=circle,label="8"]
   d1 [shape=circle,label="7"]
   d2 [shape=circle,label="6"]
-  e4 [shape=record,label="<f0> alive(x2,y1)|<f1> o"]
+  e4 [shape=record,label="<f0> alive(x2,y1)|<f1> ●"]
   d2 -> e4
   d4 [shape=circle,label="5"]
-  e6 [shape=record,label="<f0> alive(x2,y2)|<f1> o"]
+  e6 [shape=record,label="<f0> alive(x2,y2)|<f1> ●"]
   d4 -> e6
-  e7 [shape=record,label="<f0> ~alive(x2,y2)|<f1> o"]
+  e7 [shape=record,label="<f0> ~alive(x2,y2)|<f1> ●"]
   d4 -> e7
   { rank=same; e6; e7; }
-  e8 [shape=record,label="<f0> ~alive(x2,y1)|<f1> o"]
-  e8:f1 -> d4
+  e8 [shape=record,label="<f0> ~alive(x2,y1)|<f1> ●"]
+  e8:f1:c -> d4 [tailclip=false]
   d2 -> e8
   { rank=same; e4; e8; }
-  e9 [shape=record,label="<f0> alive(x1,y2)|<f1> o"]
-  e9:f1 -> d2
+  e9 [shape=record,label="<f0> alive(x1,y2)|<f1> ●"]
+  e9:f1:c -> d2 [tailclip=false]
   d1 -> e9
   d9 [shape=circle,label="6"]
-  e11 [shape=record,label="<f0> alive(x2,y1)|<f1> o"]
-  e11:f1 -> d4
+  e11 [shape=record,label="<f0> alive(x2,y1)|<f1> ●"]
+  e11:f1:c -> d4 [tailclip=false]
   d9 -> e11
-  e12 [shape=record,label="<f0> ~alive(x2,y1)|<f1> o"]
+  e12 [shape=record,label="<f0> ~alive(x2,y1)|<f1> ●"]
   d9 -> e12
   { rank=same; e11; e12; }
-  e13 [shape=record,label="<f0> ~alive(x1,y2)|<f1> o"]
-  e13:f1 -> d9
+  e13 [shape=record,label="<f0> ~alive(x1,y2)|<f1> ●"]
+  e13:f1:c -> d9 [tailclip=false]
   d1 -> e13
   { rank=same; e9; e13; }
-  e14 [shape=record,label="<f0> alive(x1,y1)|<f1> o"]
-  e14:f1 -> d1
+  e14 [shape=record,label="<f0> alive(x1,y1)|<f1> ●"]
+  e14:f1:c -> d1 [tailclip=false]
   d0 -> e14
   d14 [shape=circle,label="7"]
-  e16 [shape=record,label="<f0> alive(x1,y2)|<f1> o"]
-  e16:f1 -> d9
+  e16 [shape=record,label="<f0> alive(x1,y2)|<f1> ●"]
+  e16:f1:c -> d9 [tailclip=false]
   d14 -> e16
-  e17 [shape=record,label="<f0> ~alive(x1,y2)|<f1> o"]
+  e17 [shape=record,label="<f0> ~alive(x1,y2)|<f1> ●"]
   d14 -> e17
   { rank=same; e16; e17; }
-  e18 [shape=record,label="<f0> ~alive(x1,y1)|<f1> o"]
-  e18:f1 -> d14
+  e18 [shape=record,label="<f0> ~alive(x1,y1)|<f1> ●"]
+  e18:f1:c -> d14 [tailclip=false]
   d0 -> e18
   { rank=same; e14; e18; }
   { rank=same; value1; value2; }
   value1 [label="0.1"]
   value2 [label="0.9"]
-  e17:f1 -> value1
-  e12:f1 -> value1
-  e7:f1 -> value1
-  e4:f1 -> value2
-  e6:f1 -> value2
+  e17:f1:c -> value1 [tailclip=false]
+  e12:f1:c -> value1 [tailclip=false]
+  e7:f1:c -> value1 [tailclip=false]
+  e4:f1:c -> value2 [tailclip=false]
+  e6:f1:c -> value2 [tailclip=false]
 }
