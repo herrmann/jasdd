@@ -6,6 +6,10 @@ public class AlgebraicTerminal<T> implements ASDD<T> {
 
 	private T value;
 
+	public AlgebraicTerminal(final T value) {
+		this.value = value;
+	}
+
 	@Override
 	public T evaluate() {
 		return value;
