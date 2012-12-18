@@ -90,10 +90,10 @@ public class GraphvizDumper {
 			elemCache.put(element, elementId);
 			out.println("  e" + elementId + " [shape=record,label=\"<f0> " + primeLabel + "|<f1> " + subLabel + "\"]");
 			if (!prime.isTerminal()) {
-				out.println("  e" + elementId + ":f0 -> d" + decompCache.get(prime));
+				out.println("  e" + elementId + ":f0:c -> d" + decompCache.get(prime) + " [tailclip=false]");
 			}
 			if (!sub.isTerminal()) {
-				out.println("  e" + elementId + ":f1 -> d" + decompCache.get(sub));
+				out.println("  e" + elementId + ":f1:c -> d" + decompCache.get(sub) + " [tailclip=false]");
 			}
 			out.println("  d" + decompId + " -> e" + elementId);
 			return elementId;
@@ -114,7 +114,7 @@ public class GraphvizDumper {
 				return (literal.getSign() ? "" : "~") + (vars.exists(var) ? vars.name(var) : letter(literal.getVariable()));
 			}
 		} else {
-			return "o";
+			return "&#9679;";
 		}
 	}
 
