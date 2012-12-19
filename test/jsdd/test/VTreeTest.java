@@ -1,5 +1,6 @@
 package jsdd.test;
 
+import jsdd.VariableRegistry;
 import jsdd.vtree.InternalAVTree;
 import jsdd.vtree.InternalRightLinearAVTree;
 import jsdd.vtree.InternalVTree;
@@ -12,7 +13,8 @@ public class VTreeTest {
 
 	@Test
 	public void basicSyntax() {
-		final VariableLeaf a = new VariableLeaf("A");
+		final VariableRegistry vars = new VariableRegistry();
+		final VariableLeaf a = new VariableLeaf(vars.register("A"));
 		final ValueLeaf value = new ValueLeaf();
 
 		new InternalAVTree(a, value);
@@ -34,14 +36,15 @@ public class VTreeTest {
 
 	@Test
 	public void gameOfLife1() {
+		final VariableRegistry vars = new VariableRegistry();
 		new InternalRightLinearAVTree(
-			new VariableLeaf("alive(x1,y1)"),
+			new VariableLeaf(vars.register("alive(x1,y1)")),
 			new InternalRightLinearAVTree(
-				new VariableLeaf("alive(x1,y2)"),
+				new VariableLeaf(vars.register("alive(x1,y2)")),
 				new InternalRightLinearAVTree(
-					new VariableLeaf("alive(x2,y1)"),
+					new VariableLeaf(vars.register("alive(x2,y1)")),
 					new InternalRightLinearAVTree(
-						new VariableLeaf("alive(x2,y2)"),
+						new VariableLeaf(vars.register("alive(x2,y2)")),
 						new ValueLeaf()
 					)
 				)
@@ -51,15 +54,16 @@ public class VTreeTest {
 
 	@Test
 	public void gameOfLife2() {
+		final VariableRegistry vars = new VariableRegistry();
 		new InternalAVTree(
 			new InternalVTree(
-				new VariableLeaf("alive(x1,y1)"),
-				new VariableLeaf("alive(x1,y2)")
+				new VariableLeaf(vars.register("alive(x1,y1)")),
+				new VariableLeaf(vars.register("alive(x1,y2)"))
 			),
 			new InternalRightLinearAVTree(
-				new VariableLeaf("alive(x2,y1)"),
+				new VariableLeaf(vars.register("alive(x2,y1)")),
 				new InternalRightLinearAVTree(
-					new VariableLeaf("alive(x2,y2)"),
+					new VariableLeaf(vars.register("alive(x2,y2)")),
 					new ValueLeaf()
 				)
 			)
@@ -68,15 +72,16 @@ public class VTreeTest {
 
 	@Test
 	public void gameOfLife3() {
+		final VariableRegistry vars = new VariableRegistry();
 		new InternalAVTree(
 			new InternalVTree(
-				new VariableLeaf("alive(x1,y1)"),
-				new VariableLeaf("alive(x1,y2)")
+				new VariableLeaf(vars.register("alive(x1,y1)")),
+				new VariableLeaf(vars.register("alive(x1,y2)"))
 			),
 			new InternalAVTree(
 				new InternalVTree(
-					new VariableLeaf("alive(x2,y1)"),
-					new VariableLeaf("alive(x2,y2)")
+					new VariableLeaf(vars.register("alive(x2,y1)")),
+					new VariableLeaf(vars.register("alive(x2,y2)"))
 				),
 				new ValueLeaf()
 			)

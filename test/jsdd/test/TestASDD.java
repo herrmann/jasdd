@@ -32,10 +32,10 @@ public class TestASDD {
 		}
 		vars.register("value");
 
-		final InternalAVTree ll4 = new InternalAVTree(new VariableLeaf("alive(x1,y2)"), new ValueLeaf());
-		final InternalAVTree ll3 = new InternalAVTree(new VariableLeaf("alive(x1,y2)"), ll4);
-		final InternalAVTree ll2 = new InternalAVTree(new VariableLeaf("alive(x1,y2)"), ll3);
-		final InternalAVTree ll1 = new InternalAVTree(new VariableLeaf("alive(x1,y1)"), ll2);
+		final InternalAVTree ll4 = new InternalAVTree(new VariableLeaf(vars.register("alive(x1,y2)")), new ValueLeaf());
+		final InternalAVTree ll3 = new InternalAVTree(new VariableLeaf(vars.register("alive(x1,y2)")), ll4);
+		final InternalAVTree ll2 = new InternalAVTree(new VariableLeaf(vars.register("alive(x1,y2)")), ll3);
+		final InternalAVTree ll1 = new InternalAVTree(new VariableLeaf(vars.register("alive(x1,y1)")), ll2);
 
 		final AlgebraicTerminal<Float> high = new AlgebraicTerminal<Float>(0.9f); 
 		final AlgebraicTerminal<Float> low = new AlgebraicTerminal<Float>(0.1f); 

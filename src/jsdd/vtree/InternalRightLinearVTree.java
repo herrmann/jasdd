@@ -1,5 +1,9 @@
 package jsdd.vtree;
 
+import java.util.Set;
+
+import jsdd.Variable;
+
 
 public class InternalRightLinearVTree extends InternalTree<RightLinearVTree> implements RightLinearVTree {
 
@@ -8,6 +12,30 @@ public class InternalRightLinearVTree extends InternalTree<RightLinearVTree> imp
 
 	@Override
 	public VariableLeaf getLeft() {
+		return null;
+	}
+
+	@Override
+	public Set<Variable> variables() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean isLeaf() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isRightLinear() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public StringBuilder toStringBuilder() {
+		// TODO Auto-generated method stub
 		return null;
 	}
 
