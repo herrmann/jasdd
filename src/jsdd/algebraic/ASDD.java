@@ -8,4 +8,6 @@ public interface ASDD<T> {
 	
 	AVTree getTree();
 
+	boolean isTerminal();
+
 }

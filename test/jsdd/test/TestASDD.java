@@ -1,9 +1,12 @@
 package jsdd.test;
 
+import java.io.FileNotFoundException;
+
 import jsdd.VariableRegistry;
 import jsdd.algebraic.AlgebraicElement;
 import jsdd.algebraic.AlgebraicTerminal;
 import jsdd.algebraic.DecompositionASDD;
+import jsdd.viz.GraphvizDumper;
 import jsdd.vtree.InternalAVTree;
 import jsdd.vtree.ValueLeaf;
 import jsdd.vtree.VariableLeaf;
@@ -19,7 +22,7 @@ public class TestASDD {
 
 	@Test
 	@SuppressWarnings("unchecked")
-	public void rightLinearGameOfLife() {
+	public void rightLinearGameOfLife() throws FileNotFoundException {
 		final VariableRegistry vars = new VariableRegistry();
 		for (int x = 1; x <= 2; x++) {
 			for (int y = 1; y <= 2; y++) {
@@ -42,9 +45,9 @@ public class TestASDD {
 		final DecompositionASDD<Float> a211 = new DecompositionASDD<Float>(ll3, new AlgebraicElement<Float>(vars.register("alive(x2,y1)"), a22) , new AlgebraicElement<Float>(vars.register("alive(x2,y1)"), false, low ));
 		final DecompositionASDD<Float> a122 = new DecompositionASDD<Float>(ll2, new AlgebraicElement<Float>(vars.register("alive(x1,y2)"), a212), new AlgebraicElement<Float>(vars.register("alive(x1,y2)"), false, a211));
 		final DecompositionASDD<Float> a121 = new DecompositionASDD<Float>(ll2, new AlgebraicElement<Float>(vars.register("alive(x1,y2)"), a211), new AlgebraicElement<Float>(vars.register("alive(x1,y2)"), false, low ));
-
-		@SuppressWarnings("unused")
 		final DecompositionASDD<Float> a11  = new DecompositionASDD<Float>(ll1, new AlgebraicElement<Float>(vars.register("alive(x1,y1)"), a122), new AlgebraicElement<Float>(vars.register("alive(x1,y1)"), false, a121));
+
+		GraphvizDumper.dump(a11, vars, "sdd.gv");
 	}
 
 }

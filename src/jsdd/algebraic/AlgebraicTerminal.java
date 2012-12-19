@@ -10,6 +10,10 @@ public class AlgebraicTerminal<T> implements ASDD<T> {
 		this.value = value;
 	}
 
+	public T getValue() {
+		return value;
+	}
+
 	@Override
 	public T evaluate() {
 		return value;
@@ -18,6 +22,11 @@ public class AlgebraicTerminal<T> implements ASDD<T> {
 	@Override
 	public ValueLeaf getTree() {
 		return null;
+	}
+
+	@Override
+	public boolean isTerminal() {
+		return true;
 	}
 
 }
