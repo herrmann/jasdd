@@ -1,5 +1,7 @@
 package jsdd;
 
+import jsdd.vtree.VTree;
+
 /**
  * Superclass for all kinds of terminal SDDs (constant and literal).
  * 

@@ -3,24 +3,23 @@ package jsdd.test;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import jsdd.AbstractSDD;
 import jsdd.ConstantSDD;
 import jsdd.DecompositionSDD;
 import jsdd.Element;
-import jsdd.InternalNode;
-import jsdd.LeafNode;
 import jsdd.LiteralSDD;
 import jsdd.SDD;
-import jsdd.VTree;
 import jsdd.Variable;
 import jsdd.VariableRegistry;
 import jsdd.viz.GraphvizDumper;
+import jsdd.vtree.InternalVTree;
+import jsdd.vtree.VTree;
+import jsdd.vtree.VTreeUtils;
+import jsdd.vtree.VariableLeaf;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -86,9 +85,9 @@ public class TestSDD {
 		final Variable c = new Variable(3);
 		final Variable d = new Variable(4);
 
-		final InternalNode root = (InternalNode) vtree1();
-		final InternalNode vl = (InternalNode) root.getLeft();
-		final InternalNode vr = (InternalNode) root.getRight();
+		final InternalVTree root = (InternalVTree) vtree1();
+		final InternalVTree vl = (InternalVTree) root.getLeft();
+		final InternalVTree vr = (InternalVTree) root.getRight();
 
 		final Element n0 = new Element(b, a);
 		final Element n1 = new Element(b, false, false);
@@ -114,7 +113,7 @@ public class TestSDD {
 	public void simpleDecompositionAndSimpleDecomposition() {
 		final Variable a = new Variable(1);
 		final Variable b = new Variable(2);
-		final InternalNode vtree = new InternalNode(a, b);
+		final InternalVTree vtree = new InternalVTree(a, b);
 
 		// A /\ -B
 		final SDD sdd1 = AbstractSDD.decomposition(vtree, new Element(a, b, false), new Element(a, false, false));
@@ -130,7 +129,7 @@ public class TestSDD {
 	public void simpleDecompositionOrSimpleDecomposition() {
 		final Variable a = new Variable(1);
 		final Variable b = new Variable(2);
-		final InternalNode vtree = new InternalNode(a, b);
+		final InternalVTree vtree = new InternalVTree(a, b);
 
 		// A /\ -B
 		final SDD sdd1 = AbstractSDD.decomposition(vtree, new Element(a, b, false), new Element(a, false, false));
@@ -163,11 +162,11 @@ public class TestSDD {
 		final Variable b = new Variable(2);
 		final Variable c = new Variable(3);
 		
-		final VTree va = new LeafNode(a);
-		final VTree vb = new LeafNode(b);
-		final VTree vc = new LeafNode(c);
-		final VTree v1 = new InternalNode(va, vb);
-		final InternalNode v0 = new InternalNode(v1, vc);
+		final VTree va = new VariableLeaf(a);
+		final VTree vb = new VariableLeaf(b);
+		final VTree vc = new VariableLeaf(c);
+		final VTree v1 = new InternalVTree(va, vb);
+		final InternalVTree v0 = new InternalVTree(v1, vc);
 		
 		final SDD aOrC = AbstractSDD.decomposition(v0, new Element(a, true), new Element(a, false, c));
 		final SDD bOrC = AbstractSDD.decomposition(v0, new Element(b, true), new Element(b, false, c));
@@ -180,7 +179,7 @@ public class TestSDD {
 	public void primeLiteralAndDecomposition() {
 		final Variable a = new Variable(1);
 		final Variable b = new Variable(2);
-		final InternalNode vtree = new InternalNode(a, b);
+		final InternalVTree vtree = new InternalVTree(a, b);
 		final SDD sdd1 = new LiteralSDD(a);
 		final SDD sdd2 = AbstractSDD.decomposition(vtree, new Element(a, b, false), new Element(a, false, false));
 		final SDD result = sdd1.and(sdd2);
@@ -191,7 +190,7 @@ public class TestSDD {
 	public void subLiteralAndDecomposition() {
 		final Variable a = new Variable(1);
 		final Variable b = new Variable(2);
-		final InternalNode vtree = new InternalNode(a, b);
+		final InternalVTree vtree = new InternalVTree(a, b);
 		final SDD sdd1 = new LiteralSDD(b);
 		final SDD sdd2 = AbstractSDD.decomposition(vtree, new Element(a, b, false), new Element(a, false, false));
 		final SDD result = sdd1.and(sdd2);
@@ -212,7 +211,7 @@ public class TestSDD {
 	public void namedVTreeVariables() throws FileNotFoundException {
 		final String[] names = new String[] { "C", "PL", "APU", "BPU", "ADR", "BDR", "BO" };
 		final VariableRegistry vars = new VariableRegistry();
-		final VTree vtree = VTree.buildRightLinear(vars, names);
+		final VTree vtree = VTreeUtils.buildRightLinear(vars, names);
 		GraphvizDumper.dump(vtree, vars, "sdd.gv");
 	}
 
@@ -230,12 +229,12 @@ public class TestSDD {
 		names.toArray(names2);
 		final VariableRegistry vars = new VariableRegistry();
 
-		final InternalNode vtree = (InternalNode) VTree.buildRightLinear(vars, names2);
+		final InternalVTree vtree = (InternalVTree) VTreeUtils.buildRightLinear(vars, names2);
 
-		final InternalNode l1 = vtree;
-		final InternalNode l2 = (InternalNode) l1.getRight();
-		final InternalNode l3 = (InternalNode) l2.getRight();
-		final InternalNode l4 = (InternalNode) l3.getRight();
+		final InternalVTree l1 = vtree;
+		final InternalVTree l2 = (InternalVTree) l1.getRight();
+		final InternalVTree l3 = (InternalVTree) l2.getRight();
+		final InternalVTree l4 = (InternalVTree) l3.getRight();
 		
 		final DecompositionSDD a22 = new DecompositionSDD(l4, new Element(vars.register("alive(x2,y2)"), true), new Element(vars.register("alive(x2,y2)"), false, false));
 		final DecompositionSDD a212 = new DecompositionSDD(l3, new Element(vars.register("alive(x2,y1)"), true), new Element(vars.register("alive(x2,y1)"), false, a22));
@@ -250,11 +249,11 @@ public class TestSDD {
 	@Test
 	public void pseudoRightLinearGameOfLife() throws FileNotFoundException {
 		final VariableRegistry vars = new VariableRegistry();
-		final VTree x1y1 = VTree.register(vars, "alive(x1,y1)");
-		final VTree x1y2 = VTree.register(vars, "alive(x1,y2)");
-		final InternalNode left = new InternalNode(x1y1, x1y2);
-		final InternalNode right = (InternalNode) VTree.buildRightLinear(vars, "alive(x2,y1)", "alive(x2,y2)", "value");
-		final InternalNode root = new InternalNode(left,  right);
+		final VTree x1y1 = VTreeUtils.register(vars, "alive(x1,y1)");
+		final VTree x1y2 = VTreeUtils.register(vars, "alive(x1,y2)");
+		final InternalVTree left = new InternalVTree(x1y1, x1y2);
+		final InternalVTree right = (InternalVTree) VTreeUtils.buildRightLinear(vars, "alive(x2,y1)", "alive(x2,y2)", "value");
+		final InternalVTree root = new InternalVTree(left,  right);
 
 		final DecompositionSDD a22 = new DecompositionSDD(right.getRight(), new Element(vars.register("alive(x2,y2)"), true), new Element(vars.register("alive(x2,y2)"), false, false));
 		final DecompositionSDD a212 = new DecompositionSDD(right, new Element(vars.register("alive(x2,y1)"), true), new Element(vars.register("alive(x2,y1)"), false, a22));
@@ -288,13 +287,13 @@ public class TestSDD {
 		final Variable bdr = vars.register("BDR");
 		final Variable bo = vars.register("BO");
 		final Variable cprime = vars.register("C'");
-		final InternalNode boPart = new InternalNode(bo, cprime);
-		final InternalNode bdrPart = new InternalNode(bdr, boPart);
-		final InternalNode adrPart = new InternalNode(adr, bdrPart);
-		final InternalNode bpuPart = new InternalNode(bpu, adrPart);
-		final InternalNode apuPart = new InternalNode(apu, bpuPart);
-		final InternalNode plPart = new InternalNode(pl, apuPart);
-		final InternalNode cPart = new InternalNode(c, plPart);
+		final InternalVTree boPart = new InternalVTree(bo, cprime);
+		final InternalVTree bdrPart = new InternalVTree(bdr, boPart);
+		final InternalVTree adrPart = new InternalVTree(adr, bdrPart);
+		final InternalVTree bpuPart = new InternalVTree(bpu, adrPart);
+		final InternalVTree apuPart = new InternalVTree(apu, bpuPart);
+		final InternalVTree plPart = new InternalVTree(pl, apuPart);
+		final InternalVTree cPart = new InternalVTree(c, plPart);
 		final SDD boNode = new DecompositionSDD(boPart, new Element(bo, true), new Element(bo, false, false));
 		final SDD bdrNode = new DecompositionSDD(bdrPart, new Element(bdr, boNode), new Element(bdr, false, false));
 		final SDD adrNode = new DecompositionSDD(adrPart, new Element(adr, bdrNode), new Element(adr, false, false));
@@ -311,19 +310,19 @@ public class TestSDD {
 		final Variable c = new Variable(3);
 		final Variable d = new Variable(4);
 
-		final VTree v0 = new LeafNode(b);
-		final VTree v1 = new LeafNode(a);
-		final VTree v2 = new InternalNode(v0, v1);
-		final VTree v3 = new LeafNode(d);
-		final VTree v4 = new LeafNode(c);
-		final VTree v5 = new InternalNode(v3, v4);
-		final VTree v6 = new InternalNode(v2, v5);
+		final VTree v0 = new VariableLeaf(b);
+		final VTree v1 = new VariableLeaf(a);
+		final VTree v2 = new InternalVTree(v0, v1);
+		final VTree v3 = new VariableLeaf(d);
+		final VTree v4 = new VariableLeaf(c);
+		final VTree v5 = new InternalVTree(v3, v4);
+		final VTree v6 = new InternalVTree(v2, v5);
 		
 		return v6;
 	}
 
 	private VTree bigVTree() {
-		return new InternalNode(1, new InternalNode(2, new InternalNode(new InternalNode(3, 4), new InternalNode(5, 6))));
+		return new InternalVTree(1, new InternalVTree(2, new InternalVTree(new InternalVTree(3, 4), new InternalVTree(5, 6))));
 	}
 
 	private SDD exampleDarwiche() {
@@ -332,9 +331,9 @@ public class TestSDD {
 		final Variable c = new Variable(3);
 		final Variable d = new Variable(4);
 
-		final InternalNode root = (InternalNode) vtree1();
-		final InternalNode vl = (InternalNode) root.getLeft();
-		final InternalNode vr = (InternalNode) root.getRight();
+		final InternalVTree root = (InternalVTree) vtree1();
+		final InternalVTree vl = (InternalVTree) root.getLeft();
+		final InternalVTree vr = (InternalVTree) root.getRight();
 
 		final Element n0 = new Element(b, a);
 		final Element n1 = new Element(b, false, false);
@@ -354,9 +353,9 @@ public class TestSDD {
 		final Variable c = new Variable(3);
 		final Variable d = new Variable(4);
 
-		final InternalNode root = (InternalNode) vtree1();
-		final InternalNode vl = (InternalNode) root.getLeft();
-		final InternalNode vr = (InternalNode) root.getRight();
+		final InternalVTree root = (InternalVTree) vtree1();
+		final InternalVTree vl = (InternalVTree) root.getLeft();
+		final InternalVTree vr = (InternalVTree) root.getRight();
 
 		final Element n0 = new Element(b, a);
 		final Element n1 = new Element(b, false, false);
@@ -380,13 +379,13 @@ public class TestSDD {
 		final Variable c = new Variable(3);
 		final Variable d = new Variable(4);
 
-		final LeafNode v0 = new LeafNode(a);
-		final LeafNode v1 = new LeafNode(b);
-		final LeafNode v2 = new LeafNode(c);
-		final LeafNode v3 = new LeafNode(d);
-		final InternalNode v4 = new InternalNode(v2, v3);
-		final InternalNode v5 = new InternalNode(v1, v4);
-		final InternalNode v6 = new InternalNode(v0, v5);
+		final VariableLeaf v0 = new VariableLeaf(a);
+		final VariableLeaf v1 = new VariableLeaf(b);
+		final VariableLeaf v2 = new VariableLeaf(c);
+		final VariableLeaf v3 = new VariableLeaf(d);
+		final InternalVTree v4 = new InternalVTree(v2, v3);
+		final InternalVTree v5 = new InternalVTree(v1, v4);
+		final InternalVTree v6 = new InternalVTree(v0, v5);
 
 		final Element n0 = new Element(c, d);
 		final Element n1 = new Element(c, false, false);

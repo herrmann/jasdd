@@ -1,5 +1,7 @@
 package jsdd;
 
+import jsdd.vtree.InternalVTree;
+
 /**
  * Base class with utility methods for all kinds of SDDs.
  * 
@@ -41,7 +43,7 @@ public abstract class AbstractSDD implements SDD {
 		return hasParent() && !prime;
 	}
 
-	public static SDD decomposition(final InternalNode node, final Element... elements) {
+	public static SDD decomposition(final InternalVTree node, final Element... elements) {
 		return new DecompositionSDD(node, elements);
 	}
 

@@ -81,4 +81,9 @@ public class InternalVTree extends InternalTree<VTree> implements VTree {
 		return sb;
 	}
 
+	@Override
+	public String toString() {
+		return toStringBuilder().toString();
+	}
+
 }

@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 
 import jsdd.viz.GraphvizDumper;
+import jsdd.vtree.InternalVTree;
+import jsdd.vtree.VTree;
 
 /**
  * SDD for a (X,Y)-decomposition of a boolean function.
@@ -19,7 +21,7 @@ import jsdd.viz.GraphvizDumper;
  */
 public class DecompositionSDD extends AbstractSDD {
 
-	private InternalNode vtree;
+	private InternalVTree vtree;
 	private List<Element> elements = new ArrayList<Element>();
 
 	public DecompositionSDD(final DecompositionSDD sdd) {
@@ -29,10 +31,10 @@ public class DecompositionSDD extends AbstractSDD {
 	}
 
 	public DecompositionSDD(final VTree node, final Element... elements) {
-		this((InternalNode) node, elements);
+		this((InternalVTree) node, elements);
 	}
 
-	public DecompositionSDD(final InternalNode node, final Element... elements) {
+	public DecompositionSDD(final InternalVTree node, final Element... elements) {
 		this.vtree = node;
 		for (final Element element : elements) {
 			element.addParent(this);
@@ -50,17 +52,17 @@ public class DecompositionSDD extends AbstractSDD {
 					throw new IllegalArgumentException("Decomposition element doesn't respect the decomposition's vtree");
 				}
 			} else {
-				((DecompositionSDD) sdd).setVTree((InternalNode) correctNode);
+				((DecompositionSDD) sdd).setVTree((InternalVTree) correctNode);
 			}
 		}
 	}
 
 	@Override
-	public InternalNode getVTree() {
+	public InternalVTree getVTree() {
 		return vtree;
 	}
 
-	private void setVTree(final InternalNode vtree) {
+	private void setVTree(final InternalVTree vtree) {
 		this.vtree = vtree;
 	}
 
@@ -164,12 +166,12 @@ public class DecompositionSDD extends AbstractSDD {
 				for (final Element e2 : sdd.expansion()) {
 					SDD prime = e1.getPrime().and(e2.getPrime());
 					if (prime instanceof DecompositionSDD) {
-						((DecompositionSDD) prime).setVTree((InternalNode) sdd.getVTree().getLeft());
+						((DecompositionSDD) prime).setVTree((InternalVTree) sdd.getVTree().getLeft());
 					}
 					if (prime.isConsistent()) {
 						final SDD sub = e1.getSub().apply(e2.getSub(), op);
 						if (sub instanceof DecompositionSDD) {
-							((DecompositionSDD) sub).setVTree((InternalNode) sdd.getVTree().getRight());
+							((DecompositionSDD) sub).setVTree((InternalVTree) sdd.getVTree().getRight());
 						}
 						// Apply compression
 						if (subs.containsKey(sub)) {

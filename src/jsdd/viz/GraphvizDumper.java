@@ -9,19 +9,19 @@ import java.util.Map;
 
 import jsdd.ConstantSDD;
 import jsdd.DecompositionSDD;
-import jsdd.InternalNode;
-import jsdd.LeafNode;
+import jsdd.Element;
 import jsdd.Literal;
 import jsdd.LiteralSDD;
-import jsdd.Element;
 import jsdd.SDD;
-import jsdd.VTree;
 import jsdd.Variable;
 import jsdd.VariableRegistry;
 import jsdd.algebraic.ASDD;
 import jsdd.algebraic.AlgebraicElement;
 import jsdd.algebraic.AlgebraicTerminal;
 import jsdd.algebraic.DecompositionASDD;
+import jsdd.vtree.InternalVTree;
+import jsdd.vtree.VTree;
+import jsdd.vtree.VariableLeaf;
 
 /**
  * Conversion of SDDs to Graphviz dot format.
@@ -147,7 +147,7 @@ public class GraphvizDumper {
 
 	private static int dumpVTreeNode(final VTree vtree, final int nextId, final Map<VTree, Integer> vtreeMap, final VariableRegistry vars) {
 		if (!vtree.isLeaf()) {
-			final InternalNode node = (InternalNode) vtree;
+			final InternalVTree node = (InternalVTree) vtree;
 			final int leftId = dumpVTreeNode(node.getLeft(), nextId, vtreeMap, vars);
 			final int rightId = dumpVTreeNode(node.getRight(), leftId + 1, vtreeMap, vars);
 			final int parentId = rightId + 1;
@@ -178,7 +178,7 @@ public class GraphvizDumper {
 
 	private static String nodeName(final VTree node, final int nodeId, final VariableRegistry vars) {
 		if (node.isLeaf()) {
-			final Variable var = ((LeafNode) node).getVariable();
+			final Variable var = ((VariableLeaf) node).getVariable();
 			if (vars.exists(var)) {
 				return vars.name(var);
 			} else {

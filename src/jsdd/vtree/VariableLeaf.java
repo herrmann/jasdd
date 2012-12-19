@@ -50,4 +50,9 @@ public class VariableLeaf implements VTree, RightLinearVTree {
 		return new StringBuilder(getVariable().toString());
 	}
 
+	@Override
+	public String toString() {
+		return toStringBuilder().toString();
+	}
+
 }

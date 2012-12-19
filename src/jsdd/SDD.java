@@ -2,6 +2,8 @@ package jsdd;
 
 import java.util.Collection;
 
+import jsdd.vtree.VTree;
+
 import util.StringBuildable;
 
 /**
