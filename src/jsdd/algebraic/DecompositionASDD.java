@@ -8,9 +8,12 @@ import jsdd.vtree.InternalAVTree;
 
 public class DecompositionASDD<T> implements ASDD<T> {
 
+	private InternalAVTree avtree;
+
 	private List<AlgebraicElement<T>> elements;
 
 	public DecompositionASDD(final InternalAVTree avtree, final AlgebraicElement<T>... elements) {
+		this.avtree = avtree;
 		this.elements = new ArrayList<AlgebraicElement<T>>(elements.length);
 		for (final AlgebraicElement<T> element : elements) {
 			this.elements.add(element);
@@ -29,7 +32,7 @@ public class DecompositionASDD<T> implements ASDD<T> {
 
 	@Override
 	public InternalAVTree getTree() {
-		return null;
+		return avtree;
 	}
 
 	@Override
