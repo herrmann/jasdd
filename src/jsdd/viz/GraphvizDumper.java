@@ -271,10 +271,10 @@ public class GraphvizDumper {
 			algebraicElemCache.put(element, elementId);
 			out.println("  e" + elementId + " [shape=record,label=\"<f0> " + primeLabel + "|<f1> " + subLabel + "\"]");
 			if (!prime.isTerminal()) {
-				out.println("  e" + elementId + ":f0:c -> d" + decompCache.get(prime) + " [tailclip=false]");
+				out.println("  e" + elementId + ":f0:c -> d" + algebraicDecompCache.get(prime) + " [tailclip=false]");
 			}
 			if (!sub.isTerminal()) {
-				out.println("  e" + elementId + ":f1:c -> d" + decompCache.get(sub) + " [tailclip=false]");
+				out.println("  e" + elementId + ":f1:c -> d" + algebraicDecompCache.get(sub) + " [tailclip=false]");
 			}
 			out.println("  d" + decompId + " -> e" + elementId);
 			return elementId;
