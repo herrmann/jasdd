@@ -12,16 +12,12 @@ import jsdd.Variable;
  */
 public class InternalVTree extends InternalTree<VTree> implements VTree {
 
-	private VTree left, right;
-
-	public InternalVTree(final Variable left, final Variable right) {
-		this.left = new VariableLeaf(left);
-		this.right = new VariableLeaf(right);
+	public InternalVTree(final VTree left, final VTree right) {
+		super(left, right);
 	}
 
-	public InternalVTree(final VTree left, final VTree right) {
-		this.left = left;
-		this.right = right;
+	public InternalVTree(final Variable left, final Variable right) {
+		this(new VariableLeaf(left), new VariableLeaf(right));
 	}
 
 	public InternalVTree(final int leftIndex, final int rightIndex) {
@@ -52,14 +48,6 @@ public class InternalVTree extends InternalTree<VTree> implements VTree {
 	@Override
 	public boolean isRightLinear() {
 		return getLeft().isLeaf() && getRight().isRightLinear();
-	}
-
-	public VTree getLeft() {
-		return left;
-	}
-
-	public VTree getRight() {
-		return right;
 	}
 
 	@Override

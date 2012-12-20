@@ -7,7 +7,8 @@ import jsdd.Variable;
 
 public class InternalRightLinearVTree extends InternalTree<RightLinearVTree> implements RightLinearVTree {
 
-	public InternalRightLinearVTree(final VariableLeaf a, final RightLinearVTree right) {
+	public InternalRightLinearVTree(final VTree left, final RightLinearVTree right) {
+		super(left, right);
 	}
 
 	@Override

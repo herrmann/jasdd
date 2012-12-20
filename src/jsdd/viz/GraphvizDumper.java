@@ -19,8 +19,11 @@ import jsdd.algebraic.ASDD;
 import jsdd.algebraic.AlgebraicElement;
 import jsdd.algebraic.AlgebraicTerminal;
 import jsdd.algebraic.DecompositionASDD;
+import jsdd.vtree.InternalTree;
 import jsdd.vtree.InternalVTree;
+import jsdd.vtree.Tree;
 import jsdd.vtree.VTree;
+import jsdd.vtree.ValueLeaf;
 import jsdd.vtree.VariableLeaf;
 
 /**
@@ -44,17 +47,17 @@ public class GraphvizDumper {
 	public static void dump(final DecompositionSDD sdd, final VariableRegistry vars) {
 		out.println("digraph sdd {");
 		out.println("  graph [ordering=\"out\"]");
-		final Map<VTree, Integer> vtreeMap = new HashMap<VTree, Integer>();
+		final Map<Tree, Integer> vtreeMap = new HashMap<Tree, Integer>();
 		dumpVTreeNode(sdd.getVTree(), vtreeMap, vars);
 		dumpDecomposition(sdd, vtreeMap, vars);
 		out.println("}");
 	}
 
-	private static void dumpDecomposition(final DecompositionSDD sdd, final Map<VTree, Integer> vtreeMap, final VariableRegistry vars) {
+	private static void dumpDecomposition(final DecompositionSDD sdd, final Map<Tree, Integer> vtreeMap, final VariableRegistry vars) {
 		dumpDecomposition(sdd, 0, new HashMap<Element, Integer>(), new HashMap<DecompositionSDD, Integer>(), vtreeMap, vars);
 	}
 
-	private static int dumpDecomposition(final DecompositionSDD sdd, final int nextId, final Map<Element, Integer> elemCache, final Map<DecompositionSDD, Integer> decompCache, final Map<VTree, Integer> vtreeMap, final VariableRegistry vars) {
+	private static int dumpDecomposition(final DecompositionSDD sdd, final int nextId, final Map<Element, Integer> elemCache, final Map<DecompositionSDD, Integer> decompCache, final Map<Tree, Integer> vtreeMap, final VariableRegistry vars) {
 		if (!decompCache.containsKey(sdd)) {
 			final int decompId = nextId;
 			decompCache.put(sdd, decompId);
@@ -76,7 +79,7 @@ public class GraphvizDumper {
 		}
 	}
 
-	private static int dumpPairedBox(final Element element, final int nextId, final Map<Element, Integer> elemCache, final Map<DecompositionSDD, Integer> decompCache, final int decompId, final Map<VTree, Integer> vtreeMap, final VariableRegistry vars) {
+	private static int dumpPairedBox(final Element element, final int nextId, final Map<Element, Integer> elemCache, final Map<DecompositionSDD, Integer> decompCache, final int decompId, final Map<Tree, Integer> vtreeMap, final VariableRegistry vars) {
 		if (!elemCache.containsKey(element)) {
 			final SDD prime = element.getPrime();
 			final SDD sub = element.getSub();
@@ -138,16 +141,16 @@ public class GraphvizDumper {
 		dumpVTreeNode(vtree, 0, null, vars);
 	}
 
-	private static void dumpVTreeNode(final VTree vtree, final Map<VTree, Integer> vtreeMap, final VariableRegistry vars) {
+	private static void dumpVTreeNode(final Tree vtree, final Map<Tree, Integer> vtreeMap, final VariableRegistry vars) {
 		final int nodeId = dumpVTreeNode(vtree, 0, vtreeMap, vars);
 		if (vtreeMap != null) {
 			vtreeMap.put(vtree, nodeId);
 		}
 	}
 
-	private static int dumpVTreeNode(final VTree vtree, final int nextId, final Map<VTree, Integer> vtreeMap, final VariableRegistry vars) {
+	private static <T extends Tree> int dumpVTreeNode(final Tree vtree, final int nextId, final Map<Tree, Integer> vtreeMap, final VariableRegistry vars) {
 		if (!vtree.isLeaf()) {
-			final InternalVTree node = (InternalVTree) vtree;
+			final InternalTree<T> node = (InternalTree<T>) vtree;
 			final int leftId = dumpVTreeNode(node.getLeft(), nextId, vtreeMap, vars);
 			final int rightId = dumpVTreeNode(node.getRight(), leftId + 1, vtreeMap, vars);
 			final int parentId = rightId + 1;
@@ -163,7 +166,7 @@ public class GraphvizDumper {
 		}
 	}
 
-	private static void dumpEdge(final VTree node, final int parentId, final int nodeId, final Map<VTree, Integer> vtreeMap, final VariableRegistry vars) {
+	private static void dumpEdge(final Tree node, final int parentId, final int nodeId, final Map<Tree, Integer> vtreeMap, final VariableRegistry vars) {
 		if (vtreeMap != null) {
 			vtreeMap.put(node, nodeId);
 		}
@@ -176,13 +179,17 @@ public class GraphvizDumper {
 		}
 	}
 
-	private static String nodeName(final VTree node, final int nodeId, final VariableRegistry vars) {
+	private static String nodeName(final Tree node, final int nodeId, final VariableRegistry vars) {
 		if (node.isLeaf()) {
-			final Variable var = ((VariableLeaf) node).getVariable();
-			if (vars.exists(var)) {
-				return vars.name(var);
+			if (node instanceof VariableLeaf) {
+				final Variable var = ((VariableLeaf) node).getVariable();
+				if (vars.exists(var)) {
+					return vars.name(var);
+				} else {
+					return letter(var);
+				}
 			} else {
-				return letter(var);
+				return "VALUE";
 			}
 		} else {
 			return Integer.valueOf(nodeId).toString();
@@ -214,16 +221,17 @@ public class GraphvizDumper {
 	public static <T> void dump(final DecompositionASDD<T> asdd, final VariableRegistry vars) {
 		out.println("digraph sdd {");
 		out.println("  graph [ordering=\"out\"]");
-		final Map<VTree, Integer> vtreeMap = new HashMap<VTree, Integer>();
+		final Map<Tree, Integer> vtreeMap = new HashMap<Tree, Integer>();
+		dumpVTreeNode(asdd.getTree(), vtreeMap, vars);
 		dumpAlgebraicDecomposition(asdd, vtreeMap, vars);
 		out.println("}");
 	}
 
-	private static <T> void dumpAlgebraicDecomposition(final DecompositionASDD<T> asdd, final Map<VTree, Integer> vtreeMap, final VariableRegistry vars) {
+	private static <T> void dumpAlgebraicDecomposition(final DecompositionASDD<T> asdd, final Map<Tree, Integer> vtreeMap, final VariableRegistry vars) {
 		dumpAlgebraicDecomposition(asdd, 0, new HashMap<Element, Integer>(), new HashMap<AlgebraicElement<T>, Integer>(), new HashMap<DecompositionSDD, Integer>(), new HashMap<DecompositionASDD<T>, Integer>(), vtreeMap, vars);
 	}
 
-	private static <T> int dumpAlgebraicDecomposition(final DecompositionASDD<T> asdd, final int nextId, final Map<Element, Integer> elemCache, final Map<AlgebraicElement<T>, Integer> algebraicElemCache, final Map<DecompositionSDD, Integer> decompCache, final Map<DecompositionASDD<T>, Integer> algebraicDecompCache, final Map<VTree, Integer> vtreeMap, final VariableRegistry vars) {
+	private static <T> int dumpAlgebraicDecomposition(final DecompositionASDD<T> asdd, final int nextId, final Map<Element, Integer> elemCache, final Map<AlgebraicElement<T>, Integer> algebraicElemCache, final Map<DecompositionSDD, Integer> decompCache, final Map<DecompositionASDD<T>, Integer> algebraicDecompCache, final Map<Tree, Integer> vtreeMap, final VariableRegistry vars) {
 		if (!algebraicDecompCache.containsKey(asdd)) {
 			final int decompId = nextId;
 			algebraicDecompCache.put(asdd, decompId);
@@ -245,7 +253,7 @@ public class GraphvizDumper {
 		}
 	}
 
-	private static <T> int dumpAlgebraicPairedBox(final AlgebraicElement<T> element, final int nextId, final Map<Element, Integer> elemCache, final Map<AlgebraicElement<T>, Integer> algebraicElemCache, final Map<DecompositionSDD, Integer> decompCache, final Map<DecompositionASDD<T>, Integer> algebraicDecompCache, final int decompId, final Map<VTree, Integer> vtreeMap, final VariableRegistry vars) {
+	private static <T> int dumpAlgebraicPairedBox(final AlgebraicElement<T> element, final int nextId, final Map<Element, Integer> elemCache, final Map<AlgebraicElement<T>, Integer> algebraicElemCache, final Map<DecompositionSDD, Integer> decompCache, final Map<DecompositionASDD<T>, Integer> algebraicDecompCache, final int decompId, final Map<Tree, Integer> vtreeMap, final VariableRegistry vars) {
 		if (!algebraicElemCache.containsKey(element)) {
 			final SDD prime = element.getPrime();
 			final ASDD<T> sub = element.getSub();

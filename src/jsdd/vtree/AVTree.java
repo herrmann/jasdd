@@ -1,5 +1,5 @@
 package jsdd.vtree;
 
-public interface AVTree {
+public interface AVTree extends Tree {
 
 }

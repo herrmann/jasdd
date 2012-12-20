@@ -6,11 +6,9 @@ import util.StringBuildable;
 
 import jsdd.Variable;
 
-public interface VTree extends StringBuildable{
+public interface VTree extends Tree, StringBuildable {
 
 	Set<Variable> variables();
-
-	boolean isLeaf();
 
 	boolean isRightLinear();
 
