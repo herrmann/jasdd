@@ -273,7 +273,7 @@ public class GraphvizDumper {
 			algebraicElemCache.put(element, elementId);
 			out.println("  e" + elementId + " [shape=record,label=\"<f0> " + primeLabel + "|<f1> " + subLabel + "\"]");
 			if (!prime.isTerminal()) {
-				out.println("  e" + elementId + ":f0:c -> d" + algebraicCache.get(prime) + " [tailclip=false]");
+				out.println("  e" + elementId + ":f0:c -> d" + decompCache.get(prime) + " [tailclip=false]");
 			}
 			out.println("  e" + elementId + ":f1:c -> d" + algebraicCache.get(sub) + " [tailclip=false]");
 			out.println("  d" + decompId + " -> e" + elementId);
