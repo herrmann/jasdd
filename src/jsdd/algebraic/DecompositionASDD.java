@@ -40,4 +40,37 @@ public class DecompositionASDD<T> implements ASDD<T> {
 		return false;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((avtree == null) ? 0 : avtree.hashCode());
+		result = prime * result
+				+ ((elements == null) ? 0 : elements.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		@SuppressWarnings("unchecked")
+		DecompositionASDD<T> other = (DecompositionASDD<T>) obj;
+		if (avtree == null) {
+			if (other.avtree != null)
+				return false;
+		} else if (!avtree.equals(other.avtree))
+			return false;
+		if (elements == null) {
+			if (other.elements != null)
+				return false;
+		} else if (!elements.equals(other.elements))
+			return false;
+		return true;
+	}
+
 }

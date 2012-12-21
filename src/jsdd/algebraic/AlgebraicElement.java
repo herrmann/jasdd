@@ -30,4 +30,37 @@ public class AlgebraicElement<T> {
 		return sub;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((this.prime == null) ? 0 : this.prime.hashCode());
+		result = prime * result + ((sub == null) ? 0 : sub.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		@SuppressWarnings("unchecked")
+		AlgebraicElement<T> other = (AlgebraicElement<T>) obj;
+		if (prime == null) {
+			if (other.prime != null)
+				return false;
+		} else if (!prime.equals(other.prime))
+			return false;
+		if (sub == null) {
+			if (other.sub != null)
+				return false;
+		} else if (!sub.equals(other.sub))
+			return false;
+		return true;
+	}
+
 }
