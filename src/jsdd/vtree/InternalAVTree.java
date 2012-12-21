@@ -6,6 +6,10 @@ public class InternalAVTree extends InternalTree<AVTree> implements AVTree {
 		super(left, right);
 	}
 
+	public InternalAVTree(final VTree left) {
+		this(left, new ValueLeaf());
+	}
+
 	@Override
 	public boolean isLeaf() {
 		return false;
