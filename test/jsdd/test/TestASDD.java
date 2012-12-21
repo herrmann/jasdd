@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 
 import jsdd.DecompositionSDD;
 import jsdd.Element;
+import jsdd.Variable;
 import jsdd.VariableRegistry;
 import jsdd.algebraic.AlgebraicElement;
 import jsdd.algebraic.AlgebraicTerminal;
@@ -58,15 +59,19 @@ public class TestASDD {
 	public void pseudoLinearGameOfLife() throws FileNotFoundException {
 		final VariableRegistry vars = new VariableRegistry();
 		vars.register("value");
+		final Variable x1y1 = vars.register("alive(x1,y1)");
+		final Variable x1y2 = vars.register("alive(x1,y2)");
+		final Variable x2y1 = vars.register("alive(x2,y1)");
+		final Variable x2y2 = vars.register("alive(x2,y2)");
 
 		final InternalVTree left = new InternalVTree(
-			new VariableLeaf(vars.register("alive(x1,y1)")),
-			new VariableLeaf(vars.register("alive(x1,y2)"))
+			new VariableLeaf(x1y1),
+			new VariableLeaf(x1y2)
 		);
 		final InternalAVTree right = new InternalAVTree(
-			new VariableLeaf(vars.register("alive(x2,y1)")),
+			new VariableLeaf(x2y1),
 			new InternalAVTree(
-				new VariableLeaf(vars.register("alive(x2,y2)")),
+				new VariableLeaf(x2y2),
 				new ValueLeaf()
 			)
 		);
@@ -76,39 +81,43 @@ public class TestASDD {
 		final AlgebraicTerminal<Float> low = new AlgebraicTerminal<Float>(0.1f); 
 
 		final DecompositionASDD<Float> a22 = new DecompositionASDD<Float>(
-				(InternalAVTree) right.getRight(),
-				new AlgebraicElement<Float>(vars.register("alive(x2,y2)"), high),
-				new AlgebraicElement<Float>(vars.register("alive(x2,y2)"), false, low)
+			(InternalAVTree) right.getRight(),
+			new AlgebraicElement<Float>(x2y2, high),
+			new AlgebraicElement<Float>(x2y2, false, low)
 		);
 		final DecompositionASDD<Float> a212 = new DecompositionASDD<Float>(
-				right,
-				new AlgebraicElement<Float>(vars.register("alive(x2,y1)"), high),
-				new AlgebraicElement<Float>(vars.register("alive(x2,y1)"), false, a22)
+			right,
+			new AlgebraicElement<Float>(x2y1, high),
+			new AlgebraicElement<Float>(x2y1, false, a22)
 		);
 		final DecompositionASDD<Float> a211 = new DecompositionASDD<Float>(
-				right,
-				new AlgebraicElement<Float>(vars.register("alive(x2,y1)"), a22),
-				new AlgebraicElement<Float>(vars.register("alive(x2,y1)"), false, low));
-
-		final DecompositionSDD part1 = new DecompositionSDD(left,
-			new Element(vars.register("alive(x1,y1)"), vars.register("alive(x1,y2)")),
-			new Element(vars.register("alive(x1,y1)"), false, false));
-		
-		final DecompositionSDD part2 = new DecompositionSDD(left,
-				new Element(vars.register("alive(x1,y1)"), vars.register("alive(x1,y2)"), false),
-				new Element(vars.register("alive(x1,y1)"), false, vars.register("alive(x1,y2)")));
-			
-		final DecompositionSDD part3 = new DecompositionSDD(left,
-				new Element(vars.register("alive(x1,y1)"), false),
-				new Element(vars.register("alive(x1,y1)"), false, vars.register("alive(x1,y2)"), false));
-
+			right,
+			new AlgebraicElement<Float>(x2y1, a22),
+			new AlgebraicElement<Float>(x2y1, false, low)
+		);
+		final DecompositionSDD part1 = new DecompositionSDD(
+			left,
+			new Element(x1y1, x1y2),
+			new Element(x1y1, false, false)
+		);
+		final DecompositionSDD part2 = new DecompositionSDD(
+			left,
+			new Element(x1y1, x1y2, false),
+			new Element(x1y1, false, x1y2)
+		);
+		final DecompositionSDD part3 = new DecompositionSDD(
+			left,
+			new Element(x1y1, false),
+			new Element(x1y1, false, x1y2, false)
+		);
 		final DecompositionASDD<Float> asdd = new DecompositionASDD<Float>(
-				root,
-				new AlgebraicElement<Float>(part1, a212),
-				new AlgebraicElement<Float>(part2, a211),
-				new AlgebraicElement<Float>(part3, low));
+			root,
+			new AlgebraicElement<Float>(part1, a212),
+			new AlgebraicElement<Float>(part2, a211),
+			new AlgebraicElement<Float>(part3, low)
+		);
 
-		GraphvizDumper.dump(asdd, vars, "sdd.gv");
+		GraphvizDumper.dump(asdd, vars, "asdd.gv");
 	}
 
 }
