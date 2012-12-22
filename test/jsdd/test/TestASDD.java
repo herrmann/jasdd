@@ -137,23 +137,25 @@ public class TestASDD {
 		final AlgebraicTerminal<Float> high = new AlgebraicTerminal<Float>(0.9f); 
 		final AlgebraicTerminal<Float> low = new AlgebraicTerminal<Float>(0.1f); 
 
-		final DecompositionSDD upperPart1 = new DecompositionSDD(upperLeft, new Element(x1y1, x1y2), new Element(x1y1, false, false));
-		final DecompositionSDD upperPart2 = new DecompositionSDD(upperLeft, new Element(x1y1, x1y2, false), new Element(x1y1, false, x1y2));
-		final DecompositionSDD upperPart3 = new DecompositionSDD(upperLeft, new Element(x1y1, false), new Element(x1y1, false, x1y2, false));
-
-		final DecompositionSDD lowerPart11 = new DecompositionSDD(lowerLeft, new Element(x2y1, true), new Element(x2y1, false, x2y2));
-		final DecompositionSDD lowerPart12 = new DecompositionSDD(lowerLeft, new Element(x2y1, false), new Element(x2y1, false, x2y2, false));
-		final DecompositionASDD<Float> lower1 = new DecompositionASDD<Float>(right, new AlgebraicElement<Float>(lowerPart11, high), new AlgebraicElement<Float>(lowerPart12, low));
-
-		final DecompositionSDD lowerPart21 = new DecompositionSDD(lowerLeft, new Element(x2y1, x2y2), new Element(x2y1, false, false));
-		final DecompositionSDD lowerPart22 = new DecompositionSDD(lowerLeft, new Element(x2y1, x2y2, false), new Element(x2y1, false, true));
-		final DecompositionASDD<Float> lower2 = new DecompositionASDD<Float>(right, new AlgebraicElement<Float>(lowerPart21, high), new AlgebraicElement<Float>(lowerPart22, low));
-
-		final DecompositionASDD<Float> asdd = new DecompositionASDD<Float>(root,
-			new AlgebraicElement<Float>(upperPart1, lower1),
-			new AlgebraicElement<Float>(upperPart2, lower2),
-			new AlgebraicElement<Float>(upperPart3, low)
-		);
+		@SuppressWarnings("unchecked")
+		final DecompositionASDD<Float> asdd =
+		new DecompositionASDD<Float>(root,
+			new AlgebraicElement<Float>(
+				new DecompositionSDD(upperLeft, Element.shannon(x1y1, x1y2, false)),
+				new DecompositionASDD<Float>(right,
+					new AlgebraicElement<Float>(
+						new DecompositionSDD(lowerLeft, Element.shannon(x2y1, true, x2y2)), high),
+						new AlgebraicElement<Float>(
+							new DecompositionSDD(lowerLeft, Element.shannon(x2y1, false, x2y2, false)), low))),
+			new AlgebraicElement<Float>(
+				new DecompositionSDD(upperLeft, Element.shannon(x1y1, x1y2, false, x1y2)),
+				new DecompositionASDD<Float>(right,
+					new AlgebraicElement<Float>(
+						new DecompositionSDD(lowerLeft, Element.shannon(x2y1, x2y2, false)), high),
+						new AlgebraicElement<Float>(
+							new DecompositionSDD(lowerLeft, Element.shannon(x2y1, x2y2, false, true)), low))),
+			new AlgebraicElement<Float>(
+				new DecompositionSDD(upperLeft, Element.shannon(x1y1, false, x1y2, false)), low));
 
 		GraphvizDumper.dump(asdd, vars, "asdd.gv");
 	}
