@@ -279,7 +279,7 @@ public class GraphvizDumper {
 			out.println("  d" + decompId + " -> e" + elementId);
 			return elementId;
 		} else {
-			final int elementId = elemCache.get(element);
+			final int elementId = algebraicElemCache.get(element);
 			out.println("  d" + decompId + " -> e" + elementId);
 			return nextId;
 		}
