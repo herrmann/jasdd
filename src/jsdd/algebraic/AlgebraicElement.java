@@ -30,6 +30,14 @@ public class AlgebraicElement<T> {
 		return sub;
 	}
 
+	public static <T> AlgebraicElement<T>[] shannon(final Variable v, final ASDD<T> high, final ASDD<T> low) {
+		@SuppressWarnings("unchecked")
+		final AlgebraicElement<T>[] elems = new AlgebraicElement[2];
+		elems[0] = new AlgebraicElement<T>(v, high);
+		elems[1] = new AlgebraicElement<T>(v, false, low);
+		return elems;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
