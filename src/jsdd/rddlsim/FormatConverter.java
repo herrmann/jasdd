@@ -1,5 +1,8 @@
 package jsdd.rddlsim;
 
+import java.util.Iterator;
+import java.util.List;
+
 import jsdd.Variable;
 import jsdd.VariableRegistry;
 import jsdd.algebraic.ASDD;
@@ -8,6 +11,7 @@ import jsdd.algebraic.AlgebraicTerminal;
 import jsdd.algebraic.DecompositionASDD;
 import jsdd.vtree.AVTree;
 import jsdd.vtree.InternalAVTree;
+import jsdd.vtree.InternalVTree;
 import jsdd.vtree.ValueLeaf;
 import jsdd.vtree.VariableLeaf;
 import dd.discrete.ADD;
@@ -21,6 +25,8 @@ import dd.discrete.ADDNode;
  * @author Ricardo Herrmann
  */
 public class FormatConverter {
+
+	private boolean tightVTree = false;
 
 	private ADD context;
 
@@ -52,18 +58,24 @@ public class FormatConverter {
 		}
 	}
 
+	public ASDD<Double> addToAsdd(final VariableRegistry vars, final AVTree tree, final int nodeId) {
+		return addToAsdd(vars, tree, context.getNode(nodeId));
+	}
+
 	private ASDD<Double> addToAsdd(final VariableRegistry vars, AVTree tree, final ADDNode add) {
 		if (add instanceof ADDDNode) {
 			final ADDDNode dnode = ((ADDDNode) add);
 			return new AlgebraicTerminal<Double>(dnode._dLower);
 		} else if (add instanceof ADDINode) {
 			final ADDINode inode = ((ADDINode) add);
-			final String varName = (String) context._hmID2VarName.get(inode._nTestVarID);
+			final String varName = varNameInAdd(inode._nTestVarID);
 			final Variable var = vars.register(varName);
 
-			// Find subtree that is rooted at the current variable
-			while (!var.equals(((VariableLeaf) ((InternalAVTree) tree).getLeft()).getVariable())) {
-				tree = ((InternalAVTree) tree).getRight();
+			if (tightVTree) {
+				// Find subtree that is rooted at the current variable
+				while (!var.equals(((VariableLeaf) ((InternalAVTree) tree).getLeft()).getVariable())) {
+					tree = ((InternalAVTree) tree).getRight();
+				}
 			}
 
 			final AVTree subtree = ((InternalAVTree) tree).getRight();
@@ -75,6 +87,44 @@ public class FormatConverter {
 			return new DecompositionASDD<Double>((InternalAVTree) tree, elems);
 		}
 		return null;
+	}
+
+	private String varNameInAdd(final int id) {
+		return (String) context._hmID2VarName.get(id);
+	}
+
+	@SuppressWarnings("unchecked")
+	public AVTree buildPairwiseRightLinear() {
+		return buildPairwiseRightLinear(context._alOrder);
+	}
+
+	@SuppressWarnings("unchecked")
+	public AVTree buildPairwiseRightLinear(final VariableRegistry vars) {
+		return buildPairwiseRightLinear(vars, context._alOrder);
+	}
+
+	public AVTree buildPairwiseRightLinear(final List<Integer> order) {
+		return buildPairwiseRightLinear(new VariableRegistry(), order.iterator());
+	}
+
+	public AVTree buildPairwiseRightLinear(final VariableRegistry vars, final List<Integer> order) {
+		return buildPairwiseRightLinear(vars, order.iterator());
+	}
+
+	private AVTree buildPairwiseRightLinear(final VariableRegistry vars, final Iterator<Integer> iter) {
+		if (iter.hasNext()) {
+			final Integer fst = iter.next();
+			final Variable fstVar = vars.register(varNameInAdd(fst));
+			if (iter.hasNext()) {
+				final Integer snd = iter.next();
+				final Variable sndVar = vars.register(varNameInAdd(snd));
+				return new InternalAVTree(new InternalVTree(fstVar, sndVar), buildPairwiseRightLinear(vars, iter));
+			} else {
+				return new InternalAVTree(fstVar);
+			}
+		} else {
+			return new ValueLeaf();
+		}
 	}
 
 }
