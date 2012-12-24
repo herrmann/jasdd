@@ -32,6 +32,7 @@ import jsdd.VariableRegistry;
 import jsdd.algebraic.ASDD;
 import jsdd.algebraic.DecompositionASDD;
 import jsdd.rddlsim.FormatConverter;
+import jsdd.rddlsim.PairwiseAVTreeConverter;
 import jsdd.viz.GraphvizDumper;
 import jsdd.vtree.AVTree;
 import rddl.ActionGenerator;
@@ -398,8 +399,8 @@ public class VI extends Policy {
 			_context.getGraph(_valueDD).launchViewer();
 
 			final VariableRegistry vars = new VariableRegistry();
+			final AVTree tree = new PairwiseAVTreeConverter(_context).build(vars);
 			final FormatConverter converter = new FormatConverter(_context);
-			final AVTree tree = converter.buildPairwiseRightLinear(vars);
 			final ASDD<Double> asdd = converter.addToAsdd(vars, tree, _valueDD);
 			try {
 				if (asdd instanceof DecompositionASDD<?>) {
