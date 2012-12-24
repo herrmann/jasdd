@@ -12,6 +12,10 @@ public class InternalAVTree extends InternalTree<AVTree> implements AVTree {
 		this(left, new ValueLeaf());
 	}
 
+	public InternalAVTree(final Variable var) {
+		this(var, new ValueLeaf());
+	}
+
 	public InternalAVTree(final Variable var, final AVTree right) {
 		this(new VariableLeaf(var), right);
 	}
