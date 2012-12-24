@@ -1,11 +1,18 @@
 package jsdd.test;
 
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import jsdd.Variable;
 import jsdd.VariableRegistry;
+import jsdd.rddlsim.ASDDConverter;
+import jsdd.rddlsim.ASDDConverter.Enumeration;
 import jsdd.vtree.InternalAVTree;
 import jsdd.vtree.InternalRightLinearAVTree;
 import jsdd.vtree.InternalVTree;
 import jsdd.vtree.ValueLeaf;
 import jsdd.vtree.VariableLeaf;
+import junit.framework.Assert;
 
 import org.junit.Test;
 
@@ -87,5 +94,31 @@ public class VTreeTest {
 			)
 		);
 	}
+
+	@Test
+	public void partitionsEnumeration() {
+		final VariableRegistry vars = new VariableRegistry();
+		final Variable x1y1 = vars.register("alive(x1,y1)");
+		final Variable x1y2 = vars.register("alive(x1,y2)");
+		final Variable x2y1 = vars.register("alive(x2,y1)");
+		final Variable x2y2 = vars.register("alive(x2,y2)");
+
+		final InternalAVTree root = new InternalAVTree(
+			new InternalVTree(
+				new InternalVTree(x1y1, x1y2),
+				new InternalVTree(x2y1, x2y2)));
+
+		final ASDDConverter converter = new ASDDConverter();
+		final AtomicInteger count = new AtomicInteger();
+		final Enumeration counter = new ASDDConverter.Enumeration() {
+			@Override
+			public void values(final Map<Variable, Boolean> values) {
+				count.incrementAndGet();
+			}
+		};
+		converter.convert(root, counter);
+		Assert.assertEquals(16, count.get());
+	}
+
 
 }
