@@ -17,13 +17,10 @@ import jsdd.Variable;
 import jsdd.VariableRegistry;
 import jsdd.algebraic.ASDD;
 import jsdd.algebraic.AlgebraicElement;
-import jsdd.algebraic.AlgebraicTerminal;
 import jsdd.algebraic.DecompositionASDD;
 import jsdd.vtree.InternalTree;
-import jsdd.vtree.InternalVTree;
 import jsdd.vtree.Tree;
 import jsdd.vtree.VTree;
-import jsdd.vtree.ValueLeaf;
 import jsdd.vtree.VariableLeaf;
 
 /**
@@ -150,6 +147,7 @@ public class GraphvizDumper {
 
 	private static <T extends Tree> int dumpVTreeNode(final Tree vtree, final int nextId, final Map<Tree, Integer> vtreeMap, final VariableRegistry vars) {
 		if (!vtree.isLeaf()) {
+			@SuppressWarnings("unchecked")
 			final InternalTree<T> node = (InternalTree<T>) vtree;
 			final int leftId = dumpVTreeNode(node.getLeft(), nextId, vtreeMap, vars);
 			final int rightId = dumpVTreeNode(node.getRight(), leftId + 1, vtreeMap, vars);
