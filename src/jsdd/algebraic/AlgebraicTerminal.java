@@ -31,7 +31,12 @@ public class AlgebraicTerminal<T> implements ASDD<T> {
 
 	@Override
 	public String toString() {
-		return value.toString();
+		return toStringBuilder().toString();
+	}
+
+	@Override
+	public StringBuilder toStringBuilder() {
+		return new StringBuilder(value.toString());
 	}
 
 	@Override

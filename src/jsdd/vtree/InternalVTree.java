@@ -59,22 +59,6 @@ public class InternalVTree extends InternalTree<VTree> implements VTree {
 	}
 
 	@Override
-	public StringBuilder toStringBuilder() {
-		final StringBuilder sb = new StringBuilder();
-		sb.append("(");
-		sb.append(getLeft().toStringBuilder());
-		sb.append(", ");
-		sb.append(getRight().toStringBuilder());
-		sb.append(")");
-		return sb;
-	}
-
-	@Override
-	public String toString() {
-		return toStringBuilder().toString();
-	}
-
-	@Override
 	public Set<Variable> partitionVariables() {
 		final Set<Variable> vars = getLeft().partitionVariables();
 		vars.addAll(getRight().partitionVariables());

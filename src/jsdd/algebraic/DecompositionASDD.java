@@ -73,4 +73,25 @@ public class DecompositionASDD<T> implements ASDD<T> {
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		return toStringBuilder().toString();
+	}
+
+	@Override
+	public StringBuilder toStringBuilder() {
+		final StringBuilder sb = new StringBuilder();
+		sb.append("[").append(avtree.toStringBuilder()).append(", (");
+		boolean first = true;
+		for (final AlgebraicElement<T> elem : elements) {
+			if (!first) {
+				sb.append(" \\/ ");
+			}
+			first = false;
+			sb.append(elem.toStringBuilder());
+		}
+		sb.append(")]");
+		return sb;
+	}
+
 }

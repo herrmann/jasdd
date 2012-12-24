@@ -1,6 +1,8 @@
 package jsdd.vtree;
 
-public interface Internal<T> {
+import util.StringBuildable;
+
+public interface Internal<T> extends StringBuildable {
 
 	VTree getLeft();
 	

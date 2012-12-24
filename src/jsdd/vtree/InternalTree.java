@@ -21,6 +21,22 @@ public abstract class InternalTree<T extends Tree> implements Internal<T> {
 	}
 
 	@Override
+	public StringBuilder toStringBuilder() {
+		final StringBuilder sb = new StringBuilder();
+		sb.append("(");
+		sb.append(getLeft().toStringBuilder());
+		sb.append(",");
+		sb.append(getRight().toStringBuilder());
+		sb.append(")");
+		return sb;
+	}
+
+	@Override
+	public String toString() {
+		return toStringBuilder().toString();
+	}
+
+	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;

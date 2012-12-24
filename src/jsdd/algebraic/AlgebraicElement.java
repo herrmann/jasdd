@@ -1,10 +1,11 @@
 package jsdd.algebraic;
 
+import util.StringBuildable;
 import jsdd.LiteralSDD;
 import jsdd.SDD;
 import jsdd.Variable;
 
-public class AlgebraicElement<T> {
+public class AlgebraicElement<T> implements StringBuildable {
 
 	private SDD prime;
 	private ASDD<T> sub;
@@ -69,6 +70,18 @@ public class AlgebraicElement<T> {
 		} else if (!sub.equals(other.sub))
 			return false;
 		return true;
+	}
+
+	@Override
+	public String toString() {
+		return toStringBuilder().toString();
+	}
+
+	@Override
+	public StringBuilder toStringBuilder() {
+		final StringBuilder sb = new StringBuilder();
+		sb.append("(").append(getPrime().toStringBuilder()).append(" /\\ ").append(getSub().toStringBuilder()).append(")");
+		return sb;
 	}
 
 }
