@@ -1,5 +1,8 @@
 package jsdd.rddlsim;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import jsdd.DecompositionSDD;
 import jsdd.Element;
 import jsdd.Variable;
@@ -11,7 +14,6 @@ import jsdd.algebraic.DecompositionASDD;
 import jsdd.vtree.AVTree;
 import jsdd.vtree.InternalAVTree;
 import jsdd.vtree.InternalVTree;
-import jsdd.vtree.VTree;
 import jsdd.vtree.ValueLeaf;
 import jsdd.vtree.VariableLeaf;
 import dd.discrete.ADD;
@@ -58,14 +60,40 @@ public class FormatConverter {
 		}
 	}
 
+	private Map<ASDD<Double>, ASDD<Double>> asddCache = null;
+
+	private ASDD<Double> cachedCopy(final ASDD<Double> asdd) {
+		if (asddCache.containsKey(asdd)) {
+			return asddCache.get(asdd);
+		} else {
+			asddCache.put(asdd, asdd);
+			return asdd;
+		}
+	}
+
+	private void initCache() {
+		asddCache = new HashMap<ASDD<Double>, ASDD<Double>>();
+	}
+
 	public ASDD<Double> addToAsdd(final VariableRegistry vars, final AVTree tree, final int nodeId) {
-		return addToAsdd(vars, tree, context.getNode(nodeId));
+		initCache();
+		final ASDD<Double> asdd = addToAsdd(vars, tree, context.getNode(nodeId));
+		asddCache = null;
+		return asdd;
+	}
+
+	public ASDD<Double> pairwise(final VariableRegistry vars, final AVTree tree, final int nodeId) {
+		initCache();
+		final ASDD<Double> asdd = pairwise(vars, tree, context.getNode(nodeId));
+		asddCache = null;
+		return asdd;
 	}
 
 	private ASDD<Double> addToAsdd(final VariableRegistry vars, AVTree tree, final ADDNode add) {
 		if (add instanceof ADDDNode) {
 			final ADDDNode dnode = ((ADDDNode) add);
-			return new AlgebraicTerminal<Double>(dnode._dLower);
+			final AlgebraicTerminal<Double> asdd = new AlgebraicTerminal<Double>(dnode._dLower);
+			return cachedCopy(asdd);
 		} else if (add instanceof ADDINode) {
 			final ADDINode inode = ((ADDINode) add);
 			final String varName = varNameInAdd(inode._nTestVarID);
@@ -84,13 +112,10 @@ public class FormatConverter {
 			final ASDD<Double> left = addToAsdd(vars, subtree, high);
 			final ASDD<Double> right = addToAsdd(vars, subtree, low);
 			final AlgebraicElement<Double>[] elems = AlgebraicElement.shannon(var, left, right);
-			return new DecompositionASDD<Double>((InternalAVTree) tree, elems);
+			final DecompositionASDD<Double> asdd = new DecompositionASDD<Double>((InternalAVTree) tree, elems);
+			return cachedCopy(asdd);
 		}
 		return null;
-	}
-
-	public ASDD<Double> pairwise(final VariableRegistry vars, final AVTree tree, final int nodeId) {
-		return pairwise(vars, tree, context.getNode(nodeId));
 	}
 
 	public ASDD<Double> pairwise(final VariableRegistry vars, final AVTree tree, final ADDNode add) {
@@ -120,11 +145,13 @@ public class FormatConverter {
 				final ASDD<Double> subHighLow = pairwise(vars, ((InternalAVTree) tree).getRight(), highLow2);
 				final ASDD<Double> subLowHigh = pairwise(vars, ((InternalAVTree) tree).getRight(), lowHigh2);
 				final ASDD<Double> subLowLow = pairwise(vars, ((InternalAVTree) tree).getRight(), lowLow2);
-				return new DecompositionASDD<Double>((InternalAVTree) tree,
+				@SuppressWarnings("unchecked")
+				final DecompositionASDD<Double> asdd = new DecompositionASDD<Double>((InternalAVTree) tree,
 					new AlgebraicElement<Double>(partitionHighHigh, subHighHigh),
 					new AlgebraicElement<Double>(partitionHighLow, subHighLow),
 					new AlgebraicElement<Double>(partitionLowHigh, subLowHigh),
 					new AlgebraicElement<Double>(partitionLowLow, subLowLow));
+				return cachedCopy(asdd);
 			}
 		}
 		return null;
