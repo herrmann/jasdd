@@ -246,7 +246,7 @@ public class DecompositionSDD extends AbstractSDD {
 				return false;
 			}
 		} else {
-			final boolean sameSize = other.elements != null && elements.size() != other.elements.size();
+			final boolean sameSize = other.elements != null && elements.size() == other.elements.size();
 			if (!sameSize) {
 				return false;
 			}
