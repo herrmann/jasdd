@@ -33,8 +33,12 @@ public class FormatConverter {
 	}
 
 	public ASDD<Double> addToAsdd(final VariableRegistry vars, final ADDNode add) {
-		final InternalAVTree tree = (InternalAVTree) buildRightLinear(vars, 0);
+		final InternalAVTree tree = (InternalAVTree) buildRightLinear(vars);
 		return addToAsdd(vars, tree, add);
+	}
+
+	public AVTree buildRightLinear(final VariableRegistry vars) {
+		return buildRightLinear(vars, 0);
 	}
 
 	private AVTree buildRightLinear(final VariableRegistry vars, final int index) {
