@@ -17,17 +17,28 @@ package rddl.solver.mdp.vi;
 
 import graph.Graph;
 
+import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.math.BigDecimal;
 import java.text.DecimalFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+import java.util.Set;
+import java.util.TreeSet;
 
-import dd.discrete.DD;
-import dd.discrete.ADD;
-
-import rddl.*;
-import rddl.RDDL.*;
+import jsdd.VariableRegistry;
+import jsdd.algebraic.ASDD;
+import jsdd.algebraic.DecompositionASDD;
+import jsdd.rddlsim.FormatConverter;
+import jsdd.viz.GraphvizDumper;
+import jsdd.vtree.AVTree;
+import rddl.ActionGenerator;
+import rddl.EvalException;
+import rddl.RDDL.INSTANCE;
+import rddl.RDDL.PVAR_INST_DEF;
+import rddl.State;
 import rddl.policy.Policy;
 import rddl.policy.SPerseusSPUDDPolicy;
 import rddl.solver.DDUtils;
@@ -36,10 +47,12 @@ import rddl.solver.mdp.Action;
 import rddl.translate.RDDL2Format;
 import util.CString;
 import util.Pair;
+import dd.discrete.ADD;
+import dd.discrete.DD;
 
 public class VI extends Policy {
 	
-	public static int SOLVER_TIME_LIMIT = 40; // Solver time limit (seconds)
+	public static int SOLVER_TIME_LIMIT = Integer.MAX_VALUE; // Solver time limit (seconds)
 	
 	public final static boolean SHOW_STATE   = true;
 	public final static boolean SHOW_ACTIONS = true;
@@ -227,15 +240,15 @@ public class VI extends Policy {
 			
 			// Display ADDs in graph visualization window?
 			// (only show a subset... 100's to display otherwise)
-			final int MAX_DISPLAY = 10;
+			final int MAX_DISPLAY = 100;
 			if (DISPLAY_SPUDD_ADDS_GRAPHVIZ) {
 				int displayed = 0;
 				for (CString a : _alActionNames) {
 					Action action = _hmActionName2Action.get(a);
 					
 					// Show cpts for each action/var
-					for (CString var : _alStateVars) {
-						_context.getGraph(action._hmStateVar2CPT.get(var)).launchViewer();
+					for (final int id : action._hmStateVar2CPT.values()) {
+						_context.getGraph(id).launchViewer();
 
 						if (++displayed >= MAX_DISPLAY)
 							break;
@@ -381,6 +394,21 @@ public class VI extends Policy {
 			// Prime the value function
 			_prevDD = _valueDD;
 			_valueDD = _context.remapGIDsInt(_valueDD, _translation._hmPrimeRemap);
+
+			_context.getGraph(_valueDD).launchViewer();
+
+			final VariableRegistry vars = new VariableRegistry();
+			final FormatConverter converter = new FormatConverter(_context);
+			final AVTree tree = converter.buildPairwiseRightLinear(vars);
+			final ASDD<Double> asdd = converter.addToAsdd(vars, tree, _valueDD);
+			try {
+				if (asdd instanceof DecompositionASDD<?>) {
+					GraphvizDumper.dump((DecompositionASDD<Double>) asdd, vars, _nIter + "_" + Graph.VIEWER_FILE);
+				}
+			} catch (final FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
 			// Cache maintenance -- clear out previous nodes, but save Q-functions
 			clearSaveNodes();
