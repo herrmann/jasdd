@@ -93,38 +93,4 @@ public class FormatConverter {
 		return (String) context._hmID2VarName.get(id);
 	}
 
-	@SuppressWarnings("unchecked")
-	public AVTree buildPairwiseRightLinear() {
-		return buildPairwiseRightLinear(context._alOrder);
-	}
-
-	@SuppressWarnings("unchecked")
-	public AVTree buildPairwiseRightLinear(final VariableRegistry vars) {
-		return buildPairwiseRightLinear(vars, context._alOrder);
-	}
-
-	public AVTree buildPairwiseRightLinear(final List<Integer> order) {
-		return buildPairwiseRightLinear(new VariableRegistry(), order.iterator());
-	}
-
-	public AVTree buildPairwiseRightLinear(final VariableRegistry vars, final List<Integer> order) {
-		return buildPairwiseRightLinear(vars, order.iterator());
-	}
-
-	private AVTree buildPairwiseRightLinear(final VariableRegistry vars, final Iterator<Integer> iter) {
-		if (iter.hasNext()) {
-			final Integer fst = iter.next();
-			final Variable fstVar = vars.register(varNameInAdd(fst));
-			if (iter.hasNext()) {
-				final Integer snd = iter.next();
-				final Variable sndVar = vars.register(varNameInAdd(snd));
-				return new InternalAVTree(new InternalVTree(fstVar, sndVar), buildPairwiseRightLinear(vars, iter));
-			} else {
-				return new InternalAVTree(fstVar);
-			}
-		} else {
-			return new ValueLeaf();
-		}
-	}
-
 }
