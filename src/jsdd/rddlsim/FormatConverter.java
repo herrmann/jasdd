@@ -1,8 +1,5 @@
 package jsdd.rddlsim;
 
-import java.util.Iterator;
-import java.util.List;
-
 import jsdd.Variable;
 import jsdd.VariableRegistry;
 import jsdd.algebraic.ASDD;
@@ -11,7 +8,6 @@ import jsdd.algebraic.AlgebraicTerminal;
 import jsdd.algebraic.DecompositionASDD;
 import jsdd.vtree.AVTree;
 import jsdd.vtree.InternalAVTree;
-import jsdd.vtree.InternalVTree;
 import jsdd.vtree.ValueLeaf;
 import jsdd.vtree.VariableLeaf;
 import dd.discrete.ADD;
