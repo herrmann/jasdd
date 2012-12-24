@@ -401,7 +401,7 @@ public class VI extends Policy {
 			final VariableRegistry vars = new VariableRegistry();
 			final AVTree tree = new PairwiseAVTreeConverter(_context).build(vars);
 			final FormatConverter converter = new FormatConverter(_context);
-			final ASDD<Double> asdd = converter.addToAsdd(vars, tree, _valueDD);
+			final ASDD<Double> asdd = converter.pairwise(vars, tree, _valueDD);
 			try {
 				if (asdd instanceof DecompositionASDD<?>) {
 					GraphvizDumper.dump((DecompositionASDD<Double>) asdd, vars, _nIter + "_" + Graph.VIEWER_FILE);
