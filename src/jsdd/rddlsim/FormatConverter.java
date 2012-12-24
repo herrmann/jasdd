@@ -1,10 +1,15 @@
 package jsdd.rddlsim;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import jsdd.DecompositionSDD;
 import jsdd.Element;
+import jsdd.SDD;
 import jsdd.Variable;
 import jsdd.VariableRegistry;
 import jsdd.algebraic.ASDD;
@@ -141,20 +146,53 @@ public class FormatConverter {
 				final DecompositionSDD partitionHighLow = new DecompositionSDD(subtree, Element.shannon(leftVar, rightVar, false, false)); // A /\ ~B
 				final DecompositionSDD partitionLowHigh = new DecompositionSDD(subtree, Element.shannon(leftVar, false, rightVar)); // ~A /\ B
 				final DecompositionSDD partitionLowLow = new DecompositionSDD(subtree, Element.shannon(leftVar, false, rightVar, false)); // ~A /\ ~B
+
 				final ASDD<Double> subHighHigh = pairwise(vars, ((InternalAVTree) tree).getRight(), highHigh2);
 				final ASDD<Double> subHighLow = pairwise(vars, ((InternalAVTree) tree).getRight(), highLow2);
 				final ASDD<Double> subLowHigh = pairwise(vars, ((InternalAVTree) tree).getRight(), lowHigh2);
 				final ASDD<Double> subLowLow = pairwise(vars, ((InternalAVTree) tree).getRight(), lowLow2);
-				@SuppressWarnings("unchecked")
-				final DecompositionASDD<Double> asdd = new DecompositionASDD<Double>((InternalAVTree) tree,
-					new AlgebraicElement<Double>(partitionHighHigh, subHighHigh),
-					new AlgebraicElement<Double>(partitionHighLow, subHighLow),
-					new AlgebraicElement<Double>(partitionLowHigh, subLowHigh),
-					new AlgebraicElement<Double>(partitionLowLow, subLowLow));
+
+				final Map<ASDD<Double>, Set<DecompositionSDD>> elements = new HashMap<ASDD<Double>, Set<DecompositionSDD>>();
+				cluster(elements, subHighHigh, partitionHighHigh);
+				cluster(elements, subHighLow, partitionHighLow);
+				cluster(elements, subLowHigh, partitionLowHigh);
+				cluster(elements, subLowLow, partitionLowLow);
+
+				final DecompositionASDD<Double> asdd = new DecompositionASDD<Double>((InternalAVTree) tree, compress(elements));
 				return cachedCopy(asdd);
 			}
 		}
 		return null;
+	}
+
+	private AlgebraicElement<Double>[] compress(final Map<ASDD<Double>, Set<DecompositionSDD>> elements) {
+		@SuppressWarnings("unchecked")
+		final AlgebraicElement<Double>[] partitions = new AlgebraicElement[elements.size()];
+		int i = 0;
+		for (final Entry<ASDD<Double>, Set<DecompositionSDD>> elem : elements.entrySet()) {
+			if (elem.getValue().size() > 1) {
+				final Iterator<DecompositionSDD> iter = elem.getValue().iterator();
+				SDD prime = iter.next();
+				while (iter.hasNext()) {
+					prime = prime.or(iter.next());
+				}
+				partitions[i++] = new AlgebraicElement<Double>(prime, elem.getKey());
+			} else {
+				partitions[i++] = new AlgebraicElement<Double>(elem.getValue().iterator().next(), elem.getKey());
+			}
+		}
+		return partitions;
+	}
+
+	private void cluster(final Map<ASDD<Double>, Set<DecompositionSDD>> elements, final ASDD<Double> sub, final DecompositionSDD partition) {
+		if (elements.containsKey(sub)) {
+			final Set<DecompositionSDD> set = elements.get(sub);
+			set.add(partition);
+		} else {
+			final Set<DecompositionSDD> set = new HashSet<DecompositionSDD>();
+			set.add(partition);
+			elements.put(sub, set);
+		}
 	}
 
 	private String varNameInAdd(final int id) {
