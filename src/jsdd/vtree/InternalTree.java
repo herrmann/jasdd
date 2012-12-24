@@ -1,5 +1,10 @@
 package jsdd.vtree;
 
+/**
+ * Helper base class for internal vtree nodes.
+ * 
+ * @author Ricardo Herrmann
+ */
 public abstract class InternalTree<T extends Tree> implements Internal<T> {
 
 	private VTree left;

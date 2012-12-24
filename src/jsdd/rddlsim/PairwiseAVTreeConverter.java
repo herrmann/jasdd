@@ -12,6 +12,11 @@ import jsdd.vtree.InternalAVTree;
 import jsdd.vtree.InternalVTree;
 import jsdd.vtree.ValueLeaf;
 
+/**
+ * Utility methods for generating vtrees from rddlsim ADDs.
+ * 
+ * @author Ricardo Herrmann
+ */
 public class PairwiseAVTreeConverter {
 
 	private ADD context;

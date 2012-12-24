@@ -5,6 +5,11 @@ import java.util.Set;
 
 import jsdd.Variable;
 
+/**
+ * The special rightmost node of an algebraic vtree. 
+ * 
+ * @author Ricardo Herrmann
+ */
 public class ValueLeaf implements AVTree, RightLinearAVTree {
 
 	@Override

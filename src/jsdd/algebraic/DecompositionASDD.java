@@ -6,6 +6,11 @@ import java.util.List;
 
 import jsdd.vtree.InternalAVTree;
 
+/**
+ * The algebraic equivalent of a decomposition SDD.
+ * 
+ * @author Ricardo Herrmann
+ */
 public class DecompositionASDD<T> implements ASDD<T> {
 
 	private InternalAVTree avtree;

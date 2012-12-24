@@ -5,7 +5,11 @@ import java.util.Set;
 
 import jsdd.Variable;
 
-
+/**
+ * Special kind of internal vtree node which supports only variable nodes on the left side.
+ * 
+ * @author Ricardo Herrmann
+ */
 public class InternalRightLinearVTree extends InternalTree<RightLinearVTree> implements RightLinearVTree {
 
 	public InternalRightLinearVTree(final VTree left, final RightLinearVTree right) {

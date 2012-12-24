@@ -5,7 +5,11 @@ import java.util.Set;
 
 import jsdd.Variable;
 
-
+/**
+ * Special kind of internal algebraic vtree node which supports only variable nodes on the left side.
+ * 
+ * @author Ricardo Herrmann
+ */
 public class InternalRightLinearAVTree extends InternalTree<RightLinearAVTree> implements RightLinearAVTree {
 
 	public InternalRightLinearAVTree(final VTree left, final RightLinearAVTree right) {

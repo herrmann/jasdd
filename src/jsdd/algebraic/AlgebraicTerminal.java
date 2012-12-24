@@ -2,6 +2,11 @@ package jsdd.algebraic;
 
 import jsdd.vtree.ValueLeaf;
 
+/**
+ * The terminal value of an algebraic SDD.
+ * 
+ * @author Ricardo Herrmann
+ */
 public class AlgebraicTerminal<T> implements ASDD<T> {
 
 	private T value;

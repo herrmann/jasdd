@@ -3,6 +3,11 @@ package jsdd.vtree;
 import jsdd.Variable;
 import jsdd.VariableRegistry;
 
+/**
+ * Utility methods for building specific types of vtrees.
+ * 
+ * @author Ricardo Herrmann
+ */
 public class VTreeUtils {
 
 	public static VTree buildRightLinear(final VariableRegistry vars, final String... names) {

@@ -3,8 +3,6 @@ package jsdd.vtree;
 import java.util.HashSet;
 import java.util.Set;
 
-import util.StringBuildable;
-
 import jsdd.Variable;
 
 /**

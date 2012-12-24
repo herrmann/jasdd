@@ -5,6 +5,11 @@ import jsdd.LiteralSDD;
 import jsdd.SDD;
 import jsdd.Variable;
 
+/**
+ * One of the composing elements (paired boxes) of an algebraic SDD.
+ * 
+ * @author Ricardo Herrmann
+ */
 public class AlgebraicElement<T> implements StringBuildable {
 
 	private SDD prime;

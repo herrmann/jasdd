@@ -11,6 +11,11 @@ import jsdd.algebraic.ASDD;
 import jsdd.vtree.AVTree;
 import dd.discrete.ADD;
 
+/**
+ * Utility methods for converting rddlsim ADDs to ASDDs.
+ * 
+ * @author Ricardo Herrmann
+ */
 public class ASDDConverter {
 
 	private ADD context;

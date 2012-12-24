@@ -16,6 +16,11 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 
+/**
+ * VTree construction tests.
+ * 
+ * @author Ricardo Herrmann
+ */
 public class VTreeTest {
 
 	@Test

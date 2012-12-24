@@ -4,6 +4,11 @@ import java.util.Set;
 
 import jsdd.Variable;
 
+/**
+ * Internal node of an algebraic vtree.
+ * 
+ * @author Ricardo Herrmann
+ */
 public class InternalAVTree extends InternalTree<AVTree> implements AVTree {
 
 	public InternalAVTree(final VTree left, final AVTree right) {
