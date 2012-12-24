@@ -74,4 +74,11 @@ public class InternalVTree extends InternalTree<VTree> implements VTree {
 		return toStringBuilder().toString();
 	}
 
+	@Override
+	public Set<Variable> partitionVariables() {
+		final Set<Variable> vars = getLeft().partitionVariables();
+		vars.addAll(getRight().partitionVariables());
+		return vars;
+	}
+
 }

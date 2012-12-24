@@ -81,4 +81,11 @@ public class VariableLeaf implements VTree, RightLinearVTree {
 		return true;
 	}
 
+	@Override
+	public Set<Variable> partitionVariables() {
+		final HashSet<Variable> vars = new HashSet<Variable>(1);
+		vars.add(getVariable());
+		return vars;
+	}
+
 }

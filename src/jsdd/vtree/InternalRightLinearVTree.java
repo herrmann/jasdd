@@ -1,5 +1,6 @@
 package jsdd.vtree;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import jsdd.Variable;
@@ -38,6 +39,13 @@ public class InternalRightLinearVTree extends InternalTree<RightLinearVTree> imp
 	public StringBuilder toStringBuilder() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public Set<Variable> partitionVariables() {
+		final HashSet<Variable> vars = new HashSet<Variable>(1);
+		vars.add(getLeft().getVariable());
+		return vars;
 	}
 
 }

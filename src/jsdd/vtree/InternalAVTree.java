@@ -1,5 +1,7 @@
 package jsdd.vtree;
 
+import java.util.Set;
+
 import jsdd.Variable;
 
 public class InternalAVTree extends InternalTree<AVTree> implements AVTree {
@@ -23,6 +25,11 @@ public class InternalAVTree extends InternalTree<AVTree> implements AVTree {
 	@Override
 	public boolean isLeaf() {
 		return false;
+	}
+
+	@Override
+	public Set<Variable> partitionVariables() {
+		return getLeft().partitionVariables();
 	}
 
 }
