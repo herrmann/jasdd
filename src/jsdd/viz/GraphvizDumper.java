@@ -58,7 +58,7 @@ public class GraphvizDumper {
 		if (!decompCache.containsKey(sdd)) {
 			final int decompId = nextId;
 			decompCache.put(sdd, decompId);
-			out.println("  d" + decompId + " [shape=circle,label=\"" + vtreeMap.get(sdd.getVTree()) + "\"]");
+			out.println("  d" + decompId + " [style=filled,fillcolor=palegreen,shape=circle,label=\"" + vtreeMap.get(sdd.getVTree()) + "\"]");
 			final List<Integer> ids = new ArrayList<Integer>();
 			int id = nextId + 1;
 			for (final Element element : sdd.getElements()) {
@@ -92,7 +92,7 @@ public class GraphvizDumper {
 			}
 			final int elementId = rightId + 1;
 			elemCache.put(element, elementId);
-			out.println("  e" + elementId + " [shape=record,label=\"<f0> " + primeLabel + "|<f1> " + subLabel + "\"]");
+			out.println("  e" + elementId + " [style=filled,fillcolor=lightblue,shape=record,label=\"<f0> " + primeLabel + "|<f1> " + subLabel + "\"]");
 			if (!prime.isTerminal()) {
 				out.println("  e" + elementId + ":f0:c -> d" + decompCache.get(prime) + " [tailclip=false]");
 			}
@@ -234,10 +234,10 @@ public class GraphvizDumper {
 			final int decompId = nextId;
 			algebraicCache.put(asdd, decompId);
 			if (asdd.isTerminal()) {
-				out.println("  d" + decompId + " [label=\"" + asdd.toString() + "\"]");
+				out.println("  d" + decompId + " [style=filled,fillcolor=yellow,label=\"" + asdd.toString() + "\"]");
 				return decompId + 1;
 			} else {
-				out.println("  d" + decompId + " [shape=circle,label=\"" + vtreeMap.get(asdd.getTree()) + "\"]");
+				out.println("  d" + decompId + " [style=filled,fillcolor=lightslateblue,shape=circle,label=\"" + vtreeMap.get(asdd.getTree()) + "\"]");
 				final List<Integer> ids = new ArrayList<Integer>();
 				int id = nextId + 1;
 				for (final AlgebraicElement<T> element : ((DecompositionASDD<T>) asdd).getElements()) {
@@ -269,7 +269,7 @@ public class GraphvizDumper {
 			int rightId = dumpAlgebraicDecomposition(sub, leftId, elemCache, algebraicElemCache, decompCache, algebraicCache, vtreeMap, vars);
 			final int elementId = rightId + 1;
 			algebraicElemCache.put(element, elementId);
-			out.println("  e" + elementId + " [shape=record,label=\"<f0> " + primeLabel + "|<f1> " + subLabel + "\"]");
+			out.println("  e" + elementId + " [style=filled,fillcolor=orange,shape=record,label=\"<f0> " + primeLabel + "|<f1> " + subLabel + "\"]");
 			if (!prime.isTerminal()) {
 				out.println("  e" + elementId + ":f0:c -> d" + decompCache.get(prime) + " [tailclip=false]");
 			}
