@@ -48,7 +48,7 @@ public class TestSDD {
 		final DecompositionSDD sdd = (DecompositionSDD) exampleDarwiche();
 		final VTree vtree = sdd.getVTree();
 		Assert.assertTrue(!vtree.isRightLinear());
-		Assert.assertEquals("((2, 1), (4, 3))", vtree.toString());
+		Assert.assertEquals("((2,1),(4,3))", vtree.toString());
 	}
 
 	@Test
@@ -56,7 +56,7 @@ public class TestSDD {
 		final DecompositionSDD sdd = (DecompositionSDD) exampleBDD();
 		final VTree vtree = sdd.getVTree();
 		Assert.assertTrue(vtree.isRightLinear());
-		Assert.assertEquals("(1, (2, (3, 4)))", vtree.toString());
+		Assert.assertEquals("(1,(2,(3,4)))", vtree.toString());
 	}
 
 	@Test
