@@ -1,5 +1,6 @@
 package jsdd.rddlsim;
 
+import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -16,6 +17,7 @@ import jsdd.algebraic.ASDD;
 import jsdd.algebraic.AlgebraicElement;
 import jsdd.algebraic.AlgebraicTerminal;
 import jsdd.algebraic.DecompositionASDD;
+import jsdd.viz.GraphvizDumper;
 import jsdd.vtree.AVTree;
 import jsdd.vtree.InternalAVTree;
 import jsdd.vtree.InternalVTree;
@@ -132,7 +134,7 @@ public class FormatConverter {
 			final ADDNode low = context.getNode(inode._nLow);
 			if (high instanceof ADDDNode) {
 				return addToAsdd(vars, tree, add);
-			} else {
+			} else {	
 				final ADDINode inodeHigh2 = ((ADDINode) high);
 				final ADDINode inodeLow2 = ((ADDINode) low);
 				final ADDNode highHigh2 = context.getNode(inodeHigh2._nHigh);
@@ -197,6 +199,30 @@ public class FormatConverter {
 
 	private String varNameInAdd(final int id) {
 		return (String) context._hmID2VarName.get(id);
+	}
+
+	public void dumpAddAsAsdd(final int nodeId) {
+		final VariableRegistry vars = new VariableRegistry();
+		final AVTree tree = new FormatConverter(context).buildRightLinear(vars);
+		final FormatConverter converter = new FormatConverter(context);
+		final ASDD<Double> asdd = converter.addToAsdd(vars, tree, nodeId);
+		try {
+			GraphvizDumper.dump((DecompositionASDD<Double>) asdd, vars, "add.dot");
+		} catch (final FileNotFoundException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void dumpPairwise(final int nodeId) {
+		final VariableRegistry vars = new VariableRegistry();
+		final AVTree tree = new PairwiseAVTreeConverter(context).build(vars);
+		final FormatConverter converter = new FormatConverter(context);
+		final ASDD<Double> asdd = converter.pairwise(vars, tree, nodeId);
+		try {
+			GraphvizDumper.dump((DecompositionASDD<Double>) asdd, vars, "add.dot");
+		} catch (final FileNotFoundException e) {
+			e.printStackTrace();
+		}
 	}
 
 }
