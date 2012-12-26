@@ -273,6 +273,8 @@ public class TestSDD {
 
 		final DecompositionSDD sdd = new DecompositionSDD(root, new Element(part1, a212), new Element(part2, a211), new Element(part3, false));
 
+		Assert.assertEquals(15, sdd.size());
+
 		GraphvizDumper.dump(sdd, vars, "sdd.gv");
 	}
 

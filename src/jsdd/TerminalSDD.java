@@ -21,4 +21,9 @@ public abstract class TerminalSDD extends AbstractSDD {
 
 	public abstract boolean getSign();
 
+	@Override
+	public int size() {
+		return 0;
+	}
+
 }

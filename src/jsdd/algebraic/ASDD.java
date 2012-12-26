@@ -16,4 +16,6 @@ public interface ASDD<T> extends StringBuildable {
 
 	boolean isTerminal();
 
+	int size();
+
 }

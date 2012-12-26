@@ -33,6 +33,8 @@ public interface SDD extends Sentence, StringBuildable {
 	Collection<Element> expansion();
 	SDD trimmed();
 
+	int size();
+
 	/**
 	 * For debugging purposes only.
 	 */

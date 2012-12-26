@@ -35,6 +35,11 @@ public class AlgebraicTerminal<T> implements ASDD<T> {
 	}
 
 	@Override
+	public int size() {
+		return 0;
+	}
+
+	@Override
 	public String toString() {
 		return toStringBuilder().toString();
 	}

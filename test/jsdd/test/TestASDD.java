@@ -14,6 +14,7 @@ import jsdd.vtree.InternalAVTree;
 import jsdd.vtree.InternalVTree;
 import jsdd.vtree.ValueLeaf;
 import jsdd.vtree.VariableLeaf;
+import junit.framework.Assert;
 
 import org.junit.Test;
 
@@ -50,6 +51,8 @@ public class TestASDD {
 		final DecompositionASDD<Float> a122 = new DecompositionASDD<Float>(ll2, new AlgebraicElement<Float>(vars.register("alive(x1,y2)"), a212), new AlgebraicElement<Float>(vars.register("alive(x1,y2)"), false, a211));
 		final DecompositionASDD<Float> a121 = new DecompositionASDD<Float>(ll2, new AlgebraicElement<Float>(vars.register("alive(x1,y2)"), a211), new AlgebraicElement<Float>(vars.register("alive(x1,y2)"), false, low ));
 		final DecompositionASDD<Float> a11  = new DecompositionASDD<Float>(ll1, new AlgebraicElement<Float>(vars.register("alive(x1,y1)"), a122), new AlgebraicElement<Float>(vars.register("alive(x1,y1)"), false, a121));
+
+		Assert.assertEquals(12, a11.size());
 
 		GraphvizDumper.dump(a11, vars, "sdd.gv");
 	}

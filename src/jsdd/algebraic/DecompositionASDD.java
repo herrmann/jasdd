@@ -2,8 +2,12 @@ package jsdd.algebraic;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import jsdd.DecompositionSDD;
+import jsdd.SDD;
 import jsdd.vtree.InternalAVTree;
 
 /**
@@ -43,6 +47,27 @@ public class DecompositionASDD<T> implements ASDD<T> {
 	@Override
 	public boolean isTerminal() {
 		return false;
+	}
+
+	@Override
+	public int size() {
+		return size(new HashSet<DecompositionSDD>(), new HashSet<DecompositionASDD<T>>());
+	}
+
+	private int size(final Set<DecompositionSDD> visited, final Set<DecompositionASDD<T>> algebraicVisited) {
+		int sum = elements.size();
+		algebraicVisited.add(this);
+		for (final AlgebraicElement<T> elem : elements) {
+			final SDD prime = elem.getPrime();
+			if (prime instanceof DecompositionSDD && !visited.contains(prime)) {
+				sum += ((DecompositionSDD) prime).size(visited);
+			}
+			final ASDD<T> sub = elem.getSub();
+			if (sub instanceof DecompositionASDD<?> && !algebraicVisited.contains(sub)) {
+				sum += ((DecompositionASDD<T>) sub).size(visited, algebraicVisited);
+			}
+		}
+		return sum;
 	}
 
 	@Override

@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import jsdd.viz.GraphvizDumper;
 import jsdd.vtree.InternalVTree;
@@ -55,6 +56,28 @@ public class DecompositionSDD extends AbstractSDD {
 				((DecompositionSDD) sdd).setVTree((InternalVTree) correctNode);
 			}
 		}
+	}
+
+	@Override
+	public int size() {
+		return size(new HashSet<DecompositionSDD>());
+	}
+
+	// Should be package-level when ASDD resides in the same package
+	public int size(final Set<DecompositionSDD> visited) {
+		int sum = elements.size();
+		visited.add(this);
+		for (final Element elem : elements) {
+			final SDD prime = elem.getPrime();
+			if (prime instanceof DecompositionSDD && !visited.contains(prime)) {
+				sum += ((DecompositionSDD) prime).size(visited);
+			}
+			final SDD sub = elem.getSub();
+			if (sub instanceof DecompositionSDD && !visited.contains(sub)) {
+				sum += ((DecompositionSDD) sub).size(visited);
+			}
+		}
+		return sum;
 	}
 
 	@Override
