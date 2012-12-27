@@ -1,5 +1,6 @@
 digraph sdd {
   graph [ordering="out"]
+  node [height=0.3]
   v5 [shape=none,label="5"]
   v3 [shape=none,label="alive(x2,y2)"]
   v5 -> v3 [arrowhead=none,headlabel=3]
