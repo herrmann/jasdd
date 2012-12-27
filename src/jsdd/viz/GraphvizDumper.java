@@ -36,6 +36,9 @@ public class GraphvizDumper {
 	private static final String COLOR_DECOMP_AL = "#A3E89D";
 	private static final String COLOR_VAL       = "#DFB0FF";
 
+	private static final String ELEM_HEIGHT   = "0.4";
+	private static final String DECOMP_HEIGHT = "0.5";
+
 	public static PrintStream out = System.out;
 
 	public static void setOutput(final PrintStream output) {
@@ -64,7 +67,7 @@ public class GraphvizDumper {
 		if (!decompCache.containsKey(sdd)) {
 			final int decompId = nextId;
 			decompCache.put(sdd, decompId);
-			out.println("  d" + decompId + " [style=filled,fillcolor=\"" + COLOR_DECOMP + "\",shape=circle,label=\"" + vtreeMap.get(sdd.getVTree()) + "\"]");
+			out.println("  d" + decompId + " [style=filled,fillcolor=\"" + COLOR_DECOMP + "\",shape=circle,height=\"" + DECOMP_HEIGHT + "\",label=\"" + vtreeMap.get(sdd.getVTree()) + "\"]");
 			final List<Integer> ids = new ArrayList<Integer>();
 			int id = nextId + 1;
 			for (final Element element : sdd.getElements()) {
@@ -225,6 +228,7 @@ public class GraphvizDumper {
 	public static <T> void dump(final DecompositionASDD<T> asdd, final VariableRegistry vars) {
 		out.println("digraph sdd {");
 		out.println("  graph [ordering=\"out\"]");
+		out.println("  node [height=" + ELEM_HEIGHT + ",margin=0.05,0.05]");
 		final Map<Tree, Integer> vtreeMap = new HashMap<Tree, Integer>();
 		dumpVTreeNode(asdd.getTree(), vtreeMap, vars);
 		dumpAlgebraicDecomposition(asdd, vtreeMap, vars);
@@ -243,7 +247,7 @@ public class GraphvizDumper {
 				out.println("  d" + decompId + " [style=filled,fillcolor=\"" + COLOR_VAL + "\",label=\"" + asdd.toString() + "\"]");
 				return decompId + 1;
 			} else {
-				out.println("  d" + decompId + " [style=filled,fillcolor=\"" + COLOR_DECOMP_AL + "\",shape=circle,label=\"" + vtreeMap.get(asdd.getTree()) + "\"]");
+				out.println("  d" + decompId + " [style=filled,fillcolor=\"" + COLOR_DECOMP_AL + "\",shape=circle,height=\"" + DECOMP_HEIGHT + "\",label=\"" + vtreeMap.get(asdd.getTree()) + "\"]");
 				final List<Integer> ids = new ArrayList<Integer>();
 				int id = nextId + 1;
 				for (final AlgebraicElement<T> element : ((DecompositionASDD<T>) asdd).getElements()) {
