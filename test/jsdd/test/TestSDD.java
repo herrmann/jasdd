@@ -306,6 +306,66 @@ public class TestSDD {
 		cNode.dump();
 	}
 
+	private InternalVTree example1(final VariableRegistry vars) {
+		final Variable a = vars.register("A");
+		final Variable b = vars.register("B");
+		final Variable c = vars.register("C");
+		final Variable d = vars.register("D");
+		return new InternalVTree(new InternalVTree(b, a), new InternalVTree(d, c));
+	}
+
+	@Test
+	public void normalizedConstructionA() {
+		final VariableRegistry vars = new VariableRegistry();
+		final InternalVTree vtree = example1(vars);
+		final SDD sdd = DecompositionSDD.buildNormalized(vtree, vars.register("A"));
+		Assert.assertEquals(vtree, sdd.getVTree());
+		Assert.assertEquals(1, sdd.expansion().size());
+		final Element elem = sdd.expansion().iterator().next();
+		Assert.assertEquals(new ConstantSDD(true), elem.getSub());
+		Assert.assertEquals(vtree.getLeft(), elem.getPrime().getVTree());
+		Assert.assertEquals(1, elem.getPrime().expansion().size());
+	}
+
+	@Test
+	public void normalizedConstructionB() {
+		final VariableRegistry vars = new VariableRegistry();
+		final InternalVTree vtree = example1(vars);
+		final SDD sdd = DecompositionSDD.buildNormalized(vtree, vars.register("B"));
+		Assert.assertEquals(vtree, sdd.getVTree());
+		Assert.assertEquals(1, sdd.expansion().size());
+		final Element elem = sdd.expansion().iterator().next();
+		Assert.assertEquals(new ConstantSDD(true), elem.getSub());
+		Assert.assertEquals(vtree.getLeft(), elem.getPrime().getVTree());
+		Assert.assertEquals(2, elem.getPrime().expansion().size());
+	}
+
+	@Test
+	public void normalizedConstructionC() {
+		final VariableRegistry vars = new VariableRegistry();
+		final InternalVTree vtree = example1(vars);
+		final SDD sdd = DecompositionSDD.buildNormalized(vtree, vars.register("C"));
+		Assert.assertEquals(vtree, sdd.getVTree());
+		Assert.assertEquals(1, sdd.expansion().size());
+		final Element elem = sdd.expansion().iterator().next();
+		Assert.assertEquals(new ConstantSDD(true), elem.getPrime());
+		Assert.assertEquals(vtree.getRight(), elem.getSub().getVTree());
+		Assert.assertEquals(1, elem.getSub().expansion().size());
+	}
+
+	@Test
+	public void normalizedConstructionD() {
+		final VariableRegistry vars = new VariableRegistry();
+		final InternalVTree vtree = example1(vars);
+		final SDD sdd = DecompositionSDD.buildNormalized(vtree, vars.register("D"));
+		Assert.assertEquals(vtree, sdd.getVTree());
+		Assert.assertEquals(1, sdd.expansion().size());
+		final Element elem = sdd.expansion().iterator().next();
+		Assert.assertEquals(new ConstantSDD(true), elem.getPrime());
+		Assert.assertEquals(vtree.getRight(), elem.getSub().getVTree());
+		Assert.assertEquals(2, elem.getSub().expansion().size());
+	}
+
 	private VTree vtree1() {
 		final Variable a = new Variable(1);
 		final Variable b = new Variable(2);

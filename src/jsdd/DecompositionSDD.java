@@ -14,6 +14,7 @@ import java.util.Set;
 import jsdd.viz.GraphvizDumper;
 import jsdd.vtree.InternalVTree;
 import jsdd.vtree.VTree;
+import jsdd.vtree.VariableLeaf;
 
 /**
  * SDD for a (X,Y)-decomposition of a boolean function.
@@ -175,6 +176,37 @@ public class DecompositionSDD extends AbstractSDD {
 			decomp = new DecompositionSDD(getVTree(), new Element(true, sdd.getLiteral()));
 		}
 		return apply(decomp, op);
+	}
+
+	public static SDD buildNormalized(final InternalVTree vtree, final Variable v) {
+		// Case 1: left vtree is the variable itself
+		final VTree left = vtree.getLeft();
+		if (left instanceof VariableLeaf) {
+			final Variable treeVar = ((VariableLeaf) left).getVariable();
+			if (treeVar.equals(v)) {
+				return new DecompositionSDD(vtree, Element.shannon(v, true, false));
+			}
+		}
+		// Case 2: right vtree is the variable itself
+		final VTree right = vtree.getRight();
+		if (right instanceof VariableLeaf) {
+			final Variable treeVar = ((VariableLeaf) right).getVariable();
+			if (treeVar.equals(v)) {
+				return new DecompositionSDD(vtree, new Element(true, v));
+			}
+		}
+		// Case 3: variable is in the left vtree
+		if (left.variables().contains(v)) {
+			final SDD prime = buildNormalized((InternalVTree) left, v);
+			return new DecompositionSDD(vtree, new Element(prime, true));
+		}
+		// Case 4: variable is in the right vtree
+		if (right.variables().contains(v)) {
+			final SDD sub = buildNormalized((InternalVTree) right, v);
+			return new DecompositionSDD(vtree, new Element(true, sub));
+		}
+		// Case 5: there's no case 5. What went wrong?
+		throw new IllegalArgumentException("Variable " + v.toString() + " is not in the vtree " + vtree.toString());
 	}
 
 	@Override
