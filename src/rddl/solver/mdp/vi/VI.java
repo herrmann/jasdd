@@ -398,18 +398,23 @@ public class VI extends Policy {
 
 			_context.getGraph(_valueDD).launchViewer();
 
-			final VariableRegistry vars = new VariableRegistry();
-			final AVTree tree = new PairwiseAVTreeConverter(_context).build(vars);
-			final FormatConverter converter = new FormatConverter(_context);
-			final ASDD<Double> asdd = converter.pairwise(vars, tree, _valueDD);
-			try {
-				if (asdd instanceof DecompositionASDD<?>) {
-					GraphvizDumper.dump((DecompositionASDD<Double>) asdd, vars, _nIter + "_" + Graph.VIEWER_FILE);
-				}
-			} catch (final FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			{
+				final VariableRegistry vars = new VariableRegistry();
+				final FormatConverter converter = new FormatConverter(_context);
+				final AVTree tree = converter.buildRightLinear(vars);
+				final ASDD<Double> asdd = converter.addToAsdd(vars, tree, _valueDD);
+				System.err.println("********************** Right-linear size:" + asdd.size());
 			}
+
+			{
+				final VariableRegistry vars = new VariableRegistry();
+				final AVTree tree = new PairwiseAVTreeConverter(_context).build(vars);
+				final FormatConverter converter = new FormatConverter(_context);
+				final ASDD<Double> asdd = converter.pairwise(vars, tree, _valueDD);
+				System.err.println("********************** Pairwise size    :" + asdd.size());
+			}
+			
+			new FormatConverter(_context).dumpPairwise(_valueDD, _nIter + ".dot");
 
 			// Cache maintenance -- clear out previous nodes, but save Q-functions
 			clearSaveNodes();
