@@ -201,27 +201,41 @@ public class FormatConverter {
 		return (String) context._hmID2VarName.get(id);
 	}
 
+	public static final String FILENAME_DEFAULT = "add.dot";
+
 	public void dumpAddAsAsdd(final int nodeId) {
+		dumpAddAsAsdd(nodeId, FILENAME_DEFAULT);
+	}
+
+	public void dumpAddAsAsdd(final int nodeId, final String fileName) {
 		final VariableRegistry vars = new VariableRegistry();
 		final AVTree tree = new FormatConverter(context).buildRightLinear(vars);
 		final FormatConverter converter = new FormatConverter(context);
 		final ASDD<Double> asdd = converter.addToAsdd(vars, tree, nodeId);
-		try {
-			GraphvizDumper.dump((DecompositionASDD<Double>) asdd, vars, "add.dot");
-		} catch (final FileNotFoundException e) {
-			e.printStackTrace();
+		if (asdd instanceof DecompositionASDD<?>) {
+			try {
+				GraphvizDumper.dump((DecompositionASDD<Double>) asdd, vars, fileName);
+			} catch (final FileNotFoundException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
 	public void dumpPairwise(final int nodeId) {
+		dumpPairwise(nodeId, FILENAME_DEFAULT);
+	}
+
+	public void dumpPairwise(final int nodeId, final String fileName) {
 		final VariableRegistry vars = new VariableRegistry();
 		final AVTree tree = new PairwiseAVTreeConverter(context).build(vars);
 		final FormatConverter converter = new FormatConverter(context);
 		final ASDD<Double> asdd = converter.pairwise(vars, tree, nodeId);
-		try {
-			GraphvizDumper.dump((DecompositionASDD<Double>) asdd, vars, "add.dot");
-		} catch (final FileNotFoundException e) {
-			e.printStackTrace();
+		if (asdd instanceof DecompositionASDD<?>) {
+			try {
+				GraphvizDumper.dump((DecompositionASDD<Double>) asdd, vars, fileName);
+			} catch (final FileNotFoundException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
