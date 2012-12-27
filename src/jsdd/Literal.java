@@ -20,6 +20,10 @@ public class Literal {
 		this.sign = sign;
 	}
 
+	public Literal(final Variable variable) {
+		this(variable, true);
+	}
+
 	public Variable getVariable() {
 		return variable;
 	}

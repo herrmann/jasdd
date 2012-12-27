@@ -179,12 +179,17 @@ public class DecompositionSDD extends AbstractSDD {
 	}
 
 	public static SDD buildNormalized(final InternalVTree vtree, final Variable v) {
+		return buildNormalized(vtree, new Literal(v));
+	}
+
+	public static SDD buildNormalized(final InternalVTree vtree, final Literal lit) {
+		final Variable v = lit.getVariable();
 		// Case 1: left vtree is the variable itself
 		final VTree left = vtree.getLeft();
 		if (left instanceof VariableLeaf) {
 			final Variable treeVar = ((VariableLeaf) left).getVariable();
 			if (treeVar.equals(v)) {
-				return new DecompositionSDD(vtree, Element.shannon(v, true, false));
+				return new DecompositionSDD(vtree, Element.shannon(v, lit.getSign(), !lit.getSign()));
 			}
 		}
 		// Case 2: right vtree is the variable itself
@@ -192,17 +197,18 @@ public class DecompositionSDD extends AbstractSDD {
 		if (right instanceof VariableLeaf) {
 			final Variable treeVar = ((VariableLeaf) right).getVariable();
 			if (treeVar.equals(v)) {
-				return new DecompositionSDD(vtree, new Element(true, v));
+				return new DecompositionSDD(vtree, new Element(true, lit));
 			}
 		}
 		// Case 3: variable is in the left vtree
 		if (left.variables().contains(v)) {
-			final SDD prime = buildNormalized((InternalVTree) left, v);
-			return new DecompositionSDD(vtree, new Element(prime, true));
+			final SDD top = buildNormalized((InternalVTree) left, lit);
+			final SDD bottom = buildNormalized((InternalVTree) left, lit.opposite());
+			return new DecompositionSDD(vtree, new Element(top, true), new Element(bottom, false));
 		}
 		// Case 4: variable is in the right vtree
 		if (right.variables().contains(v)) {
-			final SDD sub = buildNormalized((InternalVTree) right, v);
+			final SDD sub = buildNormalized((InternalVTree) right, lit);
 			return new DecompositionSDD(vtree, new Element(true, sub));
 		}
 		// Case 5: there's no case 5. What went wrong?
