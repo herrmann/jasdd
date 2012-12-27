@@ -30,6 +30,12 @@ import jsdd.vtree.VariableLeaf;
  */
 public class GraphvizDumper {
 
+	private static final String COLOR_ELEM      = "#FFF1BD";
+	private static final String COLOR_DECOMP    = "#E8ADA0";
+	private static final String COLOR_ELEM_AL   = "#B7ECFF";
+	private static final String COLOR_DECOMP_AL = "#A3E89D";
+	private static final String COLOR_VAL       = "#DFB0FF";
+
 	public static PrintStream out = System.out;
 
 	public static void setOutput(final PrintStream output) {
@@ -58,7 +64,7 @@ public class GraphvizDumper {
 		if (!decompCache.containsKey(sdd)) {
 			final int decompId = nextId;
 			decompCache.put(sdd, decompId);
-			out.println("  d" + decompId + " [style=filled,fillcolor=palegreen,shape=circle,label=\"" + vtreeMap.get(sdd.getVTree()) + "\"]");
+			out.println("  d" + decompId + " [style=filled,fillcolor=\"" + COLOR_DECOMP + "\",shape=circle,label=\"" + vtreeMap.get(sdd.getVTree()) + "\"]");
 			final List<Integer> ids = new ArrayList<Integer>();
 			int id = nextId + 1;
 			for (final Element element : sdd.getElements()) {
@@ -92,7 +98,7 @@ public class GraphvizDumper {
 			}
 			final int elementId = rightId + 1;
 			elemCache.put(element, elementId);
-			out.println("  e" + elementId + " [style=filled,fillcolor=lightblue,shape=record,label=\"<f0> " + primeLabel + "|<f1> " + subLabel + "\"]");
+			out.println("  e" + elementId + " [style=filled,fillcolor=\"" + COLOR_ELEM +"\",shape=record,label=\"<f0> " + primeLabel + "|<f1> " + subLabel + "\"]");
 			if (!prime.isTerminal()) {
 				out.println("  e" + elementId + ":f0:c -> d" + decompCache.get(prime) + " [tailclip=false]");
 			}
@@ -234,10 +240,10 @@ public class GraphvizDumper {
 			final int decompId = nextId;
 			algebraicCache.put(asdd, decompId);
 			if (asdd.isTerminal()) {
-				out.println("  d" + decompId + " [style=filled,fillcolor=yellow,label=\"" + asdd.toString() + "\"]");
+				out.println("  d" + decompId + " [style=filled,fillcolor=\"" + COLOR_VAL + "\",label=\"" + asdd.toString() + "\"]");
 				return decompId + 1;
 			} else {
-				out.println("  d" + decompId + " [style=filled,fillcolor=lightslateblue,shape=circle,label=\"" + vtreeMap.get(asdd.getTree()) + "\"]");
+				out.println("  d" + decompId + " [style=filled,fillcolor=\"" + COLOR_DECOMP_AL + "\",shape=circle,label=\"" + vtreeMap.get(asdd.getTree()) + "\"]");
 				final List<Integer> ids = new ArrayList<Integer>();
 				int id = nextId + 1;
 				for (final AlgebraicElement<T> element : ((DecompositionASDD<T>) asdd).getElements()) {
@@ -269,7 +275,7 @@ public class GraphvizDumper {
 			int rightId = dumpAlgebraicDecomposition(sub, leftId, elemCache, algebraicElemCache, decompCache, algebraicCache, vtreeMap, vars);
 			final int elementId = rightId + 1;
 			algebraicElemCache.put(element, elementId);
-			out.println("  e" + elementId + " [style=filled,fillcolor=orange,shape=record,label=\"<f0> " + primeLabel + "|<f1> " + subLabel + "\"]");
+			out.println("  e" + elementId + " [style=filled,fillcolor=\"" + COLOR_ELEM_AL + "\",shape=record,label=\"<f0> " + primeLabel + "|<f1> " + subLabel + "\"]");
 			if (!prime.isTerminal()) {
 				out.println("  e" + elementId + ":f0:c -> d" + decompCache.get(prime) + " [tailclip=false]");
 			}
