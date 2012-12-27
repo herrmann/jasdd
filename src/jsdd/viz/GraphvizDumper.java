@@ -117,7 +117,7 @@ public class GraphvizDumper {
 	private static String label(final SDD sdd, final VariableRegistry vars) {
 		if (sdd.isTerminal()) {
 			if (sdd instanceof ConstantSDD) {
-				return sdd.toString();
+				return ((ConstantSDD) sdd).getSign() ? "&#8868;" : "&#8869;";
 			} else {
 				final Literal literal = ((LiteralSDD) sdd).getLiteral();
 				final Variable var = literal.getVariable();
