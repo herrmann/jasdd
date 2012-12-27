@@ -30,9 +30,9 @@ import jsdd.vtree.VariableLeaf;
  */
 public class GraphvizDumper {
 
-	private static final String COLOR_ELEM      = "#FFF1BD";
+	private static final String COLOR_ELEM      = "#B7ECFF";
 	private static final String COLOR_DECOMP    = "#E8ADA0";
-	private static final String COLOR_ELEM_AL   = "#B7ECFF";
+	private static final String COLOR_ELEM_AL   = "#FFF1BD";
 	private static final String COLOR_DECOMP_AL = "#A3E89D";
 	private static final String COLOR_VAL       = "#DFB0FF";
 
