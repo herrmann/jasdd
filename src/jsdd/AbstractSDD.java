@@ -58,7 +58,16 @@ public abstract class AbstractSDD implements SDD {
 
 	@Override
 	public SDD apply(final SDD sdd, final BooleanOperator op) {
-		return new CommutativeOperatorApplication(this, sdd, op).apply();
+		if (sdd instanceof ConstantSDD) {
+			return apply((ConstantSDD) sdd, op);
+		}
+		else if (sdd instanceof LiteralSDD) {
+			return apply((LiteralSDD) sdd, op);
+		}
+		else if (sdd instanceof DecompositionSDD) {
+			return apply((DecompositionSDD) sdd, op);
+		}
+		return null;
 	}
 
 	@Override

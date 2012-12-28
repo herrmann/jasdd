@@ -95,6 +95,42 @@ public class LiteralSDD extends TerminalSDD {
 	}
 
 	@Override
+	public SDD apply(final ConstantSDD sdd, final BooleanOperator op) {
+		return sdd.apply(this, op);
+	}
+
+	@Override
+	public SDD apply(final LiteralSDD sdd, final BooleanOperator op) {
+		final Literal literal = getLiteral();
+		final Literal otherLiteral = sdd.getLiteral();
+		if (literal.equals(otherLiteral)) {
+			return new LiteralSDD(this);
+		} else if (literal.equals(otherLiteral.opposite())) {
+			if (op.equals(new AndOperator())) {
+				return new ConstantSDD(false);
+			}
+			if (op.equals(new OrOperator())) {
+				return new ConstantSDD(true);
+			}
+		} else {
+			// TODO: Respect and match vtrees
+			if (op.equals(new AndOperator())) {
+				return new DecompositionSDD(getVTree(), new Element(literal, otherLiteral), new Element(literal.opposite(), false));
+			}
+			if (op.equals(new OrOperator())) {
+				return new DecompositionSDD(getVTree(), new Element(literal, true), new Element(literal.opposite(), otherLiteral));
+			}
+		}
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public SDD apply(final DecompositionSDD sdd, final BooleanOperator op) {
+		return sdd.apply(this, op);
+	}
+
+	@Override
 	public void dump() {
 		// TODO Auto-generated method stub
 	}

@@ -86,7 +86,7 @@ public class DecompositionSDD extends AbstractSDD {
 		return vtree;
 	}
 
-	/* package */ void setVTree(final InternalVTree vtree) {
+	private void setVTree(final InternalVTree vtree) {
 		this.vtree = vtree;
 	}
 
@@ -159,16 +159,30 @@ public class DecompositionSDD extends AbstractSDD {
 	}
 
 	@Override
-	public SDD apply(final SDD sdd, final BooleanOperator op) {
-		// Uses this SDD's vtree as base for the eventual construction of normalized literals
-		return new CommutativeOperatorApplication(this, sdd, op, (InternalVTree) getVTree()).apply();
+	public SDD apply(final ConstantSDD sdd, final BooleanOperator op) {
+		return apply(this, op);
+	}
+
+	@Override
+	public SDD apply(final LiteralSDD sdd, final BooleanOperator op) {
+		final Variable variable = sdd.getLiteral().getVariable();
+		DecompositionSDD decomp;
+		if (getVTree().getLeft().variables().contains(variable)) {
+			final Literal literal = sdd.getLiteral();
+			decomp = new DecompositionSDD(getVTree(),
+					new Element(variable, literal.getSign()),
+					new Element(variable, false, literal.opposite().getSign()));
+		} else {
+			decomp = new DecompositionSDD(getVTree(), new Element(true, sdd.getLiteral()));
+		}
+		return apply(decomp, op);
 	}
 
 	public static SDD buildNormalized(final InternalVTree vtree, final Variable v) {
 		return buildNormalized(vtree, new Literal(v));
 	}
 
-	public static DecompositionSDD buildNormalized(final InternalVTree vtree, final Literal lit) {
+	public static SDD buildNormalized(final InternalVTree vtree, final Literal lit) {
 		final Variable v = lit.getVariable();
 		// Case 1: left vtree is the variable itself
 		final VTree left = vtree.getLeft();
@@ -199,6 +213,43 @@ public class DecompositionSDD extends AbstractSDD {
 		}
 		// Case 5: there's no case 5. What went wrong?
 		throw new IllegalArgumentException("Variable " + v.toString() + " is not in the vtree " + vtree.toString());
+	}
+
+	@Override
+	public SDD apply(final DecompositionSDD sdd, final BooleanOperator op) {
+		if (false) {
+			// TODO: check if it is in cache
+			return null;
+		} else {
+			final List<Element> elements = new ArrayList<Element>();
+			final Map<SDD, Element> subs = new HashMap<SDD, Element>();
+			for (final Element e1 : expansion()) {
+				for (final Element e2 : sdd.expansion()) {
+					SDD prime = e1.getPrime().and(e2.getPrime());
+					if (prime instanceof DecompositionSDD) {
+						((DecompositionSDD) prime).setVTree((InternalVTree) sdd.getVTree().getLeft());
+					}
+					if (prime.isConsistent()) {
+						final SDD sub = e1.getSub().apply(e2.getSub(), op);
+						if (sub instanceof DecompositionSDD) {
+							((DecompositionSDD) sub).setVTree((InternalVTree) sdd.getVTree().getRight());
+						}
+						// Apply compression
+						if (subs.containsKey(sub)) {
+							final Element elem = subs.get(sub);
+							elements.remove(elem);
+							prime = elem.getPrime().or(prime);
+						}
+						final Element element = new Element(prime, sub);
+						elements.add(element);
+						subs.put(sub, element);
+					}
+				}
+			}
+			final Element[] elems = new Element[elements.size()];
+			elements.toArray(elems);
+			return new DecompositionSDD(sdd.getVTree(), elems);
+		}
 	}
 
 	@Override

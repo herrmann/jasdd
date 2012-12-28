@@ -41,6 +41,49 @@ public class ConstantSDD extends TerminalSDD {
 	}
 
 	@Override
+	public SDD apply(final ConstantSDD sdd, final BooleanOperator op) {
+		return new ConstantSDD(op.apply(getSign(), sdd.getSign()));
+	}
+
+	@Override
+	public SDD apply(final LiteralSDD sdd, final BooleanOperator op) {
+		if (op.equals(new AndOperator())) {
+			if (getSign()) {
+				return new LiteralSDD(sdd);
+			} else {
+				return new ConstantSDD(false);
+			}
+		}
+		if (op.equals(new OrOperator())) {
+			if (getSign()) {
+				return new ConstantSDD(true);
+			} else {
+				return new LiteralSDD(sdd);
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public SDD apply(final DecompositionSDD sdd, final BooleanOperator op) {
+		if (op.equals(new AndOperator())) {
+			if (getSign()) {
+				return new DecompositionSDD(sdd);
+			} else {
+				return new ConstantSDD(false);
+			}
+		}
+		if (op.equals(new OrOperator())) {
+			if (getSign()) {
+				return new ConstantSDD(true);
+			} else {
+				return new DecompositionSDD(sdd);
+			}
+		}
+		return null;
+	}
+
+	@Override
 	public StringBuilder toStringBuilder() {
 		return new StringBuilder(sign ? TRUE : FALSE);
 	}
