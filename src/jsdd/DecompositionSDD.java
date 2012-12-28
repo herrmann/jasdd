@@ -149,6 +149,10 @@ public class DecompositionSDD extends AbstractSDD {
 		return false;
 	}
 
+	public static SDD buildNormalized(final InternalVTree vtree, final Variable v, boolean sign) {
+		return buildNormalized(vtree, new Literal(v, sign));
+	}
+
 	public static SDD buildNormalized(final InternalVTree vtree, final Variable v) {
 		return buildNormalized(vtree, new Literal(v));
 	}
