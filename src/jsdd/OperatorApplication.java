@@ -195,7 +195,7 @@ public class OperatorApplication {
 			elementCache.put(element, element);
 			return element;
 		} else {
-			System.out.println("Element cache hit: " + element);
+			// System.out.println("Element cache hit: " + element);
 			return cached;
 		}
 	}
@@ -206,7 +206,7 @@ public class OperatorApplication {
 			sddCache.put(sdd, sdd);
 			return sdd;
 		} else {
-			System.out.println("SDD cache hit: " + sdd);
+			// System.out.println("SDD cache hit: " + sdd);
 			return cached;
 		}
 	}
