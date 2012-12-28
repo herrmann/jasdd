@@ -419,6 +419,43 @@ public class TestSDD {
 		Assert.assertEquals(7, sdd.size());
 	}
 
+	@Test
+	public void normalizedConstructionFromCnf4() {
+		final VariableRegistry vars = new VariableRegistry();
+
+		final Variable a = vars.register("A");
+		final Variable b = vars.register("B");
+		final Variable c = vars.register("C");
+		final Variable d = vars.register("D");
+		final Variable e = vars.register("E");
+		final Variable f = vars.register("F");
+
+		final InternalVTree vtree = new InternalVTree(a, new InternalVTree(b, new InternalVTree(new InternalVTree(c, d), new InternalVTree(e, f))));
+
+		final SDD sddA = DecompositionSDD.buildNormalized(vtree, a);
+		final SDD sddNotA = DecompositionSDD.buildNormalized(vtree, a, false);
+		final SDD sddB = DecompositionSDD.buildNormalized(vtree, b);
+		final SDD sddC = DecompositionSDD.buildNormalized(vtree, c);
+		final SDD sddNotC = DecompositionSDD.buildNormalized(vtree, c, false);
+		final SDD sddD = DecompositionSDD.buildNormalized(vtree, d);
+		final SDD sddNotE = DecompositionSDD.buildNormalized(vtree, e, false);
+		final SDD sddF = DecompositionSDD.buildNormalized(vtree, f);
+		
+		final SDD sdd1 = sddA.or(sddB).or(sddNotC);
+		final SDD sdd2 = sddNotA.or(sddC).or(sddD);
+		final SDD sdd3 = sddA.or(sddB).or(sddNotE);
+		final SDD sdd4 = sddB.or(sddF);
+		
+		final SDD sdd = sdd1.and(sdd2).and(sdd3).and(sdd4);
+		
+		try {
+			GraphvizDumper.dump((DecompositionSDD) sdd, vars, "cnf4.dot");
+		} catch (FileNotFoundException ex) {
+			// TODO Auto-generated catch block
+			ex.printStackTrace();
+		}
+	}
+
 	private VTree vtree1() {
 		final Variable a = new Variable(1);
 		final Variable b = new Variable(2);
