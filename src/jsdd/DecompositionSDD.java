@@ -59,21 +59,24 @@ public class DecompositionSDD extends AbstractSDD {
 
 	@Override
 	public int size() {
-		return size(new HashSet<DecompositionSDD>());
+		return size(new HashSet<Element>());
 	}
 
 	// Should be package-level when ASDD resides in the same package
-	public int size(final Set<DecompositionSDD> visited) {
-		int sum = elements.size();
-		visited.add(this);
+	public int size(final Set<Element> visited) {
+		int sum = 0;
 		for (final Element elem : elements) {
-			final SDD prime = elem.getPrime();
-			if (prime instanceof DecompositionSDD && !visited.contains(prime)) {
-				sum += ((DecompositionSDD) prime).size(visited);
-			}
-			final SDD sub = elem.getSub();
-			if (sub instanceof DecompositionSDD && !visited.contains(sub)) {
-				sum += ((DecompositionSDD) sub).size(visited);
+			if (!visited.contains(elem)) {
+				sum++;
+				visited.add(elem);
+				final SDD prime = elem.getPrime();
+				if (prime instanceof DecompositionSDD) {
+					sum += ((DecompositionSDD) prime).size(visited);
+				}
+				final SDD sub = elem.getSub();
+				if (sub instanceof DecompositionSDD) {
+					sum += ((DecompositionSDD) sub).size(visited);
+				}
 			}
 		}
 		return sum;

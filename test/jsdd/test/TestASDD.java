@@ -120,6 +120,8 @@ public class TestASDD {
 			new AlgebraicElement<Float>(part3, low)
 		);
 
+		Assert.assertEquals(15, asdd.size());
+
 		GraphvizDumper.dump(asdd, vars, "asdd.gv");
 	}
 
@@ -159,6 +161,8 @@ public class TestASDD {
 							new DecompositionSDD(lowerLeft, Element.shannon(x2y1, x2y2, false, true)), low))),
 			new AlgebraicElement<Float>(
 				new DecompositionSDD(upperLeft, Element.shannon(x1y1, false, x1y2, false)), low));
+
+		Assert.assertEquals(21, asdd.size());
 
 		GraphvizDumper.dump(asdd, vars, "asdd.gv");
 	}

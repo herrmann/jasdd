@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import jsdd.DecompositionSDD;
+import jsdd.Element;
 import jsdd.SDD;
 import jsdd.vtree.InternalAVTree;
 
@@ -51,20 +52,23 @@ public class DecompositionASDD<T> implements ASDD<T> {
 
 	@Override
 	public int size() {
-		return size(new HashSet<DecompositionSDD>(), new HashSet<DecompositionASDD<T>>());
+		return size(new HashSet<Element>(), new HashSet<AlgebraicElement<T>>());
 	}
 
-	private int size(final Set<DecompositionSDD> visited, final Set<DecompositionASDD<T>> algebraicVisited) {
-		int sum = elements.size();
-		algebraicVisited.add(this);
+	private int size(final Set<Element> visited, final Set<AlgebraicElement<T>> algebraicVisited) {
+		int sum = 0;
 		for (final AlgebraicElement<T> elem : elements) {
-			final SDD prime = elem.getPrime();
-			if (prime instanceof DecompositionSDD && !visited.contains(prime)) {
-				sum += ((DecompositionSDD) prime).size(visited);
-			}
-			final ASDD<T> sub = elem.getSub();
-			if (sub instanceof DecompositionASDD<?> && !algebraicVisited.contains(sub)) {
-				sum += ((DecompositionASDD<T>) sub).size(visited, algebraicVisited);
+			if (!algebraicVisited.contains(elem)) {
+				sum++;
+				algebraicVisited.add(elem);
+				final SDD prime = elem.getPrime();
+				if (prime instanceof DecompositionSDD) {
+					sum += ((DecompositionSDD) prime).size(visited);
+				}
+				final ASDD<T> sub = elem.getSub();
+				if (sub instanceof DecompositionASDD<?>) {
+					sum += ((DecompositionASDD<T>) sub).size(visited, algebraicVisited);
+				}
 			}
 		}
 		return sum;
