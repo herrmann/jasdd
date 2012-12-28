@@ -116,23 +116,7 @@ public class Element implements Sentence, StringBuildable {
 	@Override
 	public StringBuilder toStringBuilder() {
 		final StringBuilder sb = new StringBuilder();
-		final boolean tautoPrime = getPrime().isTautology();
-		final boolean tautoSub = getSub().isTautology();
-		if (getPrime().isUnsatisfiable() || getSub().isUnsatisfiable()) {
-			sb.append(FALSE);
-		} else if (tautoPrime && tautoSub) {
-			sb.append(TRUE);
-		} else if (!tautoPrime && !tautoSub) {
-			sb.append("(");
-			sb.append(getPrime().toStringBuilder());
-			sb.append(") /\\ {");
-			sb.append(getSub().toStringBuilder());
-			sb.append("}");
-		} else if (tautoPrime) {
-			sb.append(getSub().toStringBuilder());
-		} else if (tautoSub) {
-			sb.append(getPrime().toStringBuilder());
-		}
+		sb.append("(").append(getPrime().toStringBuilder()).append(" /\\ ").append(getSub().toStringBuilder()).append(")");
 		return sb;
 	}
 

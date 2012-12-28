@@ -5,10 +5,8 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import jsdd.viz.GraphvizDumper;
@@ -112,23 +110,16 @@ public class DecompositionSDD extends AbstractSDD {
 	@Override
 	public StringBuilder toStringBuilder() {
 		final StringBuilder sb = new StringBuilder();
-		if (isTautology()) {
-			sb.append(TRUE);
-		} else {
-			boolean first = true;
-			for (final Element element : elements) {
-				if (!element.isUnsatisfiable()) {
-					if (!first) {
-						sb.append(" \\/ ");
-					}
-					first = false;
-					sb.append(element.toStringBuilder());
-				}
+		sb.append("[").append(vtree.toStringBuilder()).append(", (");
+		boolean first = true;
+		for (final Element elem : elements) {
+			if (!first) {
+				sb.append(" \\/ ");
 			}
-			if (first) {
-				sb.append(FALSE);
-			}
+			first = false;
+			sb.append(elem.toStringBuilder());
 		}
+		sb.append(")]");
 		return sb;
 	}
 

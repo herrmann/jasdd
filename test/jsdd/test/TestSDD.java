@@ -61,12 +61,12 @@ public class TestSDD {
 
 	@Test
 	public void booleanPairedBoxSerialization() {
-		Assert.assertEquals("[T]", new ConstantSDD(true).expansion().toString());
+		Assert.assertEquals("[(T /\\ T)]", new ConstantSDD(true).expansion().toString());
 	}
 
 	@Test
 	public void singleLiteralPairedBoxSerialization() {
-		Assert.assertEquals("[1, F]", new LiteralSDD(1).expansion().toString());
+		Assert.assertEquals("[(1 /\\ T), (-1 /\\ F)]", new LiteralSDD(1).expansion().toString());
 	}
 
 	@Test
@@ -122,7 +122,7 @@ public class TestSDD {
 		final SDD sdd2 = AbstractSDD.decomposition(vtree, new Element(a, false, b), new Element(a, false));
 
 		final SDD result = sdd1.and(sdd2);
-		Assert.assertEquals("F", result.toString());
+		Assert.assertEquals("[(1,2), ((T /\\ F))]", result.toString());
 	}
 
 	@Test
@@ -138,7 +138,7 @@ public class TestSDD {
 		final SDD sdd2 = AbstractSDD.decomposition(vtree, new Element(a, false, b), new Element(a, false));
 
 		final SDD result = sdd1.or(sdd2);
-		Assert.assertEquals("(1) /\\ {-2} \\/ (-1) /\\ {2}", result.toString());
+		Assert.assertEquals("[(1,2), ((1 /\\ -2) \\/ (-1 /\\ 2))]", result.toString());
 	}
 
 	@Test
@@ -172,7 +172,7 @@ public class TestSDD {
 		final SDD bOrC = AbstractSDD.decomposition(v0, new Element(b, true), new Element(b, false, c));
 		
 		final SDD result = aOrC.or(bOrC);
-		Assert.assertEquals("1 \\/ (-1) /\\ {2} \\/ ((-1) /\\ {-2}) /\\ {3}", result.toString());
+		Assert.assertEquals("[((1,2),3), (([(1,2), ((1 /\\ T) \\/ (-1 /\\ 2))] /\\ T) \\/ ([(1,2), ((-1 /\\ -2) \\/ (1 /\\ F))] /\\ 3))]", result.toString());
 	}
 
 	@Test
@@ -183,7 +183,7 @@ public class TestSDD {
 		final SDD sdd1 = new LiteralSDD(a);
 		final SDD sdd2 = AbstractSDD.decomposition(vtree, new Element(a, b, false), new Element(a, false, false));
 		final SDD result = sdd1.and(sdd2);
-		Assert.assertEquals("(1) /\\ {-2}", result.toString());
+		Assert.assertEquals("[(1,2), ((1 /\\ -2) \\/ (-1 /\\ F))]", result.toString());
 	}
 
 	@Test
@@ -194,7 +194,7 @@ public class TestSDD {
 		final SDD sdd1 = new LiteralSDD(b);
 		final SDD sdd2 = AbstractSDD.decomposition(vtree, new Element(a, b, false), new Element(a, false, false));
 		final SDD result = sdd1.and(sdd2);
-		Assert.assertEquals("F", result.toString());
+		Assert.assertEquals("[(1,2), ((T /\\ F))]", result.toString());
 	}
 
 	@Test
