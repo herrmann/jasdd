@@ -37,4 +37,14 @@ public class InternalAVTree extends InternalTree<AVTree> implements AVTree {
 		return getLeft().partitionVariables();
 	}
 
+	@Override
+	public VariableLeaf leftmostLeaf() {
+		return (VariableLeaf) getLeft().leftmostLeaf();
+	}
+
+	@Override
+	public ValueLeaf rightmostLeaf() {
+		return (ValueLeaf) getRight().rightmostLeaf();
+	}
+
 }

@@ -52,4 +52,14 @@ public class InternalRightLinearVTree extends InternalTree<RightLinearVTree> imp
 		return vars;
 	}
 
+	@Override
+	public VariableLeaf leftmostLeaf() {
+		return getLeft();
+	}
+
+	@Override
+	public VariableLeaf rightmostLeaf() {
+		return (VariableLeaf) getRight().rightmostLeaf();
+	}
+
 }

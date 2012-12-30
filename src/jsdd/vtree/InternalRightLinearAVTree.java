@@ -18,7 +18,7 @@ public class InternalRightLinearAVTree extends InternalTree<RightLinearAVTree> i
 
 	@Override
 	public VariableLeaf getLeft() {
-		return null;
+		return (VariableLeaf) super.getLeft();
 	}
 
 	@Override
@@ -31,6 +31,16 @@ public class InternalRightLinearAVTree extends InternalTree<RightLinearAVTree> i
 		final HashSet<Variable> vars = new HashSet<Variable>(1);
 		vars.add(getLeft().getVariable());
 		return vars;
+	}
+
+	@Override
+	public VariableLeaf leftmostLeaf() {
+		return getLeft();
+	}
+
+	@Override
+	public ValueLeaf rightmostLeaf() {
+		return (ValueLeaf) getRight().rightmostLeaf();
 	}
 
 }

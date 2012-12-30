@@ -10,7 +10,7 @@ import jsdd.Variable;
  * 
  * @author Ricardo Herrmann
  */
-public class ValueLeaf implements AVTree, RightLinearAVTree {
+public class ValueLeaf implements AVTree, RightLinearAVTree, Leaf {
 
 	@Override
 	public boolean isLeaf() {
@@ -46,6 +46,16 @@ public class ValueLeaf implements AVTree, RightLinearAVTree {
 	@Override
 	public StringBuilder toStringBuilder() {
 		return new StringBuilder("VALUE");
+	}
+
+	@Override
+	public ValueLeaf leftmostLeaf() {
+		return this;
+	}
+
+	@Override
+	public ValueLeaf rightmostLeaf() {
+		return this;
 	}
 
 }

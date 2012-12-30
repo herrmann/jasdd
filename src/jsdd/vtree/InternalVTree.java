@@ -65,4 +65,14 @@ public class InternalVTree extends InternalTree<VTree> implements VTree {
 		return vars;
 	}
 
+	@Override
+	public VariableLeaf leftmostLeaf() {
+		return (VariableLeaf) getLeft().leftmostLeaf();
+	}
+
+	@Override
+	public VariableLeaf rightmostLeaf() {
+		return (VariableLeaf) getRight().rightmostLeaf();
+	}
+
 }

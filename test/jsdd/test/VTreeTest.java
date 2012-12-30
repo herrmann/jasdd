@@ -49,7 +49,7 @@ public class VTreeTest {
 	@Test
 	public void gameOfLife1() {
 		final VariableRegistry vars = new VariableRegistry();
-		new InternalRightLinearAVTree(
+		final InternalRightLinearAVTree vtree = new InternalRightLinearAVTree(
 			new VariableLeaf(vars.register("alive(x1,y1)")),
 			new InternalRightLinearAVTree(
 				new VariableLeaf(vars.register("alive(x1,y2)")),
@@ -62,12 +62,15 @@ public class VTreeTest {
 				)
 			)
 		);
+		Assert.assertEquals(new ValueLeaf(), vtree.rightmostLeaf());
+		Assert.assertEquals(new VariableLeaf(vars.register("alive(x1,y1)")), vtree.leftmostLeaf());
+		Assert.assertEquals(new VariableLeaf(vars.register("alive(x1,y2)")), vtree.getRight().leftmostLeaf());
 	}
 
 	@Test
 	public void gameOfLife2() {
 		final VariableRegistry vars = new VariableRegistry();
-		new InternalAVTree(
+		final InternalAVTree vtree = new InternalAVTree(
 			new InternalVTree(
 				new VariableLeaf(vars.register("alive(x1,y1)")),
 				new VariableLeaf(vars.register("alive(x1,y2)"))
@@ -80,6 +83,9 @@ public class VTreeTest {
 				)
 			)
 		);
+		Assert.assertEquals(new ValueLeaf(), vtree.rightmostLeaf());
+		Assert.assertEquals(new VariableLeaf(vars.register("alive(x1,y1)")), vtree.leftmostLeaf());
+		Assert.assertEquals(new VariableLeaf(vars.register("alive(x2,y1)")), vtree.getRight().leftmostLeaf());
 	}
 
 	@Test
@@ -124,6 +130,5 @@ public class VTreeTest {
 		converter.convert(root, counter);
 		Assert.assertEquals(16, count.get());
 	}
-
 
 }

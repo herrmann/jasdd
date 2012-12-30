@@ -17,4 +17,8 @@ public interface Tree extends StringBuildable {
 
 	Set<Variable> partitionVariables();
 
+	Leaf leftmostLeaf();
+
+	Leaf rightmostLeaf();
+
 }

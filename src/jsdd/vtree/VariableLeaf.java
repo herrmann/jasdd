@@ -10,7 +10,7 @@ import jsdd.Variable;
  * 
  * @author Ricardo Herrmann
  */
-public class VariableLeaf implements VTree, RightLinearVTree {
+public class VariableLeaf implements VTree, RightLinearVTree, Leaf {
 
 	private Variable variable;
 
@@ -84,6 +84,16 @@ public class VariableLeaf implements VTree, RightLinearVTree {
 		final HashSet<Variable> vars = new HashSet<Variable>(1);
 		vars.add(getVariable());
 		return vars;
+	}
+
+	@Override
+	public VariableLeaf leftmostLeaf() {
+		return this;
+	}
+
+	@Override
+	public VariableLeaf rightmostLeaf() {
+		return this;
 	}
 
 }
