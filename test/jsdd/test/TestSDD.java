@@ -101,12 +101,7 @@ public class TestSDD {
 		final SDD sdd = AbstractSDD.decomposition(root, n5, n6, n7);
 
 		Assert.assertEquals(root.getLeft(), n0.getVTree());
-		Assert.assertEquals(root.getLeft(), n0.getPrime().getVTree());
-		Assert.assertEquals(root.getLeft(), n0.getSub().getVTree());
-		Assert.assertEquals(root.getLeft(), n1.getSub().getVTree());
-		Assert.assertEquals(root.getLeft(), n1.getSub().getVTree());
 		Assert.assertEquals(root, n7.getVTree());
-		Assert.assertEquals(root, sdd.getVTree());
 	}
 
 	@Test
@@ -320,11 +315,11 @@ public class TestSDD {
 		final InternalVTree vtree = example1(vars);
 		final SDD sdd = DecompositionSDD.buildNormalized(vtree, vars.register("A"));
 		Assert.assertEquals(4, sdd.size());
-		Assert.assertEquals(vtree, sdd.getVTree());
+		Assert.assertEquals(vtree, ((DecompositionSDD) sdd).getVTree());
 		Assert.assertEquals(2, sdd.expansion().size());
 		final Element elem = sdd.expansion().iterator().next();
 		Assert.assertEquals(new ConstantSDD(true), elem.getSub());
-		Assert.assertEquals(vtree.getLeft(), elem.getPrime().getVTree());
+		Assert.assertEquals(vtree.getLeft(), ((DecompositionSDD) elem.getPrime()).getVTree());
 		Assert.assertEquals(1, elem.getPrime().expansion().size());
 	}
 
@@ -334,11 +329,11 @@ public class TestSDD {
 		final InternalVTree vtree = example1(vars);
 		final SDD sdd = DecompositionSDD.buildNormalized(vtree, vars.register("B"));
 		Assert.assertEquals(6, sdd.size());
-		Assert.assertEquals(vtree, sdd.getVTree());
+		Assert.assertEquals(vtree, ((DecompositionSDD) sdd).getVTree());
 		Assert.assertEquals(2, sdd.expansion().size());
 		final Element elem = sdd.expansion().iterator().next();
 		Assert.assertEquals(new ConstantSDD(true), elem.getSub());
-		Assert.assertEquals(vtree.getLeft(), elem.getPrime().getVTree());
+		Assert.assertEquals(vtree.getLeft(), ((DecompositionSDD) elem.getPrime()).getVTree());
 		Assert.assertEquals(2, elem.getPrime().expansion().size());
 	}
 
@@ -348,11 +343,11 @@ public class TestSDD {
 		final InternalVTree vtree = example1(vars);
 		final SDD sdd = DecompositionSDD.buildNormalized(vtree, vars.register("C"));
 		Assert.assertEquals(2, sdd.size());
-		Assert.assertEquals(vtree, sdd.getVTree());
+		Assert.assertEquals(vtree, ((DecompositionSDD) sdd).getVTree());
 		Assert.assertEquals(1, sdd.expansion().size());
 		final Element elem = sdd.expansion().iterator().next();
 		Assert.assertEquals(new ConstantSDD(true), elem.getPrime());
-		Assert.assertEquals(vtree.getRight(), elem.getSub().getVTree());
+		Assert.assertEquals(vtree.getRight(), ((DecompositionSDD) elem.getSub()).getVTree());
 		Assert.assertEquals(1, elem.getSub().expansion().size());
 	}
 
@@ -362,11 +357,11 @@ public class TestSDD {
 		final InternalVTree vtree = example1(vars);
 		final SDD sdd = DecompositionSDD.buildNormalized(vtree, vars.register("D"));
 		Assert.assertEquals(3, sdd.size());
-		Assert.assertEquals(vtree, sdd.getVTree());
+		Assert.assertEquals(vtree, ((DecompositionSDD) sdd).getVTree());
 		Assert.assertEquals(1, sdd.expansion().size());
 		final Element elem = sdd.expansion().iterator().next();
 		Assert.assertEquals(new ConstantSDD(true), elem.getPrime());
-		Assert.assertEquals(vtree.getRight(), elem.getSub().getVTree());
+		Assert.assertEquals(vtree.getRight(), ((DecompositionSDD) elem.getSub()).getVTree());
 		Assert.assertEquals(2, elem.getSub().expansion().size());
 	}
 
@@ -402,6 +397,12 @@ public class TestSDD {
 		final SDD sdd2 = sddB.and(sddC);
 		final SDD sdd3 = sddC.and(sddD);
 		final SDD sdd = sdd1.or(sdd2).or(sdd3);
+		try {
+			GraphvizDumper.dump((DecompositionSDD) sdd, vars, "dnf2.dot");
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		Assert.assertEquals(11, sdd.size());
 	}
 
@@ -416,6 +417,12 @@ public class TestSDD {
 		final SDD sdd1 = sddA.and(sddB);
 		final SDD sdd2 = sddC.and(sddD);
 		final SDD sdd = sdd1.or(sdd2);
+		try {
+			GraphvizDumper.dump((DecompositionSDD) sdd, vars, "dnf3.dot");
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		Assert.assertEquals(7, sdd.size());
 	}
 

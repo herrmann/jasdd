@@ -44,19 +44,6 @@ public class DecompositionSDD extends AbstractSDD {
 		}
 	}
 
-	private void fixVSubTree(final SDD sdd, final VTree correctNode) {
-		if (sdd instanceof DecompositionSDD) {
-			final VTree vtree = sdd.getVTree();
-			if (vtree != null) {
-				if (!vtree.equals(correctNode)) {
-					throw new IllegalArgumentException("Decomposition element doesn't respect the decomposition's vtree");
-				}
-			} else {
-				((DecompositionSDD) sdd).setVTree((InternalVTree) correctNode);
-			}
-		}
-	}
-
 	@Override
 	public int size() {
 		return size(new HashSet<Element>());
@@ -82,7 +69,6 @@ public class DecompositionSDD extends AbstractSDD {
 		return sum;
 	}
 
-	@Override
 	public InternalVTree getVTree() {
 		return vtree;
 	}

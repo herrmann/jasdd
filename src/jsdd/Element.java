@@ -22,10 +22,6 @@ public class Element implements Sentence, StringBuildable {
 	public Element(final SDD prime, final SDD sub) {
 		this.prime = prime;
 		this.sub = sub;
-		((AbstractSDD) prime).markPrime();
-		((AbstractSDD) prime).setParent(this);
-		((AbstractSDD) sub).markSub();
-		((AbstractSDD) sub).setParent(this);
 	}
 
 	public Element(final Variable v1, final boolean s1, final Variable v2, final boolean s2) {

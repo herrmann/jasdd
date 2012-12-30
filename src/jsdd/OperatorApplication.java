@@ -101,12 +101,12 @@ public class OperatorApplication {
 			if (op.equals(AND)) {
 				final Element elem1 = cachedElement(new Element(literal, otherLiteral));
 				final Element elem2 = cachedElement(new Element(literal.opposite(), false));
-				return cachedSdd(new DecompositionSDD(sdd1.getVTree(), elem1, elem2));
+				return cachedSdd(new DecompositionSDD(null, elem1, elem2));
 			}
 			if (op.equals(OR)) {
 				final Element elem1 = cachedElement(new Element(literal, true));
 				final Element elem2 = cachedElement(new Element(literal.opposite(), otherLiteral));
-				return cachedSdd(new DecompositionSDD(sdd1.getVTree(), elem1, elem2));
+				return cachedSdd(new DecompositionSDD(null, elem1, elem2));
 			}
 		}
 		return null;
@@ -145,40 +145,35 @@ public class OperatorApplication {
 	}
 
 	private SDD apply(final DecompositionSDD sdd1, final DecompositionSDD sdd2, final BooleanOperator op) {
-		if (false) {
-			// TODO: check if it is in cache
-			return null;
-		} else {
-			final List<Element> elements = new ArrayList<Element>();
-			final Map<SDD, Element> subs = new HashMap<SDD, Element>();
-			for (final Element e1 : sdd1.expansion()) {
-				for (final Element e2 : sdd2.expansion()) {
-					SDD prime = and(e1.getPrime(), e2.getPrime());
-					if (prime instanceof DecompositionSDD) {
-						((DecompositionSDD) prime).setVTree((InternalVTree) sdd1.getVTree().getLeft());
+		final List<Element> elements = new ArrayList<Element>();
+		final Map<SDD, Element> subs = new HashMap<SDD, Element>();
+		for (final Element e1 : sdd1.expansion()) {
+			for (final Element e2 : sdd2.expansion()) {
+				SDD prime = and(e1.getPrime(), e2.getPrime());
+				if (prime instanceof DecompositionSDD) {
+					((DecompositionSDD) prime).setVTree((InternalVTree) sdd1.getVTree().getLeft());
+				}
+				if (prime.isConsistent()) {
+					final SDD sub = apply(e1.getSub(), e2.getSub(), op);
+					if (sub instanceof DecompositionSDD) {
+						((DecompositionSDD) sub).setVTree((InternalVTree) sdd1.getVTree().getRight());
 					}
-					if (prime.isConsistent()) {
-						final SDD sub = apply(e1.getSub(), e2.getSub(), op);
-						if (sub instanceof DecompositionSDD) {
-							((DecompositionSDD) sub).setVTree((InternalVTree) sdd1.getVTree().getRight());
-						}
-						// Apply compression
-						if (subs.containsKey(sub)) {
-							final Element elem = subs.get(sub);
-							elements.remove(elem);
-							prime = or(elem.getPrime(), prime);
-						}
-						final Element element = cachedElement(new Element(prime, sub));
-						elements.add(element);
-						subs.put(sub, element);
+					// Apply compression
+					if (subs.containsKey(sub)) {
+						final Element elem = subs.get(sub);
+						elements.remove(elem);
+						prime = or(elem.getPrime(), prime);
 					}
+					final Element element = cachedElement(new Element(prime, sub));
+					elements.add(element);
+					subs.put(sub, element);
 				}
 			}
-			final Element[] elems = new Element[elements.size()];
-			elements.toArray(elems);
-			final DecompositionSDD sdd = new DecompositionSDD(sdd1.getVTree(), elems);
-			return cachedSdd(sdd);
 		}
+		final Element[] elems = new Element[elements.size()];
+		elements.toArray(elems);
+		final DecompositionSDD sdd = new DecompositionSDD(sdd1.getVTree(), elems);
+		return cachedSdd(sdd);
 	}
 
 	private SDD and(final SDD sdd1, final SDD sdd2) {

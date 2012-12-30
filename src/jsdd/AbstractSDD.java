@@ -9,40 +9,6 @@ import jsdd.vtree.InternalVTree;
  */
 public abstract class AbstractSDD implements SDD {
 
-	private boolean prime;
-	private Element parent;
-
-	@Override
-	public Element getParent() {
-		return parent;
-	}
-
-	protected boolean hasParent() {
-		return parent != null;
-	}
-
-	/* package */ void setParent(final Element parent) {
-		this.parent = parent;
-	}
-
-	@Override
-	public boolean isPrime() {
-		return prime;
-	}
-
-	/* package */ void markPrime() {
-		prime = true;
-	}
-
-	/* package */ void markSub() {
-		prime = false;
-	}
-
-	@Override
-	public boolean isSub() {
-		return hasParent() && !prime;
-	}
-
 	public static SDD decomposition(final InternalVTree node, final Element... elements) {
 		return new DecompositionSDD(node, elements);
 	}

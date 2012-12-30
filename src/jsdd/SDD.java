@@ -15,12 +15,7 @@ public interface SDD extends Sentence, StringBuildable {
 
 	boolean isFalse();
 
-	Element getParent();
-	boolean isPrime();
-	boolean isSub();
 	boolean isTerminal();
-
-	VTree getVTree();
 
 	SDD apply(SDD sdd, BooleanOperator op);
 
