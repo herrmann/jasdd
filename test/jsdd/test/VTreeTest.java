@@ -153,4 +153,21 @@ public class VTreeTest {
 		VTreeUtils.dissections();
 	}
 
+	@Test
+	public void dissectionsCount() {
+		final VariableRegistry vars = new VariableRegistry();
+		final Variable a = vars.register("A");
+		final Variable b = vars.register("B");
+		final Variable c = vars.register("C");
+		final Variable d = vars.register("D");
+		final Variable e = vars.register("E");
+		final Variable f = vars.register("F");
+		Assert.assertEquals(1, VTreeUtils.dissections(a).size());
+		Assert.assertEquals(1, VTreeUtils.dissections(a, b).size());
+		Assert.assertEquals(2, VTreeUtils.dissections(a, b, c).size());
+		Assert.assertEquals(5, VTreeUtils.dissections(a, b, c, d).size());
+		Assert.assertEquals(14, VTreeUtils.dissections(a, b, c, d, e).size());
+		Assert.assertEquals(42, VTreeUtils.dissections(a, b, c, d, e, f).size());
+	}
+
 }
