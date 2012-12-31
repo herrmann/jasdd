@@ -11,7 +11,7 @@ import jsdd.rddlsim.ASDDConverter.VariableAssignment;
 import jsdd.vtree.InternalAVTree;
 import jsdd.vtree.InternalRightLinearAVTree;
 import jsdd.vtree.InternalVTree;
-import jsdd.vtree.VTree;
+import jsdd.vtree.Tree;
 import jsdd.vtree.VTreeUtils;
 import jsdd.vtree.ValueLeaf;
 import jsdd.vtree.VariableLeaf;
@@ -140,12 +140,26 @@ public class VTreeTest {
 		final Variable a = vars.register("A");
 		final Variable b = vars.register("B");
 		final Variable c = vars.register("C");
-		final Collection<VTree> dissections = VTreeUtils.dissections(a, b, c);
+		final Collection<Tree> dissections = VTreeUtils.dissections(a, b, c);
 		Assert.assertEquals(2, dissections.size());
 		final InternalVTree left = new InternalVTree(a, new InternalVTree(b, c));
 		final InternalVTree right = new InternalVTree(new InternalVTree(a, b), c);
 		Assert.assertTrue(dissections.contains(left));
 		Assert.assertTrue(dissections.contains(right));
+	}
+
+	@Test
+	public void algebraicDissections() {
+		final VariableRegistry vars = new VariableRegistry();
+		final Variable a = vars.register("A");
+		final Variable b = vars.register("B");
+		final Variable c = vars.register("C");
+		final Collection<Tree> dissections = VTreeUtils.algebraicDissections(a, b, c);
+		Assert.assertEquals(5, dissections.size());
+		final ValueLeaf valueLeaf = new ValueLeaf();
+		for (final Tree dissection : dissections) {
+			Assert.assertEquals(valueLeaf, dissection.rightmostLeaf());
+		}
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -179,8 +193,8 @@ public class VTreeTest {
 		final Variable d = vars.register("D");
 		final Variable e = vars.register("E");
 		final Variable f = vars.register("F");
-		final Collection<VTree> dissections = VTreeUtils.dissections(a, b, c, d, e, f);
-		for (final VTree dissection : dissections) {
+		final Collection<Tree> dissections = VTreeUtils.dissections(a, b, c, d, e, f);
+		for (final Tree dissection : dissections) {
 			// The tree can never be a leaf because we have more than one variable
 			Assert.assertFalse(dissection instanceof VariableLeaf);
 			final VariableLeaf leaf = (VariableLeaf) ((InternalVTree) dissection).getRight().leftmostLeaf();
