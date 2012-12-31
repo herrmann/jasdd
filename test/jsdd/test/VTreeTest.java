@@ -170,4 +170,25 @@ public class VTreeTest {
 		Assert.assertEquals(42, VTreeUtils.dissections(a, b, c, d, e, f).size());
 	}
 
+	@Test
+	public void nextFrontierWhenDissecting() {
+		final VariableRegistry vars = new VariableRegistry();
+		final Variable a = vars.register("A");
+		final Variable b = vars.register("B");
+		final Variable c = vars.register("C");
+		final Variable d = vars.register("D");
+		final Variable e = vars.register("E");
+		final Variable f = vars.register("F");
+		final Collection<VTree> dissections = VTreeUtils.dissections(a, b, c, d, e, f);
+		for (final VTree dissection : dissections) {
+			// The tree can never be a leaf because we have more than one variable
+			Assert.assertFalse(dissection instanceof VariableLeaf);
+			final VariableLeaf leaf = (VariableLeaf) ((InternalVTree) dissection).getRight().leftmostLeaf();
+			final Variable var = leaf.getVariable();
+			// The variable A won't be present because the frontier can't be empty
+			Assert.assertFalse(a.equals(var));
+			System.out.println(vars.name(var));
+		}
+	}
+
 }
