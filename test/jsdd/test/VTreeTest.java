@@ -7,7 +7,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import jsdd.Variable;
 import jsdd.VariableRegistry;
 import jsdd.rddlsim.ASDDConverter;
-import jsdd.rddlsim.ASDDConverter.Enumeration;
+import jsdd.rddlsim.ASDDConverter.VariableAssignment;
 import jsdd.vtree.InternalAVTree;
 import jsdd.vtree.InternalRightLinearAVTree;
 import jsdd.vtree.InternalVTree;
@@ -124,9 +124,9 @@ public class VTreeTest {
 
 		final ASDDConverter converter = new ASDDConverter();
 		final AtomicInteger count = new AtomicInteger();
-		final Enumeration counter = new ASDDConverter.Enumeration() {
+		final VariableAssignment counter = new ASDDConverter.VariableAssignment() {
 			@Override
-			public void values(final Map<Variable, Boolean> values) {
+			public void assignment(final Map<Variable, Boolean> values) {
 				count.incrementAndGet();
 			}
 		};

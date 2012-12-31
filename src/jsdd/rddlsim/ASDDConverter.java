@@ -31,19 +31,19 @@ public class ASDDConverter {
 		return convert(vtree, new EnumerationPrinter());
 	}
 
-	public ASDD<Double> convert(final AVTree vtree, final Enumeration callback) {
+	public ASDD<Double> convert(final AVTree vtree, final VariableAssignment callback) {
 		final List<Variable> vars = new ArrayList<Variable>(vtree.partitionVariables());
 		enumerate(callback, new HashMap<Variable, Boolean>(), vars, 0);
 		return null;
 	}
 
-	public interface Enumeration {
-		void values(final Map<Variable, Boolean> values);
+	public interface VariableAssignment {
+		void assignment(final Map<Variable, Boolean> values);
 	}
 
-	public class EnumerationPrinter implements Enumeration {
+	public class EnumerationPrinter implements VariableAssignment {
 		@Override
-		public void values(final Map<Variable, Boolean> values) {
+		public void assignment(final Map<Variable, Boolean> values) {
 			boolean first = true;
 			for (final Entry<Variable, Boolean> entry : values.entrySet()) {
 				if (!first) {
@@ -56,7 +56,7 @@ public class ASDDConverter {
 		}
 	}
 
-	private void enumerate(final Enumeration callback, final Map<Variable, Boolean> values, final List<Variable> vars, final int index) {
+	private void enumerate(final VariableAssignment callback, final Map<Variable, Boolean> values, final List<Variable> vars, final int index) {
 		if (index < vars.size()) {
 			final Variable var = vars.get(index);
 			final HashMap<Variable, Boolean> copy = new HashMap<Variable, Boolean>(values);
@@ -65,7 +65,7 @@ public class ASDDConverter {
 			enumerate(callback, values, vars, index + 1);
 			enumerate(callback, copy, vars, index + 1);
 		} else {
-			callback.values(values);
+			callback.assignment(values);
 		}
 	}
 
