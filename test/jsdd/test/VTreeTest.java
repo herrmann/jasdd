@@ -1,5 +1,6 @@
 package jsdd.test;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -10,6 +11,8 @@ import jsdd.rddlsim.ASDDConverter.Enumeration;
 import jsdd.vtree.InternalAVTree;
 import jsdd.vtree.InternalRightLinearAVTree;
 import jsdd.vtree.InternalVTree;
+import jsdd.vtree.VTree;
+import jsdd.vtree.VTreeUtils;
 import jsdd.vtree.ValueLeaf;
 import jsdd.vtree.VariableLeaf;
 import junit.framework.Assert;
@@ -129,6 +132,25 @@ public class VTreeTest {
 		};
 		converter.convert(root, counter);
 		Assert.assertEquals(16, count.get());
+	}
+
+	@Test
+	public void dissections() {
+		final VariableRegistry vars = new VariableRegistry();
+		final Variable a = vars.register("A");
+		final Variable b = vars.register("B");
+		final Variable c = vars.register("C");
+		final Collection<VTree> dissections = VTreeUtils.dissections(a, b, c);
+		Assert.assertEquals(2, dissections.size());
+		final InternalVTree left = new InternalVTree(a, new InternalVTree(b, c));
+		final InternalVTree right = new InternalVTree(new InternalVTree(a, b), c);
+		Assert.assertTrue(dissections.contains(left));
+		Assert.assertTrue(dissections.contains(right));
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void noEmptyDissections() {
+		VTreeUtils.dissections();
 	}
 
 }
