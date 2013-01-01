@@ -426,11 +426,11 @@ public class VI extends Policy {
 			final ASDDConverter converter = new ASDDConverter(_context);
 			final Collection<Tree> dissections = VTreeUtils.dissections(primed);
 			System.out.println(dissections.size());
-			if (_valueDD > 1) {
+			// if (_valueDD > 1) {
 				for (final Tree dissection : dissections) {
-					converter.dissect((InternalAVTree) dissection, _valueDD);
+					converter.dissect((AVTree) dissection, _valueDD);
 				}
-			}
+			// }
 
 			// Cache maintenance -- clear out previous nodes, but save Q-functions
 			clearSaveNodes();

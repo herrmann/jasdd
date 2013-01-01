@@ -18,6 +18,7 @@ import jsdd.Variable;
 import jsdd.algebraic.ASDD;
 import jsdd.algebraic.AlgebraicElement;
 import jsdd.algebraic.AlgebraicTerminal;
+import jsdd.algebraic.DecompositionASDD;
 import jsdd.vtree.AVTree;
 import jsdd.vtree.InternalAVTree;
 import jsdd.vtree.InternalVTree;
@@ -133,6 +134,27 @@ public class ASDDConverter {
 			}
 			return sdd;
 		}
+	}
+
+	public ASDD<Double> dissect(final AVTree avtree, final int nodeId) {
+		final ADDNode node = context.getNode(nodeId);
+		if (node instanceof ADDDNode) {
+			if (avtree.isLeaf()) {
+				final ADDDNode dnode = (ADDDNode) node;
+				final double value = dnode._dLower;
+				final AlgebraicTerminal<Double> asdd = new AlgebraicTerminal<Double>(value);
+				return asdd;
+			} else {
+				final SDD prime = new ConstantSDD(true);
+				final AVTree rightTree = ((InternalAVTree) avtree).getRight();
+				final ASDD<Double> sub = dissect(rightTree, nodeId);
+				final AlgebraicElement<Double> elem = new AlgebraicElement<Double>(prime, sub);
+				@SuppressWarnings("unchecked")
+				final ASDD<Double> asdd = new DecompositionASDD<Double>((InternalAVTree) avtree, elem);
+				return asdd;
+			}
+		}
+		return null;
 	}
 
 }
