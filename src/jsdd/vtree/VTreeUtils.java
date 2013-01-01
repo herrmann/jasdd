@@ -61,6 +61,10 @@ public class VTreeUtils {
 		return dissections(leaves, 0, length);
 	}
 
+	private static Collection<Tree> dissections(final Tree[] vars) {
+		return dissections(vars, 0, vars.length);
+	}
+
 	private static Collection<Tree> dissections(final Tree[] vars, final int begin, final int end) {
 		if (end - begin <= 1) {
 			final Collection<Tree> container = new ArrayList<Tree>(1);
@@ -82,6 +86,16 @@ public class VTreeUtils {
 			}
 			return container;
 		}
+	}
+
+	public static Collection<Tree> dissections(final ArrayList<Integer> order) {
+		final Tree[] leaves = new Tree[order.size() + 1];
+		int i = 0;
+		for (final Integer index : order) {
+			leaves[i++] = new VariableLeaf(index);
+		}
+		leaves[i] = new ValueLeaf();
+		return dissections(leaves);
 	}
 
 }

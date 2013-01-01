@@ -17,11 +17,11 @@ package rddl.solver.mdp.vi;
 
 import graph.Graph;
 
-import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -30,11 +30,13 @@ import java.util.TreeSet;
 
 import jsdd.VariableRegistry;
 import jsdd.algebraic.ASDD;
-import jsdd.algebraic.DecompositionASDD;
+import jsdd.rddlsim.ASDDConverter;
 import jsdd.rddlsim.FormatConverter;
 import jsdd.rddlsim.PairwiseAVTreeConverter;
-import jsdd.viz.GraphvizDumper;
 import jsdd.vtree.AVTree;
+import jsdd.vtree.InternalAVTree;
+import jsdd.vtree.Tree;
+import jsdd.vtree.VTreeUtils;
 import rddl.ActionGenerator;
 import rddl.EvalException;
 import rddl.RDDL.INSTANCE;
@@ -415,6 +417,20 @@ public class VI extends Policy {
 			}
 			
 			new FormatConverter(_context).dumpPairwise(_valueDD, _nIter + ".dot");
+			
+			final int half = _context._alOrder.size() / 2;
+			final ArrayList<Integer> primed = new ArrayList<Integer>(half);
+			for (int i = half; i < half * 2; i++) {
+				primed.add((Integer) _context._alOrder.get(i));
+			}
+			final ASDDConverter converter = new ASDDConverter(_context);
+			final Collection<Tree> dissections = VTreeUtils.dissections(primed);
+			System.out.println(dissections.size());
+			if (_valueDD > 1) {
+				for (final Tree dissection : dissections) {
+					converter.dissect((InternalAVTree) dissection, _valueDD);
+				}
+			}
 
 			// Cache maintenance -- clear out previous nodes, but save Q-functions
 			clearSaveNodes();
