@@ -17,6 +17,7 @@ package rddl.solver.mdp.vi;
 
 import graph.Graph;
 
+import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.DecimalFormat;
@@ -30,11 +31,12 @@ import java.util.TreeSet;
 
 import jsdd.VariableRegistry;
 import jsdd.algebraic.ASDD;
+import jsdd.algebraic.DecompositionASDD;
 import jsdd.rddlsim.ASDDConverter;
 import jsdd.rddlsim.FormatConverter;
 import jsdd.rddlsim.PairwiseAVTreeConverter;
+import jsdd.viz.GraphvizDumper;
 import jsdd.vtree.AVTree;
-import jsdd.vtree.InternalAVTree;
 import jsdd.vtree.Tree;
 import jsdd.vtree.VTreeUtils;
 import rddl.ActionGenerator;
@@ -418,19 +420,35 @@ public class VI extends Policy {
 			
 			new FormatConverter(_context).dumpPairwise(_valueDD, _nIter + ".dot");
 			
+			final VariableRegistry vars = new VariableRegistry();
+			vars.register("dummy");
+			for (final Object index : _context._alOrder) {
+				vars.register((String) _context._hmID2VarName.get(index));
+			}
+
 			final int half = _context._alOrder.size() / 2;
 			final ArrayList<Integer> primed = new ArrayList<Integer>(half);
 			for (int i = half; i < half * 2; i++) {
-				primed.add((Integer) _context._alOrder.get(i));
+				final int index = (Integer) _context._alOrder.get(i);
+				primed.add(index);
 			}
 			final ASDDConverter converter = new ASDDConverter(_context);
 			final Collection<Tree> dissections = VTreeUtils.dissections(primed);
 			System.out.println(dissections.size());
-			// if (_valueDD > 1) {
+			if (_valueDD > 1) {
 				for (final Tree dissection : dissections) {
-					converter.dissect((AVTree) dissection, _valueDD);
+					final ASDD<Double> asdd = converter.dissect((AVTree) dissection, _valueDD);
+					System.err.println("##### dissection " + dissection + " - " + asdd.size());
+					try {
+						if (asdd instanceof DecompositionASDD<?>) {
+							GraphvizDumper.dump((DecompositionASDD<?>) asdd, vars,  "dissect_" + _nHorizon + ".dot");
+						}
+					} catch (FileNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
-			// }
+			}
 
 			// Cache maintenance -- clear out previous nodes, but save Q-functions
 			clearSaveNodes();
