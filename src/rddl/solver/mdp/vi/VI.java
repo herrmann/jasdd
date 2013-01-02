@@ -436,17 +436,19 @@ public class VI extends Policy {
 			final Collection<Tree> dissections = VTreeUtils.dissections(primed);
 			System.out.println(dissections.size());
 			if (_valueDD > 1) {
+				int i = 0;
 				for (final Tree dissection : dissections) {
 					final ASDD<Double> asdd = converter.dissect((AVTree) dissection, _valueDD);
-					System.err.println("##### dissection " + dissection + " - " + asdd.size());
+					System.err.println("##### dissection " + i + " " + dissection + " - " + asdd.size());
 					try {
 						if (asdd instanceof DecompositionASDD<?>) {
-							GraphvizDumper.dump((DecompositionASDD<?>) asdd, vars,  "dissect_" + _nHorizon + ".dot");
+							GraphvizDumper.dump((DecompositionASDD<?>) asdd, vars,  "dissect_" + i + ".dot");
 						}
 					} catch (FileNotFoundException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
+					i++;
 				}
 			}
 
