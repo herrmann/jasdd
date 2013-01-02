@@ -37,7 +37,6 @@ public class DecompositionSDD extends AbstractSDD {
 	public DecompositionSDD(final InternalVTree node, final Element... elements) {
 		this.vtree = node;
 		for (final Element element : elements) {
-			element.addParent(this);
 			// fixVSubTree(element.getPrime(), node.getLeft());
 			// fixVSubTree(element.getSub(), node.getRight());
 			this.elements.add(element);

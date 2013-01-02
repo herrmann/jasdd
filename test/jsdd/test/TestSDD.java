@@ -99,9 +99,6 @@ public class TestSDD {
 		final Element n7 = new Element(b, false, AbstractSDD.decomposition(vr, n3, n4));
 
 		final SDD sdd = AbstractSDD.decomposition(root, n5, n6, n7);
-
-		Assert.assertEquals(root.getLeft(), n0.getVTree());
-		Assert.assertEquals(root, n7.getVTree());
 	}
 
 	@Test

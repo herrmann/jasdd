@@ -1,12 +1,5 @@
 package jsdd;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-
-import jsdd.vtree.VTree;
-
 import util.StringBuildable;
 
 /**
@@ -16,7 +9,6 @@ import util.StringBuildable;
  */
 public class Element implements Sentence, StringBuildable {
 
-	private Set<DecompositionSDD> parents = new HashSet<DecompositionSDD>();
 	private SDD prime, sub;
 
 	public Element(final SDD prime, final SDD sub) {
@@ -162,19 +154,6 @@ public class Element implements Sentence, StringBuildable {
 		} else if (!sub.equals(other.sub))
 			return false;
 		return true;
-	}
-
-	public Collection<DecompositionSDD> getParents() {
-		return Collections.unmodifiableCollection(parents);
-	}
-
-	/* package */ void addParent(final DecompositionSDD parent) {
-		parents.add(parent);
-	}
-
-	public VTree getVTree() {
-		// TODO: check if paired boxes' parent decompositions all use the same vtree.
-		return getParents().iterator().next().getVTree();
 	}
 
 	public Element trimmed() {
