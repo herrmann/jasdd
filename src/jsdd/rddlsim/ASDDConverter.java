@@ -96,7 +96,7 @@ public class ASDDConverter {
 		@SuppressWarnings("unchecked")
 		final DecompositionASDD<Double> asdd = new DecompositionASDD<Double>(avtree);
 		dissect(asdd, avtree, nodeId, fringe, assignments);
-		return asdd;
+		return cachedAsdd(asdd);
 	}
 
 	public void dissect(final DecompositionASDD<Double> asdd, final InternalAVTree avtree, final int nodeId, final Set<Integer> fringe, final Map<Integer, Boolean> assignments) {
@@ -114,29 +114,29 @@ public class ASDDConverter {
 				final SDD prime = createPartition(avtree.getLeft(), assignments);
 				final ASDD<Double> sub = dissect((AVTree) avtree.getRight(), nodeId);
 				final AlgebraicElement<Double> elem = new AlgebraicElement<Double>(prime, sub);
-				asdd.addElement(elem);
+				asdd.addElement(cachedAlgebraicElement(elem));
 			}
 		} else if (node instanceof ADDDNode) {
 			final ADDDNode inode = (ADDDNode) node;
 			final SDD prime = createPartition(avtree.getLeft(), assignments);
-			final AlgebraicTerminal<Double> sub = new AlgebraicTerminal<Double>(inode._dLower);
+			final AlgebraicTerminal<Double> sub = cachedAsdd(new AlgebraicTerminal<Double>(inode._dLower));
 			final AlgebraicElement<Double> elem = new AlgebraicElement<Double>(prime, sub);
-			asdd.addElement(elem);
+			asdd.addElement(cachedAlgebraicElement(elem));
 		}
 	}
 
 	private SDD createPartition(final VTree vtree, final Map<Integer, Boolean> assignments) {
 		if (vtree instanceof VariableLeaf) {
 			final int index = ((VariableLeaf) vtree).getVariable().getIndex(); 
-			return new LiteralSDD(index, assignments.get(index));
+			return cachedSdd(new LiteralSDD(index, assignments.get(index)));
 		} else {
-			SDD sdd = new ConstantSDD(true);
+			SDD sdd = cachedSdd(new ConstantSDD(true));
 			for (final Entry<Integer, Boolean> entry : assignments.entrySet()) {
 				final int index = entry.getKey();
 				final boolean sign = entry.getValue();
 				final Variable var = new Variable(index);
 				final SDD term = DecompositionSDD.buildNormalized((InternalVTree) vtree, var, sign);
-				sdd = new OperatorApplication(sdd, term, new AndOperator()).apply();
+				sdd = cachedSdd(new OperatorApplication(sdd, term, new AndOperator()).apply());
 			}
 			return sdd;
 		}
@@ -148,16 +148,16 @@ public class ASDDConverter {
 			if (avtree.isLeaf()) {
 				final ADDDNode dnode = (ADDDNode) node;
 				final double value = dnode._dLower;
-				final AlgebraicTerminal<Double> asdd = new AlgebraicTerminal<Double>(value);
+				final AlgebraicTerminal<Double> asdd = cachedAsdd(new AlgebraicTerminal<Double>(value));
 				return asdd;
 			} else {
 				final SDD prime = new ConstantSDD(true);
 				final AVTree rightTree = ((InternalAVTree) avtree).getRight();
 				final ASDD<Double> sub = dissect(rightTree, nodeId);
-				final AlgebraicElement<Double> elem = new AlgebraicElement<Double>(prime, sub);
+				final AlgebraicElement<Double> elem = cachedAlgebraicElement(new AlgebraicElement<Double>(prime, sub));
 				@SuppressWarnings("unchecked")
 				final ASDD<Double> asdd = new DecompositionASDD<Double>((InternalAVTree) avtree, elem);
-				return asdd;
+				return cachedAsdd(asdd);
 			}
 		} else if (node instanceof ADDINode) {
 			if (avtree.isLeaf()) {
@@ -168,6 +168,47 @@ public class ASDDConverter {
 			}
 		}
 		throw new RuntimeException("This shouldn't happen");
+	}
+
+	private Map<AlgebraicElement<Double>, AlgebraicElement<Double>> algebraicElementCache = new HashMap<AlgebraicElement<Double>, AlgebraicElement<Double>>();
+
+	private Map<ASDD<Double>, ASDD<Double>> algebraicCache = new HashMap<ASDD<Double>, ASDD<Double>>();
+	
+	private Map<SDD, SDD> cache = new HashMap<SDD, SDD>();
+
+	private AlgebraicElement<Double> cachedAlgebraicElement(final AlgebraicElement<Double> element) {
+		final AlgebraicElement<Double> cached = algebraicElementCache.get(element);
+		if (null == cached) {
+			algebraicElementCache.put(element, element);
+			return element;
+		} else {
+			// System.out.println("Element cache hit: " + element);
+			return cached;
+		}
+	}
+
+	private <T extends ASDD<Double>> T cachedAsdd(final T asdd) {
+		@SuppressWarnings("unchecked")
+		final T cached = (T) algebraicCache.get(asdd);
+		if (null == cached) {
+			algebraicCache.put(asdd, asdd);
+			return asdd;
+		} else {
+			// System.out.println("Element cache hit: " + asdd);
+			return cached;
+		}
+	}
+
+	private <T extends SDD> T cachedSdd(final T sdd) {
+		@SuppressWarnings("unchecked")
+		final T cached = (T) cache.get(sdd);
+		if (null == cached) {
+			cache.put(sdd, sdd);
+			return sdd;
+		} else {
+			// System.out.println("Element cache hit: " + sdd);
+			return cached;
+		}
 	}
 
 }

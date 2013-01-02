@@ -432,12 +432,12 @@ public class VI extends Policy {
 				final int index = (Integer) _context._alOrder.get(i);
 				primed.add(index);
 			}
-			final ASDDConverter converter = new ASDDConverter(_context);
 			final Collection<Tree> dissections = VTreeUtils.dissections(primed);
 			System.out.println(dissections.size());
 			if (_valueDD > 1) {
 				int i = 0;
 				for (final Tree dissection : dissections) {
+					final ASDDConverter converter = new ASDDConverter(_context);
 					final ASDD<Double> asdd = converter.dissect((AVTree) dissection, _valueDD);
 					System.err.println("##### dissection " + i + " " + dissection + " - " + asdd.size());
 					try {
