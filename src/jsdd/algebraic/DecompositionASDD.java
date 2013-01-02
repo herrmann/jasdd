@@ -8,6 +8,8 @@ import java.util.Set;
 
 import jsdd.DecompositionSDD;
 import jsdd.Element;
+import jsdd.OperatorApplication;
+import jsdd.OrOperator;
 import jsdd.SDD;
 import jsdd.vtree.InternalAVTree;
 
@@ -30,9 +32,18 @@ public class DecompositionASDD<T> implements ASDD<T> {
 		}
 	}
 
-	public void addElement(final AlgebraicElement<T> element) {
-		// TODO: compression
-		elements.add(element);
+	public void addElement(AlgebraicElement<T> newElement) {
+		// Apply compression if possible
+		for (final AlgebraicElement<T> element : elements) {
+			final ASDD<T> sub = element.getSub();
+			if (sub.equals(newElement.getSub())) {
+				final SDD newPrime = new OperatorApplication(element.getPrime(), newElement.getPrime(), new OrOperator()).apply();
+				newElement = new AlgebraicElement<T>(newPrime, sub);
+				elements.remove(element);
+				break;
+			}
+		}
+		elements.add(newElement);
 	}
 
 	public List<AlgebraicElement<T>> getElements() {
