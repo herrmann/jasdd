@@ -30,6 +30,11 @@ public class DecompositionASDD<T> implements ASDD<T> {
 		}
 	}
 
+	public void addElement(final AlgebraicElement<T> element) {
+		// TODO: compression
+		elements.add(element);
+	}
+
 	public List<AlgebraicElement<T>> getElements() {
 		return Collections.unmodifiableList(elements);
 	}
