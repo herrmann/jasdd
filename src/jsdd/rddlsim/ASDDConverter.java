@@ -93,10 +93,13 @@ public class ASDDConverter {
 			fringe.add(var.getIndex());
 		}
 		final Map<Integer, Boolean> assignments = new HashMap<Integer, Boolean>();
-		return dissect(avtree, nodeId, fringe, assignments);
+		@SuppressWarnings("unchecked")
+		final DecompositionASDD<Double> asdd = new DecompositionASDD<Double>(avtree);
+		dissect(asdd, avtree, nodeId, fringe, assignments);
+		return asdd;
 	}
 
-	public ASDD<Double> dissect(final InternalAVTree avtree, final int nodeId, final Set<Integer> fringe, final Map<Integer, Boolean> assignments) {
+	public void dissect(final DecompositionASDD<Double> asdd, final InternalAVTree avtree, final int nodeId, final Set<Integer> fringe, final Map<Integer, Boolean> assignments) {
 		final ADDNode node = context.getNode(nodeId);
 		if (node instanceof ADDINode) {
 			final ADDINode inode = (ADDINode) node;
@@ -105,18 +108,21 @@ public class ASDDConverter {
 				final Map<Integer, Boolean> assignmentsCopy = new HashMap<Integer, Boolean>(assignments);
 				assignments.put(varId, false);
 				assignmentsCopy.put(varId, true);
-				dissect(avtree, inode._nLow, fringe, assignments);
-				dissect(avtree, inode._nHigh, fringe, assignmentsCopy);
+				dissect(asdd, avtree, inode._nLow, fringe, assignments);
+				dissect(asdd, avtree, inode._nHigh, fringe, assignmentsCopy);
 			} else {
-				final SDD sdd = createPartition(avtree.getLeft(), assignments);
-				final ASDD<Double> asdd = dissect((InternalAVTree) avtree.getRight(), nodeId);
-				new AlgebraicElement<Double>(sdd, asdd);
+				final SDD prime = createPartition(avtree.getLeft(), assignments);
+				final ASDD<Double> sub = dissect((AVTree) avtree.getRight(), nodeId);
+				final AlgebraicElement<Double> elem = new AlgebraicElement<Double>(prime, sub);
+				asdd.addElement(elem);
 			}
 		} else if (node instanceof ADDDNode) {
 			final ADDDNode inode = (ADDDNode) node;
-			return new AlgebraicTerminal<Double>(inode._dLower);
+			final SDD prime = createPartition(avtree.getLeft(), assignments);
+			final AlgebraicTerminal<Double> sub = new AlgebraicTerminal<Double>(inode._dLower);
+			final AlgebraicElement<Double> elem = new AlgebraicElement<Double>(prime, sub);
+			asdd.addElement(elem);
 		}
-		return null;
 	}
 
 	private SDD createPartition(final VTree vtree, final Map<Integer, Boolean> assignments) {
@@ -153,8 +159,15 @@ public class ASDDConverter {
 				final ASDD<Double> asdd = new DecompositionASDD<Double>((InternalAVTree) avtree, elem);
 				return asdd;
 			}
+		} else if (node instanceof ADDINode) {
+			if (avtree.isLeaf()) {
+				throw new RuntimeException("This shouldn't happen");
+			} else {
+				final InternalAVTree tree = (InternalAVTree) avtree;
+				return dissect(tree, nodeId);
+			}
 		}
-		return null;
+		throw new RuntimeException("This shouldn't happen");
 	}
 
 }
