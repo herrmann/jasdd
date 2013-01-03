@@ -98,7 +98,7 @@ public class TestSDD {
 		final Element n6 = new Element(AbstractSDD.decomposition(vl, n1, n2), c);
 		final Element n7 = new Element(b, false, AbstractSDD.decomposition(vr, n3, n4));
 
-		final SDD sdd = AbstractSDD.decomposition(root, n5, n6, n7);
+		AbstractSDD.decomposition(root, n5, n6, n7);
 	}
 
 	@Test
