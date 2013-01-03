@@ -176,13 +176,21 @@ public class VTreeTest {
 		final Variable d = vars.register("D");
 		final Variable e = vars.register("E");
 		final Variable f = vars.register("F");
-		Assert.assertEquals(1, VTreeUtils.dissections(a).size());
-		Assert.assertEquals(1, VTreeUtils.dissections(a, b).size());
-		Assert.assertEquals(2, VTreeUtils.dissections(a, b, c).size());
-		Assert.assertEquals(5, VTreeUtils.dissections(a, b, c, d).size());
-		Assert.assertEquals(14, VTreeUtils.dissections(a, b, c, d, e).size());
-		Assert.assertEquals(42, VTreeUtils.dissections(a, b, c, d, e, f).size());
+		Assert.assertEquals(catalanNumbers[0], VTreeUtils.dissections(a).size());
+		Assert.assertEquals(catalanNumbers[1], VTreeUtils.dissections(a, b).size());
+		Assert.assertEquals(catalanNumbers[2], VTreeUtils.dissections(a, b, c).size());
+		Assert.assertEquals(catalanNumbers[3], VTreeUtils.dissections(a, b, c, d).size());
+		Assert.assertEquals(catalanNumbers[4], VTreeUtils.dissections(a, b, c, d, e).size());
+		Assert.assertEquals(catalanNumbers[5], VTreeUtils.dissections(a, b, c, d, e, f).size());
 	}
+
+	// From http://oeis.org/A000108
+	private long[] catalanNumbers = new long[] { 1, 1, 2, 5, 14, 42, 132, 429,
+			1430, 4862, 16796, 58786, 208012, 742900, 2674440, 9694845,
+			35357670, 129644790, 477638700, 1767263190, 6564120420L,
+			24466267020L, 91482563640L, 343059613650L, 1289904147324L,
+			4861946401452L, 18367353072152L, 69533550916004L, 263747951750360L,
+			1002242216651368L, 3814986502092304L };
 
 	@Test
 	public void nextFrontierWhenDissecting() {
