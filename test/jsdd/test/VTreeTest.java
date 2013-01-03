@@ -209,7 +209,6 @@ public class VTreeTest {
 			final Variable var = leaf.getVariable();
 			// The variable A won't be present because the frontier can't be empty
 			Assert.assertFalse(a.equals(var));
-			System.out.println(vars.name(var));
 		}
 	}
 

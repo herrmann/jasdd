@@ -134,8 +134,9 @@ public class TestSDD {
 	}
 
 	@Test
-	public void graphvizOutput() {
+	public void graphvizOutput() throws FileNotFoundException {
 		final SDD sdd = exampleDarwiche();
+		GraphvizDumper.setOutput(new PrintStream("temp.dot"));
 		GraphvizDumper.dump((DecompositionSDD) sdd);
 	}
 
