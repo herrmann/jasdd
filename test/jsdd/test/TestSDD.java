@@ -114,7 +114,7 @@ public class TestSDD {
 		final SDD sdd2 = AbstractSDD.decomposition(vtree, new Element(a, false, b), new Element(a, false));
 
 		final SDD result = sdd1.and(sdd2);
-		Assert.assertEquals("[(1,2), ((T /\\ F))]", result.toString());
+		Assert.assertEquals("F", result.toString());
 	}
 
 	@Test
@@ -187,7 +187,7 @@ public class TestSDD {
 		final SDD sdd1 = new LiteralSDD(b);
 		final SDD sdd2 = AbstractSDD.decomposition(vtree, new Element(a, b, false), new Element(a, false, false));
 		final SDD result = sdd1.and(sdd2);
-		Assert.assertEquals("[(1,2), ((T /\\ F))]", result.toString());
+		Assert.assertEquals("F", result.toString());
 	}
 
 	@Test

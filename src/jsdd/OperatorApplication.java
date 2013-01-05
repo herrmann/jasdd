@@ -170,10 +170,16 @@ public class OperatorApplication {
 				}
 			}
 		}
-		final Element[] elems = new Element[elements.size()];
-		elements.toArray(elems);
-		final DecompositionSDD sdd = new DecompositionSDD(sdd1.getVTree(), elems);
-		return cachedSdd(sdd);
+		final int size = elements.size();
+		// Apply light trimming if possible
+		if (size == 1 && elements.get(0).getPrime().equals(new ConstantSDD(true)) && elements.get(0).getSub() instanceof ConstantSDD) {
+			return cachedSdd(new ConstantSDD(((ConstantSDD) elements.get(0).getSub()).getSign()));
+		} else {
+			final Element[] elems = new Element[size];
+			elements.toArray(elems);
+			final DecompositionSDD sdd = new DecompositionSDD(sdd1.getVTree(), elems);
+			return cachedSdd(sdd);
+		}
 	}
 
 	private SDD and(final SDD sdd1, final SDD sdd2) {
