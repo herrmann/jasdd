@@ -17,7 +17,6 @@ package rddl.solver.mdp.vi;
 
 import graph.Graph;
 
-import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.DecimalFormat;
@@ -33,10 +32,7 @@ import jsdd.VariableRegistry;
 import jsdd.algebraic.ASDD;
 import jsdd.algebraic.DecompositionASDD;
 import jsdd.rddlsim.ASDDConverter;
-import jsdd.rddlsim.FormatConverter;
-import jsdd.rddlsim.PairwiseAVTreeConverter;
 import jsdd.stat.Summary;
-import jsdd.viz.GraphvizDumper;
 import jsdd.vtree.AVTree;
 import jsdd.vtree.Tree;
 import jsdd.vtree.VTreeUtils;
@@ -384,7 +380,8 @@ public class VI extends Policy {
 		// ////////////////////////////////////////////////////////////
 		// Iterate until convergence (or max iterations)
 		// ////////////////////////////////////////////////////////////
-		while (_nIter < 2) {
+		_nHorizon = 2;
+		while (_nIter < _nHorizon) {
 
 			// Cache maintenance
 			flushCaches();
@@ -417,16 +414,18 @@ public class VI extends Policy {
 			}
 			final Collection<Tree> dissections = VTreeUtils.dissections(primed);
 			System.out.println(dissections.size());
-			if (_valueDD > 1) {
+			if (_nIter == _nHorizon - 1) {
 				int i = 0;
-				System.err.println("id avtree size algDecomps decomps algElems elems terms depth");
+				System.err.println("id avtree size algDecomps decomps algElems elems terms depth microsec");
 				for (final Tree dissection : dissections) {
 					final ASDDConverter converter = new ASDDConverter(_context);
+					final long start = System.nanoTime();
 					final ASDD<Double> asdd = converter.dissect((AVTree) dissection, _valueDD);
-					try {
+					final long end = System.nanoTime();
+//					try {
 						if (asdd instanceof DecompositionASDD<?>) {
 							final DecompositionASDD<?> decomp = (DecompositionASDD<?>) asdd;
-							GraphvizDumper.dump(decomp, vars,  "dissect_" + i + ".dot");
+							// GraphvizDumper.dump(decomp, vars,  "final_dissect_" + i + ".dot");
 							final Summary stats = Summary.from(decomp);
 							System.err.println(i
 									+ " " + dissection
@@ -436,12 +435,13 @@ public class VI extends Policy {
 									+ " " + stats.getAlgebraicElements()
 									+ " " + stats.getElements()
 									+ " " + stats.getAlgebraicTerminals()
-									+ " " + stats.getDepth());
+									+ " " + stats.getDepth()
+									+ " " + ((end - start) / 1000));
 						}
-					} catch (FileNotFoundException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+//					} catch (FileNotFoundException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
 					i++;
 				}
 			}
