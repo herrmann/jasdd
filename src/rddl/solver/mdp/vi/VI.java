@@ -35,6 +35,7 @@ import jsdd.algebraic.DecompositionASDD;
 import jsdd.rddlsim.ASDDConverter;
 import jsdd.rddlsim.FormatConverter;
 import jsdd.rddlsim.PairwiseAVTreeConverter;
+import jsdd.stat.Summary;
 import jsdd.viz.GraphvizDumper;
 import jsdd.vtree.AVTree;
 import jsdd.vtree.Tree;
@@ -383,7 +384,7 @@ public class VI extends Policy {
 		// ////////////////////////////////////////////////////////////
 		// Iterate until convergence (or max iterations)
 		// ////////////////////////////////////////////////////////////
-		while (_nIter < _nHorizon) {
+		while (_nIter < 2) {
 
 			// Cache maintenance
 			flushCaches();
@@ -402,24 +403,6 @@ public class VI extends Policy {
 
 			_context.getGraph(_valueDD).launchViewer();
 
-			{
-				final VariableRegistry vars = new VariableRegistry();
-				final FormatConverter converter = new FormatConverter(_context);
-				final AVTree tree = converter.buildRightLinear(vars);
-				final ASDD<Double> asdd = converter.addToAsdd(vars, tree, _valueDD);
-				System.err.println("********************** Right-linear size:" + asdd.size());
-			}
-
-			{
-				final VariableRegistry vars = new VariableRegistry();
-				final AVTree tree = new PairwiseAVTreeConverter(_context).build(vars);
-				final FormatConverter converter = new FormatConverter(_context);
-				final ASDD<Double> asdd = converter.pairwise(vars, tree, _valueDD);
-				System.err.println("********************** Pairwise size    :" + asdd.size());
-			}
-			
-			new FormatConverter(_context).dumpPairwise(_valueDD, _nIter + ".dot");
-			
 			final VariableRegistry vars = new VariableRegistry();
 			vars.register("dummy");
 			for (final Object index : _context._alOrder) {
@@ -436,13 +419,24 @@ public class VI extends Policy {
 			System.out.println(dissections.size());
 			if (_valueDD > 1) {
 				int i = 0;
+				System.err.println("id avtree size algDecomps decomps algElems elems terms depth");
 				for (final Tree dissection : dissections) {
 					final ASDDConverter converter = new ASDDConverter(_context);
 					final ASDD<Double> asdd = converter.dissect((AVTree) dissection, _valueDD);
-					System.err.println("##### dissection " + i + " " + dissection + " - " + asdd.size());
 					try {
 						if (asdd instanceof DecompositionASDD<?>) {
-							GraphvizDumper.dump((DecompositionASDD<?>) asdd, vars,  "dissect_" + i + ".dot");
+							final DecompositionASDD<?> decomp = (DecompositionASDD<?>) asdd;
+							GraphvizDumper.dump(decomp, vars,  "dissect_" + i + ".dot");
+							final Summary stats = Summary.from(decomp);
+							System.err.println(i
+									+ " " + dissection
+									+ " " + asdd.size()
+									+ " " + stats.getAlgebraicDecompositions()
+									+ " " + stats.getDecompositions()
+									+ " " + stats.getAlgebraicElements()
+									+ " " + stats.getElements()
+									+ " " + stats.getAlgebraicTerminals()
+									+ " " + stats.getDepth());
 						}
 					} catch (FileNotFoundException e) {
 						// TODO Auto-generated catch block
