@@ -1,5 +1,6 @@
 package jsdd.algebraic;
 
+import jsdd.stat.ASDDVisitor;
 import jsdd.vtree.ValueLeaf;
 
 /**
@@ -73,6 +74,11 @@ public class AlgebraicTerminal<T> implements ASDD<T> {
 		} else if (!value.equals(other.value))
 			return false;
 		return true;
+	}
+
+	@Override
+	public void accept(final ASDDVisitor<T> visitor) {
+		visitor.visit(this);
 	}
 
 }

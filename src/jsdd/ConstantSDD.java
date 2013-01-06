@@ -3,6 +3,8 @@ package jsdd;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import jsdd.stat.SDDVisitor;
+
 /**
  * Constant SDD, which is either true or false.
  * 
@@ -87,6 +89,11 @@ public class ConstantSDD extends TerminalSDD {
 	@Override
 	public SDD trimmed() {
 		return new ConstantSDD(this);
+	}
+
+	@Override
+	public void accept(final SDDVisitor visitor) {
+		visitor.visit(this);
 	}
 
 }

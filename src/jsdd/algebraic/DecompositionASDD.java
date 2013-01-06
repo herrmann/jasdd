@@ -11,6 +11,7 @@ import jsdd.Element;
 import jsdd.OperatorApplication;
 import jsdd.OrOperator;
 import jsdd.SDD;
+import jsdd.stat.ASDDVisitor;
 import jsdd.vtree.InternalAVTree;
 
 /**
@@ -142,6 +143,16 @@ public class DecompositionASDD<T> implements ASDD<T> {
 		}
 		sb.append(")]");
 		return sb;
+	}
+
+	@Override
+	public void accept(final ASDDVisitor<T> visitor) {
+		if (visitor.visit(this)) {
+			for (final AlgebraicElement<T> elem : getElements()) {
+				elem.accept(visitor);
+			}
+			visitor.postVisit(this);
+		}
 	}
 
 }

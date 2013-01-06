@@ -1,5 +1,6 @@
 package jsdd;
 
+import jsdd.stat.SDDVisitor;
 import util.StringBuildable;
 
 /**
@@ -206,6 +207,14 @@ public class Element implements Sentence, StringBuildable {
 		elems[0] = new Element(v, true, s1);
 		elems[1] = new Element(v, false, s2);
 		return elems;
+	}
+
+	public void accept(final SDDVisitor visitor) {
+		if (visitor.visit(this)) {
+			getPrime().accept(visitor);
+			getSub().accept(visitor);
+			visitor.postVisit(this);
+		}
 	}
 
 }

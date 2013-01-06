@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import jsdd.stat.SDDVisitor;
 import jsdd.viz.GraphvizDumper;
 import jsdd.vtree.InternalVTree;
 import jsdd.vtree.VTree;
@@ -265,6 +266,16 @@ public class DecompositionSDD extends AbstractSDD {
 		} catch (final FileNotFoundException e) {
 		}
 		GraphvizDumper.dump(this);
+	}
+
+	@Override
+	public void accept(final SDDVisitor visitor) {
+		if (visitor.visit(this)) {
+			for (final Element elem : getElements()) {
+				elem.accept(visitor);
+			}
+			visitor.postVisit(this);
+		}
 	}
 
 }

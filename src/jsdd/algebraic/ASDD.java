@@ -1,5 +1,6 @@
 package jsdd.algebraic;
 
+import jsdd.stat.ASDDVisitor;
 import jsdd.vtree.AVTree;
 import util.StringBuildable;
 
@@ -17,5 +18,7 @@ public interface ASDD<T> extends StringBuildable {
 	boolean isTerminal();
 
 	int size();
+
+	void accept(ASDDVisitor<T> visitor);
 
 }

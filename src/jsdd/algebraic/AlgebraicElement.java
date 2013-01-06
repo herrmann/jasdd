@@ -1,9 +1,10 @@
 package jsdd.algebraic;
 
-import util.StringBuildable;
 import jsdd.LiteralSDD;
 import jsdd.SDD;
 import jsdd.Variable;
+import jsdd.stat.ASDDVisitor;
+import util.StringBuildable;
 
 /**
  * One of the composing elements (paired boxes) of an algebraic SDD.
@@ -87,6 +88,14 @@ public class AlgebraicElement<T> implements StringBuildable {
 		final StringBuilder sb = new StringBuilder();
 		sb.append("(").append(getPrime().toStringBuilder()).append(" /\\ ").append(getSub().toStringBuilder()).append(")");
 		return sb;
+	}
+
+	public void accept(final ASDDVisitor<T> visitor) {
+		if (visitor.visit(this)) {
+			getPrime().accept(visitor);
+			getSub().accept(visitor);
+			visitor.postVisit(this);
+		}
 	}
 
 }

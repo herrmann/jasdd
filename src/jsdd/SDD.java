@@ -2,6 +2,8 @@ package jsdd;
 
 import java.util.Collection;
 
+import jsdd.stat.SDDVisitor;
+
 import util.StringBuildable;
 
 /**
@@ -29,5 +31,7 @@ public interface SDD extends Sentence, StringBuildable {
 	 * For debugging purposes only.
 	 */
 	void dump();
+
+	void accept(SDDVisitor visitor);
 
 }

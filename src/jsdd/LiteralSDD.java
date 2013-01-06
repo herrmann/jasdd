@@ -3,6 +3,8 @@ package jsdd;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import jsdd.stat.SDDVisitor;
+
 /**
  * SDD for a single literal.
  * 
@@ -107,6 +109,11 @@ public class LiteralSDD extends TerminalSDD {
 	@Override
 	public boolean getSign() {
 		return getLiteral().getSign();
+	}
+
+	@Override
+	public void accept(final SDDVisitor visitor) {
+		visitor.visit(this);
 	}
 
 }
