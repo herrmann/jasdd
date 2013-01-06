@@ -207,14 +207,19 @@ public class DecompositionSDD extends AbstractSDD {
 		return true;
 	}
 
+	private Integer hashCode;
+
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result
-				+ ((elements == null) ? 0 : elements.hashCode());
-		result = prime * result + ((vtree == null) ? 0 : vtree.hashCode());
-		return result;
+		if (hashCode == null) {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result
+					+ ((elements == null) ? 0 : elements.hashCode());
+			result = prime * result + ((vtree == null) ? 0 : vtree.hashCode());
+			hashCode = result;
+		}
+		return hashCode;
 	}
 
 	@Override
@@ -238,7 +243,7 @@ public class DecompositionSDD extends AbstractSDD {
 			if (!sameSize) {
 				return false;
 			}
-			final boolean sameSet = new HashSet<Element>(elements).equals(new HashSet<Element>(other.elements));
+			final boolean sameSet = getElementsSet().equals(other.getElementsSet());
 			if (!sameSet) {
 				return false;
 			}
@@ -249,6 +254,20 @@ public class DecompositionSDD extends AbstractSDD {
 		} else if (!vtree.equals(other.vtree))
 			return false;
 		return true;
+	}
+
+	private Set<Element> elementsSet;
+
+	private static int elementsSetCacheHit, elementsSetCacheMiss;
+
+	private Set<Element> getElementsSet() {
+		if (elementsSet == null) {
+			elementsSetCacheMiss++;
+			elementsSet = new HashSet<Element>(elements);
+		} else {
+			elementsSetCacheHit++;
+		}
+		return elementsSet;
 	}
 
 	@Override

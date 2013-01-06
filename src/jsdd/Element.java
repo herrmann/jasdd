@@ -125,14 +125,19 @@ public class Element implements Sentence, StringBuildable {
 		return false;
 	}
 
+	private Integer hashCode;
+
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result
-				+ ((this.prime == null) ? 0 : this.prime.hashCode());
-		result = prime * result + ((sub == null) ? 0 : sub.hashCode());
-		return result;
+		if (hashCode == null) {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result
+					+ ((this.prime == null) ? 0 : this.prime.hashCode());
+			result = prime * result + ((sub == null) ? 0 : sub.hashCode());
+			hashCode = result;
+		}
+		return hashCode;
 	}
 
 	@Override
