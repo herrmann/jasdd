@@ -2,9 +2,27 @@ package jsdd.stat;
 
 import jsdd.algebraic.ASDD;
 
+/**
+ * Summary of attributes of an ASDD structure.
+ * 
+ * @author Ricardo Herrmann
+ */
 public class Summary {
-	
+
 	private int algebraicTerminals, elements, algebraicElements, decompositions, algebraicDecompositions, depth;
+
+	/**
+	 * Construct the summary from a given ASDD reference.
+	 * 
+	 * @param asdd the ASDD to summarize
+	 * @return the summary of attributes
+	 */
+	public static <T> Summary from(final ASDD<T> asdd) {
+		final SummaryASDDVisitor<T> delegate = new SummaryASDDVisitor<T>();
+		final UniqueASDDVisitor<T> visitor = new UniqueASDDVisitor<T>(delegate);
+		asdd.accept(visitor);
+		return delegate.getSummary();
+	}
 
 	public int getAlgebraicTerminals() {
 		return algebraicTerminals;
@@ -30,36 +48,30 @@ public class Summary {
 		return depth;
 	}
 
-	public void increaseAlgebraicTerminals() {
+	/* package */ void increaseAlgebraicTerminals() {
 		algebraicTerminals++;
 	}
 
-	public void increaseElements() {
+	/* package */ void increaseElements() {
 		elements++;
 	}
 
-	public void increaseAlgebraicElements() {
+	/* package */ void increaseAlgebraicElements() {
 		algebraicElements++;
 	}
 
-	public void increaseDecompositions() {
+	/* package */ void increaseDecompositions() {
 		decompositions++;
 	}
 
-	public void increaseAlgebraicDecompositions() {
+	/* package */ void increaseAlgebraicDecompositions() {
 		algebraicDecompositions++;
 	}
 
-	public void updateDepth(final int depth) {
+	/* package */ void updateDepth(final int depth) {
 		if (depth > this.depth) {
 			this.depth = depth;
 		}
-	}
-
-	public static <T> Summary from(final ASDD<T> asdd) {
-		final SummaryASDDVisitor<T> visitor = new SummaryASDDVisitor<T>();
-		asdd.accept(visitor);
-		return visitor.getSummary();
 	}
 
 }
