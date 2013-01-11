@@ -17,6 +17,7 @@ package rddl.solver.mdp.vi;
 
 import graph.Graph;
 
+import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.DecimalFormat;
@@ -33,6 +34,7 @@ import jsdd.algebraic.ASDD;
 import jsdd.algebraic.DecompositionASDD;
 import jsdd.rddlsim.ASDDConverter;
 import jsdd.stat.Summary;
+import jsdd.viz.GraphvizDumper;
 import jsdd.vtree.AVTree;
 import jsdd.vtree.Tree;
 import jsdd.vtree.VTreeUtils;
@@ -406,26 +408,26 @@ public class VI extends Policy {
 				vars.register((String) _context._hmID2VarName.get(index));
 			}
 
-			final int half = _context._alOrder.size() / 2;
-			final ArrayList<Integer> primed = new ArrayList<Integer>(half);
-			for (int i = half; i < half * 2; i++) {
-				final int index = (Integer) _context._alOrder.get(i);
-				primed.add(index);
+			final ArrayList<Integer> variables = new ArrayList<Integer>();
+			for (final Object obj : _context._alOrder) {
+				final int id = (Integer) obj;
+				final String name = (String) _context._hmID2VarName.get(id);
+				if (name.endsWith("'")) {
+					variables.add(id);
+				}
 			}
-			final Collection<Tree> dissections = VTreeUtils.dissections(primed);
-			System.out.println(dissections.size());
 			if (_nIter == _nHorizon - 1) {
 				int i = 0;
 				System.err.println("id avtree size algDecomps decomps algElems elems terms depth microsec");
-				for (final Tree dissection : dissections) {
+				for (final Tree dissection : VTreeUtils.dissect(variables)) {
 					final ASDDConverter converter = new ASDDConverter(_context);
 					final long start = System.nanoTime();
 					final ASDD<Double> asdd = converter.dissect((AVTree) dissection, _valueDD);
 					final long end = System.nanoTime();
-//					try {
+					try {
 						if (asdd instanceof DecompositionASDD<?>) {
 							final DecompositionASDD<?> decomp = (DecompositionASDD<?>) asdd;
-							// GraphvizDumper.dump(decomp, vars,  "final_dissect_" + i + ".dot");
+							GraphvizDumper.dump(decomp, vars,  "asdd/dissect_" + i + ".dot");
 							final Summary stats = Summary.from(decomp);
 							System.err.println(i
 									+ " " + dissection
@@ -438,10 +440,10 @@ public class VI extends Policy {
 									+ " " + stats.getDepth()
 									+ " " + ((end - start) / 1000));
 						}
-//					} catch (FileNotFoundException e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					}
+					} catch (FileNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					i++;
 				}
 			}

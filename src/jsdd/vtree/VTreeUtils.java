@@ -98,4 +98,14 @@ public class VTreeUtils {
 		return dissections(leaves);
 	}
 
+	public static Iterable<Tree> dissect(final ArrayList<Integer> order) {
+		final Tree[] leaves = new Tree[order.size() + 1];
+		int i = 0;
+		for (final Integer index : order) {
+			leaves[i++] = new VariableLeaf(index);
+		}
+		leaves[i] = new ValueLeaf();
+		return new DissectionIterator(leaves);
+	}
+
 }
