@@ -1,11 +1,11 @@
 package jasdd;
 
+import jasdd.util.StringBuildable;
 import jasdd.visitor.SDDVisitor;
 
 import java.util.Collection;
 
 
-import util.StringBuildable;
 
 /**
  * Methods shared by all kinds of SDDs.

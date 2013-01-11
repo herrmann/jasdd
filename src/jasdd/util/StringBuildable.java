@@ -1,4 +1,4 @@
-package util;
+package jasdd.util;
 
 /**
  * Type of classes that provide human-readable serialization of objects.

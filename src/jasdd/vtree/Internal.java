@@ -1,6 +1,6 @@
 package jasdd.vtree;
 
-import util.StringBuildable;
+import jasdd.util.StringBuildable;
 
 /**
  * Auxiliary super type for internal vtree (algebraic or not) nodes.

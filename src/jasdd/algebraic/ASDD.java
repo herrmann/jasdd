@@ -1,8 +1,8 @@
 package jasdd.algebraic;
 
+import jasdd.util.StringBuildable;
 import jasdd.visitor.ASDDVisitor;
 import jasdd.vtree.AVTree;
-import util.StringBuildable;
 
 /**
  * The type of algebraic SDDs.

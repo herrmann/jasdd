@@ -3,8 +3,8 @@ package jasdd.algebraic;
 import jasdd.LiteralSDD;
 import jasdd.SDD;
 import jasdd.Variable;
+import jasdd.util.StringBuildable;
 import jasdd.visitor.ASDDVisitor;
-import util.StringBuildable;
 
 /**
  * One of the composing elements (paired boxes) of an algebraic SDD.

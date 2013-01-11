@@ -1,7 +1,7 @@
 package jasdd;
 
+import jasdd.util.StringBuildable;
 import jasdd.visitor.SDDVisitor;
-import util.StringBuildable;
 
 /**
  * A pair of SDDs representing one element of a decomposition.

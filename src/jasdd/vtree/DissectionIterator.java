@@ -1,6 +1,6 @@
 package jasdd.vtree;
 
-import util.PartitioningIterator;
+import jasdd.util.PartitioningIterator;
 
 /**
  * Lazily generates tree dissections.
