@@ -11,7 +11,7 @@ import jsdd.Element;
 import jsdd.OperatorApplication;
 import jsdd.OrOperator;
 import jsdd.SDD;
-import jsdd.stat.ASDDVisitor;
+import jsdd.visitor.ASDDVisitor;
 import jsdd.vtree.InternalAVTree;
 
 /**

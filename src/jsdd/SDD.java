@@ -2,7 +2,7 @@ package jsdd;
 
 import java.util.Collection;
 
-import jsdd.stat.SDDVisitor;
+import jsdd.visitor.SDDVisitor;
 
 import util.StringBuildable;
 

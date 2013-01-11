@@ -1,6 +1,6 @@
 package jsdd;
 
-import jsdd.stat.SDDVisitor;
+import jsdd.visitor.SDDVisitor;
 import util.StringBuildable;
 
 /**

@@ -3,7 +3,7 @@ package jsdd;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import jsdd.stat.SDDVisitor;
+import jsdd.visitor.SDDVisitor;
 
 /**
  * SDD for a single literal.

@@ -3,7 +3,7 @@ package jsdd.algebraic;
 import jsdd.LiteralSDD;
 import jsdd.SDD;
 import jsdd.Variable;
-import jsdd.stat.ASDDVisitor;
+import jsdd.visitor.ASDDVisitor;
 import util.StringBuildable;
 
 /**

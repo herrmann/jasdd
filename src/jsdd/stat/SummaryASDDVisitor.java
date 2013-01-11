@@ -5,6 +5,7 @@ import jsdd.Element;
 import jsdd.algebraic.AlgebraicElement;
 import jsdd.algebraic.AlgebraicTerminal;
 import jsdd.algebraic.DecompositionASDD;
+import jsdd.visitor.AbstractASDDVisitor;
 
 /**
  * Visits an ASDD and creates a summary of it.

@@ -9,7 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import jsdd.stat.SDDVisitor;
+import jsdd.visitor.SDDVisitor;
 import jsdd.viz.GraphvizDumper;
 import jsdd.vtree.InternalVTree;
 import jsdd.vtree.VTree;

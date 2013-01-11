@@ -1,4 +1,4 @@
-package jsdd.stat;
+package jsdd.visitor;
 
 import java.util.HashSet;
 import java.util.Set;

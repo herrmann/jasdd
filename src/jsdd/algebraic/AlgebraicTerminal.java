@@ -1,6 +1,6 @@
 package jsdd.algebraic;
 
-import jsdd.stat.ASDDVisitor;
+import jsdd.visitor.ASDDVisitor;
 import jsdd.vtree.ValueLeaf;
 
 /**

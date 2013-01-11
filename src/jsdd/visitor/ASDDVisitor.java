@@ -1,4 +1,4 @@
-package jsdd.stat;
+package jsdd.visitor;
 
 import jsdd.algebraic.AlgebraicElement;
 import jsdd.algebraic.AlgebraicTerminal;

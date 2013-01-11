@@ -1,6 +1,7 @@
 package jsdd.stat;
 
 import jsdd.algebraic.ASDD;
+import jsdd.visitor.UniqueASDDVisitor;
 
 /**
  * Summary of attributes of an ASDD structure.

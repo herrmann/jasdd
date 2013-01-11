@@ -1,4 +1,4 @@
-package jsdd.stat;
+package jsdd.visitor;
 
 import jsdd.ConstantSDD;
 import jsdd.DecompositionSDD;
