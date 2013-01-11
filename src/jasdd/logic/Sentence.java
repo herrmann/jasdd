@@ -1,4 +1,4 @@
-package jasdd;
+package jasdd.logic;
 
 /**
  * Boolean logical sentence semantics.

@@ -1,8 +1,5 @@
 package jasdd.viz;
 
-import jasdd.Literal;
-import jasdd.Variable;
-import jasdd.VariableRegistry;
 import jasdd.algebraic.ASDD;
 import jasdd.algebraic.AlgebraicElement;
 import jasdd.algebraic.DecompositionASDD;
@@ -11,6 +8,9 @@ import jasdd.bool.DecompositionSDD;
 import jasdd.bool.Element;
 import jasdd.bool.LiteralSDD;
 import jasdd.bool.SDD;
+import jasdd.logic.Literal;
+import jasdd.logic.Variable;
+import jasdd.logic.VariableRegistry;
 import jasdd.vtree.InternalTree;
 import jasdd.vtree.Tree;
 import jasdd.vtree.VTree;

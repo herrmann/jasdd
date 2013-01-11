@@ -1,8 +1,8 @@
 package jasdd.bool;
 
-import jasdd.BooleanOperator;
-import jasdd.Literal;
-import jasdd.Variable;
+import jasdd.logic.BooleanOperator;
+import jasdd.logic.Literal;
+import jasdd.logic.Variable;
 import jasdd.vtree.InternalVTree;
 
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package jasdd;
+package jasdd.logic;
 
 /**
  * Interface for any binary boolean operator over SDDs.

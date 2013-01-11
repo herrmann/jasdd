@@ -1,4 +1,4 @@
-package jasdd;
+package jasdd.logic;
 
 /**
  * Representation of a logical boolean variable.

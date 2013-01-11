@@ -1,4 +1,4 @@
-package jasdd;
+package jasdd.logic;
 
 import java.util.HashMap;
 import java.util.Map;

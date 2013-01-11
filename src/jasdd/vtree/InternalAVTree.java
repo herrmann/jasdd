@@ -1,6 +1,6 @@
 package jasdd.vtree;
 
-import jasdd.Variable;
+import jasdd.logic.Variable;
 
 import java.util.Set;
 

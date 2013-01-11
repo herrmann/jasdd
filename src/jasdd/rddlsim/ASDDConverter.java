@@ -1,6 +1,5 @@
 package jasdd.rddlsim;
 
-import jasdd.Variable;
 import jasdd.algebraic.ASDD;
 import jasdd.algebraic.AlgebraicElement;
 import jasdd.algebraic.AlgebraicTerminal;
@@ -11,6 +10,7 @@ import jasdd.bool.DecompositionSDD;
 import jasdd.bool.LiteralSDD;
 import jasdd.bool.OperatorApplication;
 import jasdd.bool.SDD;
+import jasdd.logic.Variable;
 import jasdd.vtree.AVTree;
 import jasdd.vtree.InternalAVTree;
 import jasdd.vtree.InternalVTree;

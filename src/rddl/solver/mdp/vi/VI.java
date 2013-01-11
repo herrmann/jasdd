@@ -17,9 +17,9 @@ package rddl.solver.mdp.vi;
 
 import graph.Graph;
 
-import jasdd.VariableRegistry;
 import jasdd.algebraic.ASDD;
 import jasdd.algebraic.DecompositionASDD;
+import jasdd.logic.VariableRegistry;
 import jasdd.rddlsim.ASDDConverter;
 import jasdd.stat.Summary;
 import jasdd.viz.GraphvizDumper;

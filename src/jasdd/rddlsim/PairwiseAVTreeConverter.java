@@ -1,7 +1,7 @@
 package jasdd.rddlsim;
 
-import jasdd.Variable;
-import jasdd.VariableRegistry;
+import jasdd.logic.Variable;
+import jasdd.logic.VariableRegistry;
 import jasdd.vtree.AVTree;
 import jasdd.vtree.InternalAVTree;
 import jasdd.vtree.InternalVTree;

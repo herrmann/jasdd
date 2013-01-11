@@ -1,7 +1,7 @@
 package jasdd.bool;
 
-import jasdd.BooleanOperator;
-import jasdd.Sentence;
+import jasdd.logic.BooleanOperator;
+import jasdd.logic.Sentence;
 import jasdd.util.StringBuildable;
 import jasdd.visitor.SDDVisitor;
 

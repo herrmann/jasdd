@@ -1,8 +1,8 @@
 package jasdd.bool;
 
-import jasdd.Literal;
-import jasdd.Sentence;
-import jasdd.Variable;
+import jasdd.logic.Literal;
+import jasdd.logic.Sentence;
+import jasdd.logic.Variable;
 import jasdd.util.StringBuildable;
 import jasdd.visitor.SDDVisitor;
 

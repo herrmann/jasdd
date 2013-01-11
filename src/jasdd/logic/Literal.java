@@ -1,4 +1,4 @@
-package jasdd;
+package jasdd.logic;
 
 /**
  * A true or false variable.

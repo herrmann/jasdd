@@ -1,7 +1,7 @@
 package jasdd.vtree;
 
-import jasdd.Variable;
-import jasdd.VariableRegistry;
+import jasdd.logic.Variable;
+import jasdd.logic.VariableRegistry;
 
 import java.util.ArrayList;
 import java.util.Collection;

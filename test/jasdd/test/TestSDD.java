@@ -1,13 +1,13 @@
 package jasdd.test;
 
-import jasdd.Variable;
-import jasdd.VariableRegistry;
 import jasdd.bool.AbstractSDD;
 import jasdd.bool.ConstantSDD;
 import jasdd.bool.DecompositionSDD;
 import jasdd.bool.Element;
 import jasdd.bool.LiteralSDD;
 import jasdd.bool.SDD;
+import jasdd.logic.Variable;
+import jasdd.logic.VariableRegistry;
 import jasdd.viz.GraphvizDumper;
 import jasdd.vtree.InternalVTree;
 import jasdd.vtree.VTree;
