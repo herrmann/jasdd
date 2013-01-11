@@ -8,6 +8,7 @@ import jsdd.Variable;
 import jsdd.VariableRegistry;
 import jsdd.rddlsim.ASDDConverter;
 import jsdd.rddlsim.ASDDConverter.VariableAssignment;
+import jsdd.vtree.DissectionIterator;
 import jsdd.vtree.InternalAVTree;
 import jsdd.vtree.InternalRightLinearAVTree;
 import jsdd.vtree.InternalVTree;
@@ -209,6 +210,23 @@ public class VTreeTest {
 			final Variable var = leaf.getVariable();
 			// The variable A won't be present because the frontier can't be empty
 			Assert.assertFalse(a.equals(var));
+		}
+	}
+
+	@Test
+	public void dissectionIterator() {
+		for (int n = 1; n <= 5; n++) {
+			final Tree[] leaves = new Tree[n + 1];
+			for (int i = 0; i < n; i++) {
+				leaves[i] = new VariableLeaf(i);
+			}
+			leaves[n] = new ValueLeaf();
+			int count = 0;
+			for (final Tree tree : new DissectionIterator(leaves)) {
+				count++;
+				System.out.println(tree);
+			}
+			Assert.assertEquals(catalanNumbers[n], count);
 		}
 	}
 
