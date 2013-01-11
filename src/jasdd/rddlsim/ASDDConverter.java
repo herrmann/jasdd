@@ -1,16 +1,16 @@
 package jasdd.rddlsim;
 
-import jasdd.AndOperator;
-import jasdd.ConstantSDD;
-import jasdd.DecompositionSDD;
-import jasdd.LiteralSDD;
-import jasdd.OperatorApplication;
-import jasdd.SDD;
 import jasdd.Variable;
 import jasdd.algebraic.ASDD;
 import jasdd.algebraic.AlgebraicElement;
 import jasdd.algebraic.AlgebraicTerminal;
 import jasdd.algebraic.DecompositionASDD;
+import jasdd.bool.AndOperator;
+import jasdd.bool.ConstantSDD;
+import jasdd.bool.DecompositionSDD;
+import jasdd.bool.LiteralSDD;
+import jasdd.bool.OperatorApplication;
+import jasdd.bool.SDD;
 import jasdd.vtree.AVTree;
 import jasdd.vtree.InternalAVTree;
 import jasdd.vtree.InternalVTree;

@@ -1,10 +1,10 @@
 package jasdd.stat;
 
-import jasdd.DecompositionSDD;
-import jasdd.Element;
 import jasdd.algebraic.AlgebraicElement;
 import jasdd.algebraic.AlgebraicTerminal;
 import jasdd.algebraic.DecompositionASDD;
+import jasdd.bool.DecompositionSDD;
+import jasdd.bool.Element;
 import jasdd.visitor.AbstractASDDVisitor;
 
 /**

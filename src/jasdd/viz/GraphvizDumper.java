@@ -1,16 +1,16 @@
 package jasdd.viz;
 
-import jasdd.ConstantSDD;
-import jasdd.DecompositionSDD;
-import jasdd.Element;
 import jasdd.Literal;
-import jasdd.LiteralSDD;
-import jasdd.SDD;
 import jasdd.Variable;
 import jasdd.VariableRegistry;
 import jasdd.algebraic.ASDD;
 import jasdd.algebraic.AlgebraicElement;
 import jasdd.algebraic.DecompositionASDD;
+import jasdd.bool.ConstantSDD;
+import jasdd.bool.DecompositionSDD;
+import jasdd.bool.Element;
+import jasdd.bool.LiteralSDD;
+import jasdd.bool.SDD;
 import jasdd.vtree.InternalTree;
 import jasdd.vtree.Tree;
 import jasdd.vtree.VTree;

@@ -1,9 +1,9 @@
 package jasdd.visitor;
 
-import jasdd.ConstantSDD;
-import jasdd.DecompositionSDD;
-import jasdd.Element;
-import jasdd.LiteralSDD;
+import jasdd.bool.ConstantSDD;
+import jasdd.bool.DecompositionSDD;
+import jasdd.bool.Element;
+import jasdd.bool.LiteralSDD;
 
 /**
  * Empty implementation of SDDVisitor meant to be used as base class for

@@ -1,10 +1,10 @@
 package jasdd.algebraic;
 
-import jasdd.DecompositionSDD;
-import jasdd.Element;
-import jasdd.OperatorApplication;
-import jasdd.OrOperator;
-import jasdd.SDD;
+import jasdd.bool.DecompositionSDD;
+import jasdd.bool.Element;
+import jasdd.bool.OperatorApplication;
+import jasdd.bool.OrOperator;
+import jasdd.bool.SDD;
 import jasdd.visitor.ASDDVisitor;
 import jasdd.vtree.InternalAVTree;
 

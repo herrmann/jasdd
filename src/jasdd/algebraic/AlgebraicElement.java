@@ -1,8 +1,8 @@
 package jasdd.algebraic;
 
-import jasdd.LiteralSDD;
-import jasdd.SDD;
 import jasdd.Variable;
+import jasdd.bool.LiteralSDD;
+import jasdd.bool.SDD;
 import jasdd.util.StringBuildable;
 import jasdd.visitor.ASDDVisitor;
 

@@ -1,4 +1,4 @@
-package jasdd;
+package jasdd.bool;
 
 /**
  * Superclass for all kinds of terminal SDDs (constant and literal).

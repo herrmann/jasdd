@@ -1,4 +1,4 @@
-package jasdd;
+package jasdd.bool;
 
 import jasdd.visitor.SDDVisitor;
 

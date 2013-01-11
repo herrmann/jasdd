@@ -1,5 +1,7 @@
-package jasdd;
+package jasdd.bool;
 
+import jasdd.Literal;
+import jasdd.Variable;
 import jasdd.visitor.SDDVisitor;
 import jasdd.viz.GraphvizDumper;
 import jasdd.vtree.InternalVTree;

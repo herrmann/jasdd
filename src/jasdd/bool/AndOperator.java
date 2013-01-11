@@ -1,4 +1,6 @@
-package jasdd;
+package jasdd.bool;
+
+import jasdd.BooleanOperator;
 
 /**
  * Logical AND operator over SDDs.

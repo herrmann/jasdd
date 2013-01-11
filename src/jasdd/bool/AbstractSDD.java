@@ -1,5 +1,6 @@
-package jasdd;
+package jasdd.bool;
 
+import jasdd.BooleanOperator;
 import jasdd.vtree.InternalVTree;
 
 /**

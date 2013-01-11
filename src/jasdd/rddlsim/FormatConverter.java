@@ -1,14 +1,14 @@
 package jasdd.rddlsim;
 
-import jasdd.DecompositionSDD;
-import jasdd.Element;
-import jasdd.SDD;
 import jasdd.Variable;
 import jasdd.VariableRegistry;
 import jasdd.algebraic.ASDD;
 import jasdd.algebraic.AlgebraicElement;
 import jasdd.algebraic.AlgebraicTerminal;
 import jasdd.algebraic.DecompositionASDD;
+import jasdd.bool.DecompositionSDD;
+import jasdd.bool.Element;
+import jasdd.bool.SDD;
 import jasdd.viz.GraphvizDumper;
 import jasdd.vtree.AVTree;
 import jasdd.vtree.InternalAVTree;
