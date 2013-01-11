@@ -1,5 +1,5 @@
 /**
- * Visualization of SDD structure using Graphviz.
+ * Visualization of ASDD structures using Graphviz.
  * 
  * @author Ricardo Herrmann
  */

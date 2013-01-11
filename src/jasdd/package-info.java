@@ -1,5 +1,5 @@
 /**
- * Sentential Decision Diagrams library.
+ * Algebraic Sentential Decision Diagrams library.
  * 
  * @author Ricardo Herrmann
  */
