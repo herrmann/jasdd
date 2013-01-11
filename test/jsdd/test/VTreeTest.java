@@ -1,21 +1,22 @@
 package jsdd.test;
 
+import jasdd.Variable;
+import jasdd.VariableRegistry;
+import jasdd.rddlsim.ASDDConverter;
+import jasdd.rddlsim.ASDDConverter.VariableAssignment;
+import jasdd.vtree.DissectionIterator;
+import jasdd.vtree.InternalAVTree;
+import jasdd.vtree.InternalRightLinearAVTree;
+import jasdd.vtree.InternalVTree;
+import jasdd.vtree.Tree;
+import jasdd.vtree.VTreeUtils;
+import jasdd.vtree.ValueLeaf;
+import jasdd.vtree.VariableLeaf;
+
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import jsdd.Variable;
-import jsdd.VariableRegistry;
-import jsdd.rddlsim.ASDDConverter;
-import jsdd.rddlsim.ASDDConverter.VariableAssignment;
-import jsdd.vtree.DissectionIterator;
-import jsdd.vtree.InternalAVTree;
-import jsdd.vtree.InternalRightLinearAVTree;
-import jsdd.vtree.InternalVTree;
-import jsdd.vtree.Tree;
-import jsdd.vtree.VTreeUtils;
-import jsdd.vtree.ValueLeaf;
-import jsdd.vtree.VariableLeaf;
 import junit.framework.Assert;
 
 import org.junit.Test;

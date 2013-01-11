@@ -1,5 +1,19 @@
 package jsdd.test;
 
+import jasdd.AbstractSDD;
+import jasdd.ConstantSDD;
+import jasdd.DecompositionSDD;
+import jasdd.Element;
+import jasdd.LiteralSDD;
+import jasdd.SDD;
+import jasdd.Variable;
+import jasdd.VariableRegistry;
+import jasdd.viz.GraphvizDumper;
+import jasdd.vtree.InternalVTree;
+import jasdd.vtree.VTree;
+import jasdd.vtree.VTreeUtils;
+import jasdd.vtree.VariableLeaf;
+
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -7,19 +21,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import jsdd.AbstractSDD;
-import jsdd.ConstantSDD;
-import jsdd.DecompositionSDD;
-import jsdd.Element;
-import jsdd.LiteralSDD;
-import jsdd.SDD;
-import jsdd.Variable;
-import jsdd.VariableRegistry;
-import jsdd.viz.GraphvizDumper;
-import jsdd.vtree.InternalVTree;
-import jsdd.vtree.VTree;
-import jsdd.vtree.VTreeUtils;
-import jsdd.vtree.VariableLeaf;
 
 import org.junit.Assert;
 import org.junit.Test;

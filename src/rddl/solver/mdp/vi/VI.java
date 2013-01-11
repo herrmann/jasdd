@@ -17,6 +17,16 @@ package rddl.solver.mdp.vi;
 
 import graph.Graph;
 
+import jasdd.VariableRegistry;
+import jasdd.algebraic.ASDD;
+import jasdd.algebraic.DecompositionASDD;
+import jasdd.rddlsim.ASDDConverter;
+import jasdd.stat.Summary;
+import jasdd.viz.GraphvizDumper;
+import jasdd.vtree.AVTree;
+import jasdd.vtree.Tree;
+import jasdd.vtree.VTreeUtils;
+
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -29,15 +39,6 @@ import java.util.Random;
 import java.util.Set;
 import java.util.TreeSet;
 
-import jsdd.VariableRegistry;
-import jsdd.algebraic.ASDD;
-import jsdd.algebraic.DecompositionASDD;
-import jsdd.rddlsim.ASDDConverter;
-import jsdd.stat.Summary;
-import jsdd.viz.GraphvizDumper;
-import jsdd.vtree.AVTree;
-import jsdd.vtree.Tree;
-import jsdd.vtree.VTreeUtils;
 import rddl.ActionGenerator;
 import rddl.EvalException;
 import rddl.RDDL.INSTANCE;

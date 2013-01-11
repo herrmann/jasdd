@@ -1,19 +1,20 @@
 package jsdd.test;
 
+import jasdd.DecompositionSDD;
+import jasdd.Element;
+import jasdd.Variable;
+import jasdd.VariableRegistry;
+import jasdd.algebraic.AlgebraicElement;
+import jasdd.algebraic.AlgebraicTerminal;
+import jasdd.algebraic.DecompositionASDD;
+import jasdd.viz.GraphvizDumper;
+import jasdd.vtree.InternalAVTree;
+import jasdd.vtree.InternalVTree;
+import jasdd.vtree.ValueLeaf;
+import jasdd.vtree.VariableLeaf;
+
 import java.io.FileNotFoundException;
 
-import jsdd.DecompositionSDD;
-import jsdd.Element;
-import jsdd.Variable;
-import jsdd.VariableRegistry;
-import jsdd.algebraic.AlgebraicElement;
-import jsdd.algebraic.AlgebraicTerminal;
-import jsdd.algebraic.DecompositionASDD;
-import jsdd.viz.GraphvizDumper;
-import jsdd.vtree.InternalAVTree;
-import jsdd.vtree.InternalVTree;
-import jsdd.vtree.ValueLeaf;
-import jsdd.vtree.VariableLeaf;
 import junit.framework.Assert;
 
 import org.junit.Test;
