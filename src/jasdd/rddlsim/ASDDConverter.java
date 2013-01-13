@@ -129,7 +129,11 @@ public class ASDDConverter {
 	private SDD createPartition(final VTree vtree, final Map<Integer, Boolean> assignments) {
 		if (vtree instanceof VariableLeaf) {
 			final int index = ((VariableLeaf) vtree).getVariable().getIndex(); 
-			return cachedSdd(new LiteralSDD(index, assignments.get(index)));
+			if (assignments.containsKey(index)) {
+				return cachedSdd(new LiteralSDD(index, assignments.get(index)));
+			} else {
+				return cachedSdd(new ConstantSDD(true));
+			}
 		} else {
 			SDD sdd = cachedSdd(new ConstantSDD(true));
 			for (final Entry<Integer, Boolean> entry : assignments.entrySet()) {
