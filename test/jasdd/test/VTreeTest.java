@@ -223,9 +223,8 @@ public class VTreeTest {
 			}
 			leaves[n] = new ValueLeaf();
 			int count = 0;
-			for (final Tree tree : new DissectionIterator(leaves)) {
+			for (@SuppressWarnings("unused") final Tree tree : new DissectionIterator(leaves)) {
 				count++;
-				System.out.println(tree);
 			}
 			Assert.assertEquals(catalanNumbers[n], count);
 		}
