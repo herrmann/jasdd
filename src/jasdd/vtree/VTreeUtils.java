@@ -5,6 +5,7 @@ import jasdd.logic.VariableRegistry;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 
 /**
@@ -107,6 +108,43 @@ public class VTreeUtils {
 		}
 		leaves[i] = new ValueLeaf();
 		return new DissectionIterator(leaves);
+	}
+
+	public static Tree skewedAVTree(final double factor, final ArrayList<Integer> order) {
+		final Tree[] leaves = new Tree[order.size() + 1];
+		int i = 0;
+		for (final Integer index : order) {
+			leaves[i++] = new VariableLeaf(index);
+		}
+		leaves[i] = new ValueLeaf();
+		return skewedAVTree(factor, leaves, 0, leaves.length);
+	}
+
+	public static Tree skewedAVTree(final double factor, final Tree[] order) {
+		if (factor < 0 || factor > 1) {
+			throw new IllegalArgumentException("Skewness factor should be between 0 and 1");
+		}
+		return skewedAVTree(factor, order, 0, order.length);
+	}
+
+	private static Tree skewedAVTree(final double factor, final Tree[] order, final int begin, final int end) {
+		final int length = end - begin;
+		if (length == 1) {
+			return order[begin];
+		} else {
+			int sep = 1 + begin + (int) ((length - 1) * factor);
+			// Handle the case where factor is 1 where it should be 0.999...
+			if (sep == end) {
+				sep--;
+			}
+			final VTree left = (VTree) skewedAVTree(factor, order, begin, sep);
+			final Tree right = skewedAVTree(factor, order, sep, end);
+			if (end < order.length) {
+				return new InternalVTree(left, (VTree) right);
+			} else {
+				return new InternalAVTree(left, (AVTree) right);
+			}
+		}
 	}
 
 }
