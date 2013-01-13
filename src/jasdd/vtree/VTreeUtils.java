@@ -60,10 +60,10 @@ public class VTreeUtils {
 		for (final Variable var : vars) {
 			leaves[i++] = new VariableLeaf(var);
 		}
-		return dissections(leaves, 0, length);
+		return dissections(leaves);
 	}
 
-	private static Collection<Tree> dissections(final Tree[] vars) {
+	public static Collection<Tree> dissections(final Tree[] vars) {
 		return dissections(vars, 0, vars.length);
 	}
 
@@ -145,6 +145,22 @@ public class VTreeUtils {
 				return new InternalAVTree(left, (AVTree) right);
 			}
 		}
+	}
+
+	public static List<Tree> skews(final int skews, final ArrayList<Integer> order) {
+		final Tree[] leaves = new Tree[order.size() + 1];
+		int i = 0;
+		for (final Integer index : order) {
+			leaves[i++] = new VariableLeaf(index);
+		}
+		leaves[i] = new ValueLeaf();
+
+		final List<Tree> trees = new ArrayList<Tree>();
+		for (i = 0; i < skews; i++) {
+			final double factor = (double) i / (skews - 1);
+			trees.add(VTreeUtils.skewedAVTree(factor, leaves));
+		}
+		return trees;
 	}
 
 }
