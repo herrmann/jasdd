@@ -14,7 +14,10 @@ import jasdd.vtree.ValueLeaf;
 import jasdd.vtree.VariableLeaf;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import junit.framework.Assert;
@@ -228,6 +231,56 @@ public class VTreeTest {
 			}
 			Assert.assertEquals(catalanNumbers[n], count);
 		}
+	}
+
+	@Test
+	public void skewedTree() {
+		final int n = 200;
+		final Tree[] leaves = new Tree[n + 1];
+		for (int i = 0; i < n; i++) {
+			leaves[i] = new VariableLeaf(i);
+		}
+		leaves[n] = new ValueLeaf();
+
+		final Set<Tree> trees = new HashSet<Tree>();
+		final int skews = 2000;
+		for (int i = 0; i < skews; i++) {
+			final double factor = (double) i / (skews - 1);
+			trees.add(VTreeUtils.skewedAVTree(factor, leaves));
+		}
+		// System.out.println(trees.size());
+	}
+
+	@Test
+	public void skewnessDistribution() {
+		final int n = 9;
+		final Tree[] leaves = new Tree[n + 1];
+		for (int i = 0; i < n; i++) {
+			leaves[i] = new VariableLeaf(i);
+		}
+		leaves[n] = new ValueLeaf();
+
+		final Map<Tree, Integer> ids = new HashMap<Tree, Integer>();
+	
+		int i = 0;
+		for (final Tree tree : VTreeUtils.dissections(leaves)) {
+			ids.put(tree, i++);
+		}
+
+		final int skews = (int) catalanNumbers[n+1];
+		Tree lastTree = null;
+		for (i = 0; i < skews; i++) {
+			final double factor = (double) i / (skews - 1);
+			final Tree tree = VTreeUtils.skewedAVTree(factor, leaves);
+			if (!tree.equals(lastTree)) {
+				lastTree = tree;
+				final Integer id = ids.get(tree);
+				if (id != null) {
+					// System.out.print("," + id);
+				}
+			}
+		}
+		// System.out.println();
 	}
 
 }
