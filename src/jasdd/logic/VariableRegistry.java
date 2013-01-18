@@ -14,11 +14,24 @@ public class VariableRegistry {
 	private Map<String, Integer> index = new HashMap<String, Integer>();
 	private int counter;
 
+	public Variable register(final int id, final String name) {
+		if (!namesIndex.containsKey(id) && !index.containsKey(name)) {
+			index.put(name, id);
+			namesIndex.put(id, name);
+			return new Variable(id);
+		} else {
+			throw new AssertionError("Variable index and/or name already exist in registry");
+		}
+	}
+
 	public Variable register(final String name) {
 		if (index.containsKey(name)) {
 			return new Variable(index.get(name));
 		} else {
-			final int id = nextId();
+			int id = nextId();
+			while (namesIndex.containsKey(id)) {
+				id = nextId();
+			}
 			index.put(name, id);
 			namesIndex.put(id, name);
 			return new Variable(id);
