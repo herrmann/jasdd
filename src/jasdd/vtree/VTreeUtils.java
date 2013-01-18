@@ -127,7 +127,7 @@ public class VTreeUtils {
 		return skewedAVTree(factor, order, 0, order.length);
 	}
 
-	private static Tree skewedAVTree(final double factor, final Tree[] order, final int begin, final int end) {
+	public static Tree skewedAVTree(final double factor, final Tree[] order, final int begin, final int end) {
 		final int length = end - begin;
 		if (length == 1) {
 			return order[begin];
@@ -144,6 +144,22 @@ public class VTreeUtils {
 			} else {
 				return new InternalAVTree(left, (AVTree) right);
 			}
+		}
+	}
+
+	public static Tree skewedVTree(final double factor, final Tree[] order, final int begin, final int end) {
+		final int length = end - begin;
+		if (length == 1) {
+			return order[begin];
+		} else {
+			int sep = 1 + begin + (int) ((length - 1) * factor);
+			// Handle the case where factor is 1 where it should be 0.999...
+			if (sep == end) {
+				sep--;
+			}
+			final VTree left = (VTree) skewedVTree(factor, order, begin, sep);
+			final Tree right = skewedVTree(factor, order, sep, end);
+			return new InternalVTree(left, (VTree) right);
 		}
 	}
 
