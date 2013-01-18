@@ -137,14 +137,14 @@ public class TestSDD {
 	@Test
 	public void graphvizOutput() throws FileNotFoundException {
 		final SDD sdd = exampleDarwiche();
-		GraphvizDumper.setOutput(new PrintStream("temp.dot"));
+		GraphvizDumper.setOutput("temp.dot");
 		GraphvizDumper.dump((DecompositionSDD) sdd);
 	}
 
 	@Test
 	public void graphvizVTreeOutput() {
 		try {
-			GraphvizDumper.setOutput(new PrintStream("sdd.dot"));
+			GraphvizDumper.setOutput("sdd.dot");
 		} catch (final FileNotFoundException e) {
 		}
 		GraphvizDumper.dump(bigVTree());

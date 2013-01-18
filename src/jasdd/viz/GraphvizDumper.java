@@ -42,6 +42,10 @@ public class GraphvizDumper {
 
 	public static PrintStream out = System.out;
 
+	public static void setOutput(final String fileName) throws FileNotFoundException {
+		setOutput(new PrintStream(fileName));
+	}
+
 	public static void setOutput(final PrintStream output) {
 		out = output;
 	}
