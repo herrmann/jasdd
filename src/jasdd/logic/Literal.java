@@ -24,6 +24,13 @@ public class Literal {
 		this(variable, true);
 	}
 
+	public static Literal from(final int index) {
+		if (index == 0) {
+			throw new IllegalArgumentException("Cannot directly create literal from index zero");
+		}
+		return new Literal(new Variable(Math.abs(index)), index > 0);
+	}
+
 	public Variable getVariable() {
 		return variable;
 	}
