@@ -141,15 +141,19 @@ public class DecompositionSDD extends AbstractSDD {
 		return false;
 	}
 
-	public static SDD buildNormalized(final InternalVTree vtree, final Variable v, boolean sign) {
+	public static DecompositionSDD buildNormalized(final InternalVTree vtree, final Variable v, boolean sign) {
 		return buildNormalized(vtree, new Literal(v, sign));
 	}
 
-	public static SDD buildNormalized(final InternalVTree vtree, final Variable v) {
+	public static DecompositionSDD buildNormalized(final InternalVTree vtree, final Variable v) {
 		return buildNormalized(vtree, new Literal(v));
 	}
 
-	public static SDD buildNormalized(final InternalVTree vtree, final Literal lit) {
+	public static DecompositionSDD buildNormalized(final InternalVTree vtree, final int index) {
+		return buildNormalized(vtree, Literal.from(index));
+	}
+
+	public static DecompositionSDD buildNormalized(final InternalVTree vtree, final Literal lit) {
 		final Variable v = lit.getVariable();
 		// Case 1: left vtree is the variable itself
 		final VTree left = vtree.getLeft();
