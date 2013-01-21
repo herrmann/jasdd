@@ -1,6 +1,8 @@
 package jasdd.test;
 
+import jasdd.algebraic.ASDD;
 import jasdd.algebraic.AlgebraicElement;
+import jasdd.algebraic.AlgebraicOperatorApplication;
 import jasdd.algebraic.AlgebraicTerminal;
 import jasdd.algebraic.DecompositionASDD;
 import jasdd.bool.DecompositionSDD;
@@ -166,6 +168,14 @@ public class TestASDD {
 		Assert.assertEquals(21, asdd.size());
 
 		GraphvizDumper.dump(asdd, vars, "asdd.gv");
+	}
+
+	@Test
+	public void sumTerminals() {
+		final ASDD<Double> left = new AlgebraicTerminal<Double>(1.0);
+		final ASDD<Double> right = new AlgebraicTerminal<Double>(2.0);
+		final ASDD<Double> result = AlgebraicOperatorApplication.sum(left, right);
+		Assert.assertEquals(new AlgebraicTerminal<Double>(3.0), result);
 	}
 
 }
