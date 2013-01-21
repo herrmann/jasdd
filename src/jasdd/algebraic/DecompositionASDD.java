@@ -26,6 +26,11 @@ public class DecompositionASDD<T> implements ASDD<T> {
 
 	private List<AlgebraicElement<T>> elements;
 
+	public DecompositionASDD(final InternalAVTree avtree, final List<AlgebraicElement<T>> elements) {
+		this.avtree = avtree;
+		this.elements = Collections.unmodifiableList(elements);
+	}
+
 	public DecompositionASDD(final InternalAVTree avtree, final AlgebraicElement<T>... elements) {
 		this.avtree = avtree;
 		this.elements = new ArrayList<AlgebraicElement<T>>(elements.length);
@@ -34,6 +39,7 @@ public class DecompositionASDD<T> implements ASDD<T> {
 		}
 	}
 
+	// TODO: avoid mutation, specially now that there's a constructor that creates a immutable list of elements.
 	public void addElement(AlgebraicElement<T> newElement) {
 		// Apply compression if possible
 		for (final AlgebraicElement<T> element : elements) {
