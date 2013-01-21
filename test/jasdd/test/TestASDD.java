@@ -178,4 +178,18 @@ public class TestASDD {
 		Assert.assertEquals(new AlgebraicTerminal<Double>(3.0), result);
 	}
 
+	@Test
+	public void sumScalar() {
+		final VariableRegistry vars = new VariableRegistry();
+		final Variable a = vars.register("A");
+		final ASDD<Double> low = new AlgebraicTerminal<Double>(1.0);
+		final ASDD<Double> high = new AlgebraicTerminal<Double>(2.0);
+		final AlgebraicElement<Double>[] elements = AlgebraicElement.shannon(a, high, low);
+		final InternalAVTree avtree = new InternalAVTree(a, new ValueLeaf());
+		final ASDD<Double> asdd = new DecompositionASDD<Double>(avtree, elements);
+		final ASDD<Double> increment = new AlgebraicTerminal<Double>(0.5);
+		final ASDD<Double> result = AlgebraicOperatorApplication.sum(asdd, increment);
+		Assert.assertEquals("[(0,VALUE), ((0 /\\ 2.5) \\/ (-0 /\\ 1.5))]", result.toString());
+	}
+
 }
