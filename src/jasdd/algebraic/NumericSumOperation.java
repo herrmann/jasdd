@@ -1,5 +1,7 @@
 package jasdd.algebraic;
 
+import jasdd.bool.AndOperator;
+import jasdd.bool.OperatorApplication;
 import jasdd.bool.SDD;
 import jasdd.visitor.AbstractASDDVisitor;
 
@@ -58,7 +60,8 @@ public class NumericSumOperation<T extends Number> extends AbstractASDDVisitor<T
 
 			@Override
 			public boolean visit(final DecompositionASDD<T> other) {
-				throw new UnsupportedOperationException();
+				result = sumDecompositions(decomp, other);
+				return false;
 			}
 
 		});
@@ -73,6 +76,23 @@ public class NumericSumOperation<T extends Number> extends AbstractASDDVisitor<T
 			final SDD prime = element.getPrime();
 			final ASDD<T> sub = AlgebraicOperatorApplication.sum(element.getSub(), terminal);
 			elements.add(new AlgebraicElement<T>(prime, sub));
+		}
+		return new DecompositionASDD<T>(decomp.getTree(), elements);
+	}
+
+	private ASDD<T> sumDecompositions(final DecompositionASDD<T> decomp, final DecompositionASDD<T> other) {
+		if (!decomp.getTree().equals(other.getTree())) {
+			throw new UnsupportedOperationException("Sum of decompositions using different avtrees is not supported yet");
+		}
+		// TODO: structural caching
+		final List<AlgebraicElement<T>> elements = new ArrayList<AlgebraicElement<T>>();
+		for (final AlgebraicElement<T> leftElem : decomp.getElements()) {
+			for (final AlgebraicElement<T> rightElem : other.getElements()) {
+				final SDD prime = new OperatorApplication(leftElem.getPrime(), rightElem.getPrime(), new AndOperator()).apply();
+				final ASDD<T> sub = AlgebraicOperatorApplication.sum(leftElem.getSub(), rightElem.getSub());
+				// TODO: compression
+				elements.add(new AlgebraicElement<T>(prime, sub));
+			}
 		}
 		return new DecompositionASDD<T>(decomp.getTree(), elements);
 	}

@@ -5,6 +5,7 @@ import jasdd.algebraic.AlgebraicElement;
 import jasdd.algebraic.AlgebraicOperatorApplication;
 import jasdd.algebraic.AlgebraicTerminal;
 import jasdd.algebraic.DecompositionASDD;
+import jasdd.bool.ConstantSDD;
 import jasdd.bool.DecompositionSDD;
 import jasdd.bool.Element;
 import jasdd.logic.Variable;
@@ -190,6 +191,29 @@ public class TestASDD {
 		final ASDD<Double> increment = new AlgebraicTerminal<Double>(0.5);
 		final ASDD<Double> result = AlgebraicOperatorApplication.sum(asdd, increment);
 		Assert.assertEquals("[(0,VALUE), ((0 /\\ 2.5) \\/ (-0 /\\ 1.5))]", result.toString());
+	}
+
+	@Test
+	public void sumDecompositions() {
+		final VariableRegistry vars = new VariableRegistry();
+		final Variable a = vars.register("A");
+		final Variable b = vars.register("B");
+
+		final InternalAVTree subtree = new InternalAVTree(b, new ValueLeaf());
+		final InternalAVTree avtree = new InternalAVTree(a, subtree);
+
+		@SuppressWarnings("unchecked")
+		final DecompositionASDD<Double> countA = new DecompositionASDD<Double>(avtree, AlgebraicElement.shannon(a,
+			new DecompositionASDD<Double>(subtree, new AlgebraicElement<Double>(new ConstantSDD(true), new AlgebraicTerminal<Double>(1.0))),
+			new DecompositionASDD<Double>(subtree, new AlgebraicElement<Double>(new ConstantSDD(true), new AlgebraicTerminal<Double>(0.0)))));
+		
+		@SuppressWarnings("unchecked")
+		final DecompositionASDD<Double> countB = new DecompositionASDD<Double>(avtree, new AlgebraicElement<Double>(new ConstantSDD(true),
+			new DecompositionASDD<Double>(subtree, AlgebraicElement.shannon(b, new AlgebraicTerminal<Double>(1.0), new AlgebraicTerminal<Double>(0.0)))));
+
+		final DecompositionASDD<Double> result = (DecompositionASDD<Double>) AlgebraicOperatorApplication.sum(countA, countB);
+
+		Assert.assertEquals("[(0,(1,VALUE)), ((0 /\\ [(1,VALUE), ((1 /\\ 2.0) \\/ (-1 /\\ 1.0))]) \\/ (-0 /\\ [(1,VALUE), ((1 /\\ 1.0) \\/ (-1 /\\ 0.0))]))]", result.toString());
 	}
 
 }
