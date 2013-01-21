@@ -216,4 +216,28 @@ public class TestASDD {
 		Assert.assertEquals("[(0,(1,VALUE)), ((0 /\\ [(1,VALUE), ((1 /\\ 2.0) \\/ (-1 /\\ 1.0))]) \\/ (-0 /\\ [(1,VALUE), ((1 /\\ 1.0) \\/ (-1 /\\ 0.0))]))]", result.toString());
 	}
 
+	@Test
+	public void sumDecompositionsLeftLinear() {
+		final VariableRegistry vars = new VariableRegistry();
+		final Variable a = vars.register("A");
+		final Variable b = vars.register("B");
+
+		final InternalVTree subtree = new InternalVTree(a, b);
+		final InternalAVTree avtree = new InternalAVTree(subtree, new ValueLeaf());
+
+		@SuppressWarnings("unchecked")
+		final DecompositionASDD<Double> countA = new DecompositionASDD<Double>(avtree,
+			new AlgebraicElement<Double>(new DecompositionSDD(subtree, Element.shannon(a, true, false)), new AlgebraicTerminal<Double>(1.0)),
+			new AlgebraicElement<Double>(new DecompositionSDD(subtree, Element.shannon(a, false, true)), new AlgebraicTerminal<Double>(0.0)));
+
+		@SuppressWarnings("unchecked")
+		final DecompositionASDD<Double> countB = new DecompositionASDD<Double>(avtree,
+			new AlgebraicElement<Double>(new DecompositionSDD(subtree, new Element(true, b)), new AlgebraicTerminal<Double>(1.0)),
+			new AlgebraicElement<Double>(new DecompositionSDD(subtree, new Element(true, b, false)), new AlgebraicTerminal<Double>(0.0)));
+
+		final DecompositionASDD<Double> result = (DecompositionASDD<Double>) AlgebraicOperatorApplication.sum(countA, countB);
+
+		Assert.assertEquals("[((0,1),VALUE), (([(0,1), ((0 /\\ 1) \\/ (-0 /\\ F))] /\\ 2.0) \\/ ([(0,1), ((0 /\\ -1) \\/ (-0 /\\ F))] /\\ 1.0) \\/ ([(0,1), ((0 /\\ F) \\/ (-0 /\\ 1))] /\\ 1.0) \\/ ([(0,1), ((0 /\\ F) \\/ (-0 /\\ -1))] /\\ 0.0))]", result.toString());
+	}
+
 }
