@@ -21,4 +21,6 @@ public interface ASDD<T> extends StringBuildable {
 
 	void accept(ASDDVisitor<T> visitor);
 
+	ASDD<T> trimmed();
+
 }

@@ -81,4 +81,9 @@ public class AlgebraicTerminal<T> implements ASDD<T> {
 		visitor.visit(this);
 	}
 
+	@Override
+	public ASDD<T> trimmed() {
+		return this;
+	}
+
 }

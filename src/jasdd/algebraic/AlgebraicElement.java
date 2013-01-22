@@ -98,4 +98,8 @@ public class AlgebraicElement<T> implements StringBuildable {
 		}
 	}
 
+	public AlgebraicElement<T> trimmed() {
+		return new AlgebraicElement<T>(getPrime().trimmed(), getSub().trimmed());
+	}
+
 }

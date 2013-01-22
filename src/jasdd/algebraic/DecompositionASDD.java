@@ -1,5 +1,6 @@
 package jasdd.algebraic;
 
+import jasdd.bool.ConstantSDD;
 import jasdd.bool.DecompositionSDD;
 import jasdd.bool.Element;
 import jasdd.bool.OperatorApplication;
@@ -159,6 +160,26 @@ public class DecompositionASDD<T> implements ASDD<T> {
 				elem.accept(visitor);
 			}
 			visitor.postVisit(this);
+		}
+	}
+
+	@Override
+	public ASDD<T> trimmed() {
+		final List<AlgebraicElement<T>> elements = new ArrayList<AlgebraicElement<T>>();
+		for (final AlgebraicElement<T> element : getElements()) {
+			elements.add(element.trimmed());
+		}
+		if (elements.size() == 1 && elements.get(0).getPrime().equals(new ConstantSDD(true))) {
+			if (elements.get(0).getSub() instanceof AlgebraicTerminal<?>) {
+				return elements.get(0).getSub();
+			} else {
+				return elements.get(0).getSub().trimmed();
+			}
+		} else {
+			@SuppressWarnings("unchecked")
+			final AlgebraicElement<T>[] elems = new AlgebraicElement[elements.size()];
+			elements.toArray(elems);
+			return new DecompositionASDD<T>(getTree(), elems);
 		}
 	}
 
