@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 /**
  * Boolean operator application with node sharing and cached computation.
  * 
@@ -23,12 +22,6 @@ public class OperatorApplication {
 
 	private SDD originalSdd1, originalSdd2, result;
 	private BooleanOperator originalOp;
-
-	// The components of the new SDD must be new, and the same applies to the
-	// caches. No components from the input SDDs must be reused. Global cache
-	// comes later when immutability is guaranteed.
-	private final Map<SDD, SDD> sddCache = new HashMap<SDD, SDD>();
-	private final Map<Element, Element> elementCache = new HashMap<Element, Element>();
 
 	public OperatorApplication(final SDD sdd1, final SDD sdd2, final BooleanOperator op) {
 		originalSdd1 = sdd1;
@@ -67,22 +60,22 @@ public class OperatorApplication {
 	}
 
 	private SDD apply(final ConstantSDD sdd1, final ConstantSDD sdd2, final BooleanOperator op) {
-		return cachedSdd(new ConstantSDD(op.apply(sdd1.getSign(), sdd2.getSign())));
+		return SDDFactory.getInstance().createConstant(op.apply(sdd1.getSign(), sdd2.getSign()));
 	}
 
 	private SDD apply(final LiteralSDD sdd1, final ConstantSDD sdd2, final BooleanOperator op) {
 		if (op.equals(AND)) {
 			if (sdd2.getSign()) {
-				return cachedSdd(new LiteralSDD(sdd1));
+				return SDDFactory.getInstance().createLiteral(sdd1);
 			} else {
-				return cachedSdd(new ConstantSDD(false));
+				return SDDFactory.getInstance().createConstant(false);
 			}
 		}
 		if (op.equals(OR)) {
 			if (sdd2.getSign()) {
-				return cachedSdd(new ConstantSDD(true));
+				return SDDFactory.getInstance().createConstant(true);
 			} else {
-				return cachedSdd(new LiteralSDD(sdd1));
+				return SDDFactory.getInstance().createLiteral(sdd1);
 			}
 		}
 		return null;
@@ -92,25 +85,27 @@ public class OperatorApplication {
 		final Literal literal = sdd1.getLiteral();
 		final Literal otherLiteral = sdd2.getLiteral();
 		if (literal.equals(otherLiteral)) {
-			return cachedSdd(new LiteralSDD(sdd1));
+			return SDDFactory.getInstance().createLiteral(sdd1);
 		} else if (literal.equals(otherLiteral.opposite())) {
 			if (op.equals(AND)) {
-				return cachedSdd(new ConstantSDD(false));
+				return SDDFactory.getInstance().createConstant(false);
 			}
 			if (op.equals(OR)) {
-				return cachedSdd(new ConstantSDD(true));
+				return SDDFactory.getInstance().createConstant(true);
 			}
 		} else {
 			// TODO: Respect and match vtrees
 			if (op.equals(AND)) {
-				final Element elem1 = cachedElement(new Element(literal, otherLiteral));
-				final Element elem2 = cachedElement(new Element(literal.opposite(), false));
-				return cachedSdd(new DecompositionSDD(null, elem1, elem2));
+				// createDecomposition takes care of caching elements
+				final Element elem1 = new Element(literal, otherLiteral);
+				final Element elem2 = new Element(literal.opposite(), false);
+				return SDDFactory.getInstance().createDecomposition(null, elem1, elem2);
 			}
 			if (op.equals(OR)) {
-				final Element elem1 = cachedElement(new Element(literal, true));
-				final Element elem2 = cachedElement(new Element(literal.opposite(), otherLiteral));
-				return cachedSdd(new DecompositionSDD(null, elem1, elem2));
+				// createDecomposition takes care of caching elements
+				final Element elem1 = new Element(literal, true);
+				final Element elem2 = new Element(literal.opposite(), otherLiteral);
+				return SDDFactory.getInstance().createDecomposition(null, elem1, elem2);
 			}
 		}
 		return null;
@@ -119,16 +114,16 @@ public class OperatorApplication {
 	private SDD apply(final DecompositionSDD sdd1, final ConstantSDD sdd2, final BooleanOperator op) {
 		if (op.equals(AND)) {
 			if (sdd2.getSign()) {
-				return cachedSdd(new DecompositionSDD(sdd1));
+				return SDDFactory.getInstance().createDecomposition(sdd1);
 			} else {
-				return cachedSdd(new ConstantSDD(false));
+				return SDDFactory.getInstance().createConstant(false);
 			}
 		}
 		if (op.equals(OR)) {
 			if (sdd2.getSign()) {
-				return cachedSdd(new ConstantSDD(true));
+				return SDDFactory.getInstance().createConstant(true);
 			} else {
-				return cachedSdd(new DecompositionSDD(sdd1));
+				return SDDFactory.getInstance().createDecomposition(sdd1);
 			}
 		}
 		return null;
@@ -139,13 +134,14 @@ public class OperatorApplication {
 		DecompositionSDD decomp;
 		if (sdd1.getVTree().getLeft().variables().contains(variable)) {
 			final Literal literal = sdd2.getLiteral();
-			decomp = new DecompositionSDD(sdd1.getVTree(),
-					cachedElement(new Element(variable, literal.getSign())),
-					cachedElement(new Element(variable, false, literal.opposite().getSign())));
+			// createDecomposition takes care of caching elements
+			decomp = SDDFactory.getInstance().createDecomposition(sdd1.getVTree(),
+					new Element(variable, literal.getSign()),
+					new Element(variable, false, literal.opposite().getSign()));
 		} else {
-			decomp = new DecompositionSDD(sdd1.getVTree(), cachedElement(new Element(true, sdd2.getLiteral())));
+			decomp = SDDFactory.getInstance().createDecomposition(sdd1.getVTree(), new Element(true, sdd2.getLiteral()));
 		}
-		return apply(sdd1, cachedSdd(decomp), op);
+		return apply(sdd1, decomp, op);
 	}
 
 	private SDD apply(final DecompositionSDD sdd1, final DecompositionSDD sdd2, final BooleanOperator op) {
@@ -168,7 +164,7 @@ public class OperatorApplication {
 						elements.remove(elem);
 						prime = or(elem.getPrime(), prime);
 					}
-					final Element element = cachedElement(new Element(prime, sub));
+					final Element element = SDDFactory.getInstance().createElement(prime, sub);
 					elements.add(element);
 					subs.put(sub, element);
 				}
@@ -177,12 +173,11 @@ public class OperatorApplication {
 		final int size = elements.size();
 		// Apply light trimming if possible
 		if (size == 1 && elements.get(0).getPrime().equals(new ConstantSDD(true)) && elements.get(0).getSub() instanceof ConstantSDD) {
-			return cachedSdd(new ConstantSDD(((ConstantSDD) elements.get(0).getSub()).getSign()));
+			return SDDFactory.getInstance().createConstant(((ConstantSDD) elements.get(0).getSub()).getSign());
 		} else {
 			final Element[] elems = new Element[size];
 			elements.toArray(elems);
-			final DecompositionSDD sdd = new DecompositionSDD(sdd1.getVTree(), elems);
-			return cachedSdd(sdd);
+			return SDDFactory.getInstance().createDecomposition(sdd1.getVTree(), elems);
 		}
 	}
 
@@ -192,28 +187,6 @@ public class OperatorApplication {
 
 	private SDD or(final SDD sdd1, final SDD sdd2) {
 		return apply(sdd1, sdd2, OR);
-	}
-
-	private Element cachedElement(final Element element) {
-		final Element cached = elementCache.get(element);
-		if (null == cached) {
-			elementCache.put(element, element);
-			return element;
-		} else {
-			// System.out.println("Element cache hit: " + element);
-			return cached;
-		}
-	}
-
-	private SDD cachedSdd(final SDD sdd) {
-		final SDD cached = sddCache.get(sdd);
-		if (null == cached) {
-			sddCache.put(sdd, sdd);
-			return sdd;
-		} else {
-			// System.out.println("SDD cache hit: " + sdd);
-			return cached;
-		}
 	}
 
 }
