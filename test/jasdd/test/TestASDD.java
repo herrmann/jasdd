@@ -10,6 +10,7 @@ import jasdd.bool.DecompositionSDD;
 import jasdd.bool.Element;
 import jasdd.logic.Variable;
 import jasdd.logic.VariableRegistry;
+import jasdd.stat.Summary;
 import jasdd.viz.GraphvizDumper;
 import jasdd.vtree.InternalAVTree;
 import jasdd.vtree.InternalVTree;
@@ -216,9 +217,11 @@ public class TestASDD {
 		Assert.assertEquals("[(0,(1,VALUE)), ((0 /\\ [(1,VALUE), ((1 /\\ 2.0) \\/ (-1 /\\ 1.0))]) \\/ (-0 /\\ [(1,VALUE), ((1 /\\ 1.0) \\/ (-1 /\\ 0.0))]))]", result.toString());
 	}
 
-	@Test
-	public void sumDecompositionsLeftLinear() {
-		final VariableRegistry vars = new VariableRegistry();
+	private DecompositionASDD<Double> leftLinearExample() {
+		return leftLinearExample(new VariableRegistry());
+	}
+
+	private DecompositionASDD<Double> leftLinearExample(final VariableRegistry vars) {
 		final Variable a = vars.register("A");
 		final Variable b = vars.register("B");
 
@@ -236,8 +239,27 @@ public class TestASDD {
 			new AlgebraicElement<Double>(new DecompositionSDD(subtree, new Element(true, b, false)), new AlgebraicTerminal<Double>(0.0)));
 
 		final DecompositionASDD<Double> result = (DecompositionASDD<Double>) AlgebraicOperatorApplication.sum(countA, countB);
+		return result;
+	}
 
+	@Test
+	public void sumDecompositionsLeftLinear() {
+		final DecompositionASDD<Double> result = leftLinearExample();
 		Assert.assertEquals("[((0,1),VALUE), (([(0,1), ((0 /\\ 1) \\/ (-0 /\\ F))] /\\ 2.0) \\/ ([(0,1), ((0 /\\ -1) \\/ (-0 /\\ F))] /\\ 1.0) \\/ ([(0,1), ((0 /\\ F) \\/ (-0 /\\ 1))] /\\ 1.0) \\/ ([(0,1), ((0 /\\ F) \\/ (-0 /\\ -1))] /\\ 0.0))]", result.toString());
+	}
+
+	@Test
+	public void stats() throws FileNotFoundException {
+		final VariableRegistry vars = new VariableRegistry();
+		final DecompositionASDD<Double> result = leftLinearExample(vars);
+		final Summary stats = Summary.from(result);
+		Assert.assertEquals(3, stats.getAlgebraicTerminals());
+		Assert.assertEquals(4, stats.getAlgebraicElements());
+		Assert.assertEquals(6, stats.getElements());
+		Assert.assertEquals(1, stats.getAlgebraicDecompositions());
+		Assert.assertEquals(4, stats.getDecompositions());
+		Assert.assertEquals(2, stats.getDepth());
+		Assert.assertEquals(10, result.size());
 	}
 
 }
