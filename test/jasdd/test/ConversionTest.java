@@ -53,13 +53,13 @@ public class ConversionTest {
 					GraphvizDumper.dump((DecompositionSDD) conjunction, reg, "conjunction.dot");
 				}
 				clauses++;
-				System.out.println(clauses);
+				// System.out.println(clauses);
 			} else {
 				final String cmd = scan.next();
 				if ("p".equals(cmd) && scan.next("cnf") != null) {
 					final int vars = scan.nextInt();
 					final int totalClauses = scan.nextInt();
-					System.out.println(vars + " vars, " + totalClauses + " clauses");
+					// System.out.println(vars + " vars, " + totalClauses + " clauses");
 					vtree = (InternalVTree) createVTree(vars);
 				} else if ("c".equals(cmd) && scan.hasNextInt()) {
 					final int index = scan.nextInt();
@@ -71,7 +71,7 @@ public class ConversionTest {
 				scan.nextLine();
 			}
 		}
-		System.out.println("Size: " + conjunction.size());
+		// System.out.println("Size: " + conjunction.size());
 	}
 
 	private VTree createVTree(final int vars) {
