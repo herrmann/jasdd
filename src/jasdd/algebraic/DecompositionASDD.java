@@ -169,12 +169,9 @@ public class DecompositionASDD<T> implements ASDD<T> {
 		for (final AlgebraicElement<T> element : getElements()) {
 			elements.add(element.trimmed());
 		}
-		if (elements.size() == 1 && elements.get(0).getPrime().equals(new ConstantSDD(true))) {
-			if (elements.get(0).getSub() instanceof AlgebraicTerminal<?>) {
-				return elements.get(0).getSub();
-			} else {
-				return elements.get(0).getSub().trimmed();
-			}
+		final AlgebraicElement<T> first = elements.get(0);
+		if (elements.size() == 1 && first.getPrime().isTautology()) {
+			return first.getSub().trimmed();
 		} else {
 			@SuppressWarnings("unchecked")
 			final AlgebraicElement<T>[] elems = new AlgebraicElement[elements.size()];
