@@ -556,4 +556,10 @@ public class TestSDD {
 		return AbstractSDD.decomposition(v6, n4, n5);
 	}
 
+	@Test
+	public void trimTrue() {
+		final DecompositionSDD sdd = new DecompositionSDD(vtree1(), new Element(true, true));
+		Assert.assertEquals(new ConstantSDD(true), sdd.trimmed());
+	}
+
 }

@@ -249,6 +249,12 @@ public class TestASDD {
 	}
 
 	@Test
+	public void nothingToTrim() {
+		final DecompositionASDD<Double> result = leftLinearExample();
+		Assert.assertEquals(result, result.trimmed());
+	}
+
+	@Test
 	public void stats() throws FileNotFoundException {
 		final VariableRegistry vars = new VariableRegistry();
 		final DecompositionASDD<Double> result = leftLinearExample(vars);
