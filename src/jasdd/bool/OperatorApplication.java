@@ -95,16 +95,17 @@ public class OperatorApplication {
 			}
 		} else {
 			// TODO: Respect and match vtrees
+			final SDDFactory factory = SDDFactory.getInstance();
 			if (op.equals(AND)) {
 				// createDecomposition takes care of caching elements
-				final Element elem1 = new Element(literal, otherLiteral);
-				final Element elem2 = new Element(literal.opposite(), false);
+				final Element elem1 = factory.createElement(literal, otherLiteral);
+				final Element elem2 = factory.createElement(literal.opposite(), false);
 				return SDDFactory.getInstance().createDecomposition(null, elem1, elem2);
 			}
 			if (op.equals(OR)) {
 				// createDecomposition takes care of caching elements
-				final Element elem1 = new Element(literal, true);
-				final Element elem2 = new Element(literal.opposite(), otherLiteral);
+				final Element elem1 = factory.createElement(literal, true);
+				final Element elem2 = factory.createElement(literal.opposite(), otherLiteral);
 				return SDDFactory.getInstance().createDecomposition(null, elem1, elem2);
 			}
 		}
@@ -131,15 +132,16 @@ public class OperatorApplication {
 
 	private SDD apply(final DecompositionSDD sdd1, final LiteralSDD sdd2, final BooleanOperator op) {
 		final Variable variable = sdd2.getLiteral().getVariable();
+		final SDDFactory factory = SDDFactory.getInstance();
 		DecompositionSDD decomp;
 		if (sdd1.getVTree().getLeft().variables().contains(variable)) {
 			final Literal literal = sdd2.getLiteral();
 			// createDecomposition takes care of caching elements
-			decomp = SDDFactory.getInstance().createDecomposition(sdd1.getVTree(),
-					new Element(variable, literal.getSign()),
-					new Element(variable, false, literal.opposite().getSign()));
+			decomp = factory.createDecomposition(sdd1.getVTree(),
+					factory.createElement(variable, literal.getSign()),
+					factory.createElement(variable, false, literal.opposite().getSign()));
 		} else {
-			decomp = SDDFactory.getInstance().createDecomposition(sdd1.getVTree(), new Element(true, sdd2.getLiteral()));
+			decomp = factory.createDecomposition(sdd1.getVTree(), factory.createElement(true, sdd2.getLiteral()));
 		}
 		return apply(sdd1, decomp, op);
 	}

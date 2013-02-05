@@ -15,80 +15,80 @@ public class Element implements Sentence, StringBuildable {
 
 	private SDD prime, sub;
 
-	public Element(final SDD prime, final SDD sub) {
+	/* package */ Element(final SDD prime, final SDD sub) {
 		this.prime = prime;
 		this.sub = sub;
 	}
 
-	public Element(final Variable v1, final boolean s1, final Variable v2, final boolean s2) {
+	private Element(final Variable v1, final boolean s1, final Variable v2, final boolean s2) {
 		this(new LiteralSDD(v1, s1), new LiteralSDD(v2, s2));
 	}
 
-	public Element(final Variable v1, final Variable v2) {
+	private Element(final Variable v1, final Variable v2) {
 		this(v1, true, v2, true);
 	}
 
-	public Element(final Variable v1, final boolean s2) {
+	private Element(final Variable v1, final boolean s2) {
 		this(v1, true, s2);
 	}
 
-	public Element(final boolean s1, final Variable v2) {
+	private Element(final boolean s1, final Variable v2) {
 		this(s1, v2, true);
 	}
 
-	public Element(final boolean s1, final Literal l2) {
+	private Element(final boolean s1, final Literal l2) {
 		this(s1, l2.getVariable(), l2.getSign());
 	}
 
-	public Element(final Variable v1, final boolean s1, final Variable v2) {
+	private Element(final Variable v1, final boolean s1, final Variable v2) {
 		this(v1, s1, v2, true);
 	}
 
-	public Element(final Variable v1, final Variable v2, final boolean s2) {
+	private Element(final Variable v1, final Variable v2, final boolean s2) {
 		this(v1, true, v2, s2);
 	}
 
-	public Element(final Variable v1, final boolean s1, final boolean s2) {
+	private Element(final Variable v1, final boolean s1, final boolean s2) {
 		this(new LiteralSDD(v1, s1), new ConstantSDD(s2));
 	}
 
-	public Element(final boolean s1, final Variable v2, final boolean s2) {
+	private Element(final boolean s1, final Variable v2, final boolean s2) {
 		this(new ConstantSDD(s1), new LiteralSDD(v2, s2));
 	}
 
-	public Element(final boolean s1, final boolean s2) {
+	private Element(final boolean s1, final boolean s2) {
 		this(new ConstantSDD(s1), new ConstantSDD(s2));
 	}
 
-	public Element(final SDD prime, final boolean s2) {
+	private Element(final SDD prime, final boolean s2) {
 		this(prime, new ConstantSDD(s2));
 	}
 
-	public Element(final boolean s1, final SDD sub) {
+	private Element(final boolean s1, final SDD sub) {
 		this(new ConstantSDD(s1), sub);
 	}
 
-	public Element(final SDD prime, final Variable v2, final boolean s2) {
+	private Element(final SDD prime, final Variable v2, final boolean s2) {
 		this(prime, new LiteralSDD(v2, s2));
 	}
 
-	public Element(final SDD prime, final Variable v2) {
+	private Element(final SDD prime, final Variable v2) {
 		this(prime, v2, true);
 	}
 
-	public Element(final Variable v1, final boolean s1, final SDD sub) {
+	private Element(final Variable v1, final boolean s1, final SDD sub) {
 		this(new LiteralSDD(v1, s1), sub);
 	}
 
-	public Element(final Variable v1, final SDD sub) {
+	private Element(final Variable v1, final SDD sub) {
 		this(v1, true, sub);
 	}
 
-	public Element(final Literal l1, boolean s2) {
+	private Element(final Literal l1, boolean s2) {
 		this(l1.getVariable(), l1.getSign(), s2);
 	}
 
-	public Element(final Literal l1, final Literal l2) {
+	private Element(final Literal l1, final Literal l2) {
 		this(l1.getVariable(), l1.getSign(), l2.getVariable(), l2.getSign());
 	}
 

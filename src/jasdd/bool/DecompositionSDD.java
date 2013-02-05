@@ -154,6 +154,7 @@ public class DecompositionSDD extends AbstractSDD {
 	}
 
 	public static DecompositionSDD buildNormalized(final InternalVTree vtree, final Literal lit) {
+		final SDDFactory factory = SDDFactory.getInstance();
 		final Variable v = lit.getVariable();
 		// Case 1: left vtree is the variable itself
 		final VTree left = vtree.getLeft();
@@ -168,19 +169,19 @@ public class DecompositionSDD extends AbstractSDD {
 		if (right instanceof VariableLeaf) {
 			final Variable treeVar = ((VariableLeaf) right).getVariable();
 			if (treeVar.equals(v)) {
-				return new DecompositionSDD(vtree, new Element(true, lit));
+				return new DecompositionSDD(vtree, factory.createElement(true, lit));
 			}
 		}
 		// Case 3: variable is in the left vtree
 		if (left.variables().contains(v)) {
 			final SDD top = buildNormalized((InternalVTree) left, lit);
 			final SDD bottom = buildNormalized((InternalVTree) left, lit.opposite());
-			return new DecompositionSDD(vtree, new Element(top, true), new Element(bottom, false));
+			return new DecompositionSDD(vtree, factory.createElement(top, true), factory.createElement(bottom, false));
 		}
 		// Case 4: variable is in the right vtree
 		if (right.variables().contains(v)) {
 			final SDD sub = buildNormalized((InternalVTree) right, lit);
-			return new DecompositionSDD(vtree, new Element(true, sub));
+			return new DecompositionSDD(vtree, factory.createElement(true, sub));
 		}
 		// Case 5: there's no case 5. What went wrong?
 		throw new IllegalArgumentException("Variable " + v.toString() + " is not in the vtree " + vtree.toString());

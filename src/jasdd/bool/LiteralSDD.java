@@ -64,8 +64,9 @@ public class LiteralSDD extends TerminalSDD {
 	@Override
 	public Collection<Element> expansion() {
 		final Collection<Element> expansion = new ArrayList<Element>(2);
-		expansion.add(new Element(getLiteral(), true));
-		expansion.add(new Element(getLiteral().opposite(), false));
+		final SDDFactory factory = SDDFactory.getInstance();
+		expansion.add(factory.createElement(getLiteral(), true));
+		expansion.add(factory.createElement(getLiteral().opposite(), false));
 		return expansion;
 	}
 
