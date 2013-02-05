@@ -6,6 +6,7 @@ import jasdd.bool.DecompositionSDD;
 import jasdd.bool.Element;
 import jasdd.bool.LiteralSDD;
 import jasdd.bool.SDD;
+import jasdd.bool.SDDFactory;
 import jasdd.logic.Variable;
 import jasdd.logic.VariableRegistry;
 import jasdd.viz.GraphvizDumper;
@@ -230,12 +231,13 @@ public class TestSDD {
 		final InternalVTree l3 = (InternalVTree) l2.getRight();
 		final InternalVTree l4 = (InternalVTree) l3.getRight();
 		
-		final DecompositionSDD a22 = new DecompositionSDD(l4, new Element(vars.register("alive(x2,y2)"), true), new Element(vars.register("alive(x2,y2)"), false, false));
-		final DecompositionSDD a212 = new DecompositionSDD(l3, new Element(vars.register("alive(x2,y1)"), true), new Element(vars.register("alive(x2,y1)"), false, a22));
-		final DecompositionSDD a211 = new DecompositionSDD(l3, new Element(vars.register("alive(x2,y1)"), a22), new Element(vars.register("alive(x2,y1)"), false, false));
-		final DecompositionSDD a122 = new DecompositionSDD(l2, new Element(vars.register("alive(x1,y2)"), a212), new Element(vars.register("alive(x1,y2)"), false, a211));
-		final DecompositionSDD a121 = new DecompositionSDD(l2, new Element(vars.register("alive(x1,y2)"), a211), new Element(vars.register("alive(x1,y2)"), false, false));
-		final DecompositionSDD a11 = new DecompositionSDD(l1, new Element(vars.register("alive(x1,y1)"), a122), new Element(vars.register("alive(x1,y1)"), false, a121));
+		final SDDFactory factory = SDDFactory.getInstance();
+		final DecompositionSDD a22 = factory.createDecomposition(l4, new Element(vars.register("alive(x2,y2)"), true), new Element(vars.register("alive(x2,y2)"), false, false));
+		final DecompositionSDD a212 = factory.createDecomposition(l3, new Element(vars.register("alive(x2,y1)"), true), new Element(vars.register("alive(x2,y1)"), false, a22));
+		final DecompositionSDD a211 = factory.createDecomposition(l3, new Element(vars.register("alive(x2,y1)"), a22), new Element(vars.register("alive(x2,y1)"), false, false));
+		final DecompositionSDD a122 = factory.createDecomposition(l2, new Element(vars.register("alive(x1,y2)"), a212), new Element(vars.register("alive(x1,y2)"), false, a211));
+		final DecompositionSDD a121 = factory.createDecomposition(l2, new Element(vars.register("alive(x1,y2)"), a211), new Element(vars.register("alive(x1,y2)"), false, false));
+		final DecompositionSDD a11 = factory.createDecomposition(l1, new Element(vars.register("alive(x1,y1)"), a122), new Element(vars.register("alive(x1,y1)"), false, a121));
 
 		GraphvizDumper.dump(a11, vars, "sdd.gv");
 	}
@@ -249,23 +251,25 @@ public class TestSDD {
 		final InternalVTree right = (InternalVTree) VTreeUtils.buildRightLinear(vars, "alive(x2,y1)", "alive(x2,y2)", "value");
 		final InternalVTree root = new InternalVTree(left,  right);
 
-		final DecompositionSDD a22 = new DecompositionSDD(right.getRight(), new Element(vars.register("alive(x2,y2)"), true), new Element(vars.register("alive(x2,y2)"), false, false));
-		final DecompositionSDD a212 = new DecompositionSDD(right, new Element(vars.register("alive(x2,y1)"), true), new Element(vars.register("alive(x2,y1)"), false, a22));
-		final DecompositionSDD a211 = new DecompositionSDD(right, new Element(vars.register("alive(x2,y1)"), a22), new Element(vars.register("alive(x2,y1)"), false, false));
+		final SDDFactory factory = SDDFactory.getInstance();
 
-		final DecompositionSDD part1 = new DecompositionSDD(left,
+		final DecompositionSDD a22 = factory.createDecomposition((InternalVTree) right.getRight(), new Element(vars.register("alive(x2,y2)"), true), new Element(vars.register("alive(x2,y2)"), false, false));
+		final DecompositionSDD a212 = factory.createDecomposition(right, new Element(vars.register("alive(x2,y1)"), true), new Element(vars.register("alive(x2,y1)"), false, a22));
+		final DecompositionSDD a211 = factory.createDecomposition(right, new Element(vars.register("alive(x2,y1)"), a22), new Element(vars.register("alive(x2,y1)"), false, false));
+
+		final DecompositionSDD part1 = factory.createDecomposition(left,
 			new Element(vars.register("alive(x1,y1)"), vars.register("alive(x1,y2)")),
 			new Element(vars.register("alive(x1,y1)"), false, false));
 		
-		final DecompositionSDD part2 = new DecompositionSDD(left,
+		final DecompositionSDD part2 = factory.createDecomposition(left,
 				new Element(vars.register("alive(x1,y1)"), vars.register("alive(x1,y2)"), false),
 				new Element(vars.register("alive(x1,y1)"), false, vars.register("alive(x1,y2)")));
 			
-		final DecompositionSDD part3 = new DecompositionSDD(left,
+		final DecompositionSDD part3 = factory.createDecomposition(left,
 				new Element(vars.register("alive(x1,y1)"), false),
 				new Element(vars.register("alive(x1,y1)"), false, vars.register("alive(x1,y2)"), false));
 
-		final DecompositionSDD sdd = new DecompositionSDD(root, new Element(part1, a212), new Element(part2, a211), new Element(part3, false));
+		final DecompositionSDD sdd = factory.createDecomposition(root, new Element(part1, a212), new Element(part2, a211), new Element(part3, false));
 
 		Assert.assertEquals(15, sdd.size());
 
@@ -290,13 +294,14 @@ public class TestSDD {
 		final InternalVTree apuPart = new InternalVTree(apu, bpuPart);
 		final InternalVTree plPart = new InternalVTree(pl, apuPart);
 		final InternalVTree cPart = new InternalVTree(c, plPart);
-		final SDD boNode = new DecompositionSDD(boPart, new Element(bo, true), new Element(bo, false, false));
-		final SDD bdrNode = new DecompositionSDD(bdrPart, new Element(bdr, boNode), new Element(bdr, false, false));
-		final SDD adrNode = new DecompositionSDD(adrPart, new Element(adr, bdrNode), new Element(adr, false, false));
-		final SDD bpuNode = new DecompositionSDD(bpuPart, new Element(bpu, boNode), new Element(bpu, false, adrNode));
-		final SDD apuNode = new DecompositionSDD(apuPart, new Element(apu, bpuNode), new Element(apu, false, adrNode));
-		final SDD plNode = new DecompositionSDD(plPart, new Element(pl, apuNode), new Element(pl, false, adrNode));
-		final SDD cNode = new DecompositionSDD(cPart, new Element(c, true), new Element(c, false, plNode));
+		final SDDFactory factory = SDDFactory.getInstance();
+		final SDD boNode = factory.createDecomposition(boPart, new Element(bo, true), new Element(bo, false, false));
+		final SDD bdrNode = factory.createDecomposition(bdrPart, new Element(bdr, boNode), new Element(bdr, false, false));
+		final SDD adrNode = factory.createDecomposition(adrPart, new Element(adr, bdrNode), new Element(adr, false, false));
+		final SDD bpuNode = factory.createDecomposition(bpuPart, new Element(bpu, boNode), new Element(bpu, false, adrNode));
+		final SDD apuNode = factory.createDecomposition(apuPart, new Element(apu, bpuNode), new Element(apu, false, adrNode));
+		final SDD plNode = factory.createDecomposition(plPart, new Element(pl, apuNode), new Element(pl, false, adrNode));
+		final SDD cNode = factory.createDecomposition(cPart, new Element(c, true), new Element(c, false, plNode));
 		cNode.dump();
 	}
 
@@ -493,14 +498,16 @@ public class TestSDD {
 		final InternalVTree vl = (InternalVTree) root.getLeft();
 		final InternalVTree vr = (InternalVTree) root.getRight();
 
-		final Element n0 = new Element(b, a);
-		final Element n1 = new Element(b, false, false);
-		final Element n2 = new Element(b, a, false);
-		final Element n3 = new Element(d, c);
-		final Element n4 = new Element(d, false, false);
-		final Element n5 = new Element(AbstractSDD.decomposition(vl, n0, n1), true);
-		final Element n6 = new Element(AbstractSDD.decomposition(vl, n1, n2), c);
-		final Element n7 = new Element(b, false, AbstractSDD.decomposition(vr, n3, n4));
+		final SDDFactory factory = SDDFactory.getInstance();
+
+		final Element n0 = factory.createElement(b, a);
+		final Element n1 = factory.createElement(b, false, false);
+		final Element n2 = factory.createElement(b, a, false);
+		final Element n3 = factory.createElement(d, c);
+		final Element n4 = factory.createElement(d, false, false);
+		final Element n5 = factory.createElement(AbstractSDD.decomposition(vl, n0, n1), true);
+		final Element n6 = factory.createElement(AbstractSDD.decomposition(vl, n1, n2), c);
+		final Element n7 = factory.createElement(b, false, AbstractSDD.decomposition(vr, n3, n4));
 
 		return AbstractSDD.decomposition(root, n5, n6, n7);
 	}
@@ -558,7 +565,8 @@ public class TestSDD {
 
 	@Test
 	public void trimTrue() {
-		final DecompositionSDD sdd = new DecompositionSDD(vtree1(), new Element(true, true));
+		final SDDFactory factory = SDDFactory.getInstance();
+		final DecompositionSDD sdd = factory.createDecomposition((InternalVTree) vtree1(), new Element(true, true));
 		Assert.assertEquals(new ConstantSDD(true), sdd.trimmed());
 	}
 

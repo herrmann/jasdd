@@ -5,8 +5,8 @@ import jasdd.algebraic.AlgebraicElement;
 import jasdd.algebraic.AlgebraicTerminal;
 import jasdd.algebraic.DecompositionASDD;
 import jasdd.bool.DecompositionSDD;
-import jasdd.bool.Element;
 import jasdd.bool.SDD;
+import jasdd.bool.SDDFactory;
 import jasdd.logic.Variable;
 import jasdd.logic.VariableRegistry;
 import jasdd.viz.GraphvizDumper;
@@ -145,10 +145,11 @@ public class FormatConverter {
 				final InternalVTree subtree = (InternalVTree) ((InternalAVTree) tree).getLeft();
 				final Variable leftVar = ((VariableLeaf) subtree.getLeft()).getVariable();
 				final Variable rightVar = ((VariableLeaf) subtree.getRight()).getVariable();
-				final DecompositionSDD partitionHighHigh = new DecompositionSDD(subtree, Element.shannon(leftVar, rightVar, false)); // A /\ B
-				final DecompositionSDD partitionHighLow = new DecompositionSDD(subtree, Element.shannon(leftVar, rightVar, false, false)); // A /\ ~B
-				final DecompositionSDD partitionLowHigh = new DecompositionSDD(subtree, Element.shannon(leftVar, false, rightVar)); // ~A /\ B
-				final DecompositionSDD partitionLowLow = new DecompositionSDD(subtree, Element.shannon(leftVar, false, rightVar, false)); // ~A /\ ~B
+				final SDDFactory factory = SDDFactory.getInstance();
+				final DecompositionSDD partitionHighHigh = factory.createDecomposition(subtree, factory.shannon(leftVar, rightVar, false)); // A /\ B
+				final DecompositionSDD partitionHighLow = factory.createDecomposition(subtree, factory.shannon(leftVar, rightVar, false, false)); // A /\ ~B
+				final DecompositionSDD partitionLowHigh = factory.createDecomposition(subtree, factory.shannon(leftVar, false, rightVar)); // ~A /\ B
+				final DecompositionSDD partitionLowLow = factory.createDecomposition(subtree, factory.shannon(leftVar, false, rightVar, false)); // ~A /\ ~B
 
 				final ASDD<Double> subHighHigh = pairwise(vars, ((InternalAVTree) tree).getRight(), highHigh2);
 				final ASDD<Double> subHighLow = pairwise(vars, ((InternalAVTree) tree).getRight(), highLow2);

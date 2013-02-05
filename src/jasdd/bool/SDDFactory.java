@@ -1,5 +1,6 @@
 package jasdd.bool;
 
+import jasdd.logic.Literal;
 import jasdd.logic.Variable;
 import jasdd.vtree.InternalVTree;
 
@@ -60,6 +61,13 @@ public class SDDFactory {
 		}
 	}
 
+	/**
+	 * Base factory method for Elements.
+	 * 
+	 * @param prime the prime SDD
+	 * @param sub the sub SDD
+	 * @return the cached instance of the Element
+	 */
 	public Element createElement(final SDD prime, final SDD sub) {
 		return cache(new Element(prime, sub));
 	}
@@ -70,6 +78,130 @@ public class SDDFactory {
 
 	public SDD createDecomposition(final DecompositionSDD sdd) {
 		return cache(sdd);
+	}
+
+	// Factory methods corresponding to Element constructors
+
+	public Element createElement(final Variable v1, final boolean s1, final Variable v2, final boolean s2) {
+		return createElement(new LiteralSDD(v1, s1), new LiteralSDD(v2, s2));
+	}
+
+	public Element createElement(final Variable v1, final Variable v2) {
+		return createElement(v1, true, v2, true);
+	}
+
+	public Element createElement(final Variable v1, final boolean s2) {
+		return createElement(v1, true, s2);
+	}
+
+	public Element createElement(final boolean s1, final Variable v2) {
+		return createElement(s1, v2, true);
+	}
+
+	public Element createElement(final boolean s1, final Literal l2) {
+		return createElement(s1, l2.getVariable(), l2.getSign());
+	}
+
+	public Element createElement(final Variable v1, final boolean s1, final Variable v2) {
+		return createElement(v1, s1, v2, true);
+	}
+
+	public Element createElement(final Variable v1, final Variable v2, final boolean s2) {
+		return createElement(v1, true, v2, s2);
+	}
+
+	public Element createElement(final Variable v1, final boolean s1, final boolean s2) {
+		return createElement(new LiteralSDD(v1, s1), new ConstantSDD(s2));
+	}
+
+	public Element createElement(final boolean s1, final Variable v2, final boolean s2) {
+		return createElement(new ConstantSDD(s1), new LiteralSDD(v2, s2));
+	}
+
+	public Element createElement(final boolean s1, final boolean s2) {
+		return createElement(new ConstantSDD(s1), new ConstantSDD(s2));
+	}
+
+	public Element createElement(final SDD prime, final boolean s2) {
+		return createElement(prime, new ConstantSDD(s2));
+	}
+
+	public Element createElement(final boolean s1, final SDD sub) {
+		return createElement(new ConstantSDD(s1), sub);
+	}
+
+	public Element createElement(final SDD prime, final Variable v2, final boolean s2) {
+		return createElement(prime, new LiteralSDD(v2, s2));
+	}
+
+	public Element createElement(final SDD prime, final Variable v2) {
+		return createElement(prime, v2, true);
+	}
+
+	public Element createElement(final Variable v1, final boolean s1, final SDD sub) {
+		return createElement(new LiteralSDD(v1, s1), sub);
+	}
+
+	public Element createElement(final Variable v1, final SDD sub) {
+		return createElement(v1, true, sub);
+	}
+
+	public Element createElement(final Literal l1, boolean s2) {
+		return createElement(l1.getVariable(), l1.getSign(), s2);
+	}
+
+	public Element createElement(final Literal l1, final Literal l2) {
+		return createElement(l1.getVariable(), l1.getSign(), l2.getVariable(), l2.getSign());
+	}
+
+	// Shannon decompositions
+
+	public Element[] shannon(final Variable v, final Variable v1, final Variable v2, final boolean s2) {
+		return shannon(v, v1, true, v2, s2);
+	}
+
+	public Element[] shannon(final Variable v, final Variable v1, final boolean s1, final Variable v2) {
+		return shannon(v, v1, s1, v2, true);
+	}
+
+	public Element[] shannon(final Variable v, final Variable v1, final Variable v2) {
+		return shannon(v, v1, true, v2, true);
+	}
+
+	public Element[] shannon(final Variable v, final Variable v1, final boolean s1, final Variable v2, final boolean s2) {
+		final Element[] elems = new Element[2];
+		elems[0] = createElement(v, true, v1, s1);
+		elems[1] = createElement(v, false, v2, s2);
+		return elems;
+	}
+
+	public Element[] shannon(final Variable v, final Variable v1, final boolean s2) {
+		return shannon(v, v1, true, s2);
+	}
+
+	public Element[] shannon(final Variable v, final Variable v1, final boolean s1, final boolean s2) {
+		final Element[] elems = new Element[2];
+		elems[0] = createElement(v, true, v1, s1);
+		elems[1] = createElement(v, false, s2);
+		return elems;
+	}
+
+	public Element[] shannon(final Variable v, final boolean s1, final Variable v2) {
+		return shannon(v, s1, v2, true);
+	}
+
+	public Element[] shannon(final Variable v, final boolean s1, final Variable v2, final boolean s2) {
+		final Element[] elems = new Element[2];
+		elems[0] = createElement(v, true, s1);
+		elems[1] = createElement(v, false, v2, s2);
+		return elems;
+	}
+
+	public Element[] shannon(final Variable v, final boolean s1, final boolean s2) {
+		final Element[] elems = new Element[2];
+		elems[0] = createElement(v, true, s1);
+		elems[1] = createElement(v, false, s2);
+		return elems;
 	}
 
 }

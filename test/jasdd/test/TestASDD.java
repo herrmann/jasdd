@@ -8,6 +8,7 @@ import jasdd.algebraic.DecompositionASDD;
 import jasdd.bool.ConstantSDD;
 import jasdd.bool.DecompositionSDD;
 import jasdd.bool.Element;
+import jasdd.bool.SDDFactory;
 import jasdd.logic.Variable;
 import jasdd.logic.VariableRegistry;
 import jasdd.stat.Summary;
@@ -88,6 +89,8 @@ public class TestASDD {
 		final AlgebraicTerminal<Float> high = new AlgebraicTerminal<Float>(0.9f); 
 		final AlgebraicTerminal<Float> low = new AlgebraicTerminal<Float>(0.1f); 
 
+		final SDDFactory factory = SDDFactory.getInstance();
+
 		final DecompositionASDD<Float> a22 = new DecompositionASDD<Float>(
 			(InternalAVTree) right.getRight(),
 			new AlgebraicElement<Float>(x2y2, high),
@@ -103,17 +106,17 @@ public class TestASDD {
 			new AlgebraicElement<Float>(x2y1, a22),
 			new AlgebraicElement<Float>(x2y1, false, low)
 		);
-		final DecompositionSDD part1 = new DecompositionSDD(
+		final DecompositionSDD part1 = factory.createDecomposition(
 			left,
 			new Element(x1y1, x1y2),
 			new Element(x1y1, false, false)
 		);
-		final DecompositionSDD part2 = new DecompositionSDD(
+		final DecompositionSDD part2 = factory.createDecomposition(
 			left,
 			new Element(x1y1, x1y2, false),
 			new Element(x1y1, false, x1y2)
 		);
-		final DecompositionSDD part3 = new DecompositionSDD(
+		final DecompositionSDD part3 = factory.createDecomposition(
 			left,
 			new Element(x1y1, false),
 			new Element(x1y1, false, x1y2, false)
@@ -147,25 +150,27 @@ public class TestASDD {
 		final AlgebraicTerminal<Float> high = new AlgebraicTerminal<Float>(0.9f); 
 		final AlgebraicTerminal<Float> low = new AlgebraicTerminal<Float>(0.1f); 
 
+		final SDDFactory factory = SDDFactory.getInstance();
+
 		@SuppressWarnings("unchecked")
 		final DecompositionASDD<Float> asdd =
 		new DecompositionASDD<Float>(root,
 			new AlgebraicElement<Float>(
-				new DecompositionSDD(upperLeft, Element.shannon(x1y1, x1y2, false)),
+					factory.createDecomposition(upperLeft, Element.shannon(x1y1, x1y2, false)),
 				new DecompositionASDD<Float>(right,
 					new AlgebraicElement<Float>(
-						new DecompositionSDD(lowerLeft, Element.shannon(x2y1, true, x2y2)), high),
+							factory.createDecomposition(lowerLeft, Element.shannon(x2y1, true, x2y2)), high),
 						new AlgebraicElement<Float>(
-							new DecompositionSDD(lowerLeft, Element.shannon(x2y1, false, x2y2, false)), low))),
+								factory.createDecomposition(lowerLeft, Element.shannon(x2y1, false, x2y2, false)), low))),
 			new AlgebraicElement<Float>(
-				new DecompositionSDD(upperLeft, Element.shannon(x1y1, x1y2, false, x1y2)),
+					factory.createDecomposition(upperLeft, Element.shannon(x1y1, x1y2, false, x1y2)),
 				new DecompositionASDD<Float>(right,
 					new AlgebraicElement<Float>(
-						new DecompositionSDD(lowerLeft, Element.shannon(x2y1, x2y2, false)), high),
+							factory.createDecomposition(lowerLeft, Element.shannon(x2y1, x2y2, false)), high),
 						new AlgebraicElement<Float>(
-							new DecompositionSDD(lowerLeft, Element.shannon(x2y1, x2y2, false, true)), low))),
+								factory.createDecomposition(lowerLeft, Element.shannon(x2y1, x2y2, false, true)), low))),
 			new AlgebraicElement<Float>(
-				new DecompositionSDD(upperLeft, Element.shannon(x1y1, false, x1y2, false)), low));
+					factory.createDecomposition(upperLeft, Element.shannon(x1y1, false, x1y2, false)), low));
 
 		Assert.assertEquals(21, asdd.size());
 
@@ -228,15 +233,17 @@ public class TestASDD {
 		final InternalVTree subtree = new InternalVTree(a, b);
 		final InternalAVTree avtree = new InternalAVTree(subtree, new ValueLeaf());
 
+		final SDDFactory factory = SDDFactory.getInstance();
+
 		@SuppressWarnings("unchecked")
 		final DecompositionASDD<Double> countA = new DecompositionASDD<Double>(avtree,
-			new AlgebraicElement<Double>(new DecompositionSDD(subtree, Element.shannon(a, true, false)), new AlgebraicTerminal<Double>(1.0)),
-			new AlgebraicElement<Double>(new DecompositionSDD(subtree, Element.shannon(a, false, true)), new AlgebraicTerminal<Double>(0.0)));
+			new AlgebraicElement<Double>(factory.createDecomposition(subtree, Element.shannon(a, true, false)), new AlgebraicTerminal<Double>(1.0)),
+			new AlgebraicElement<Double>(factory.createDecomposition(subtree, Element.shannon(a, false, true)), new AlgebraicTerminal<Double>(0.0)));
 
 		@SuppressWarnings("unchecked")
 		final DecompositionASDD<Double> countB = new DecompositionASDD<Double>(avtree,
-			new AlgebraicElement<Double>(new DecompositionSDD(subtree, new Element(true, b)), new AlgebraicTerminal<Double>(1.0)),
-			new AlgebraicElement<Double>(new DecompositionSDD(subtree, new Element(true, b, false)), new AlgebraicTerminal<Double>(0.0)));
+			new AlgebraicElement<Double>(factory.createDecomposition(subtree, new Element(true, b)), new AlgebraicTerminal<Double>(1.0)),
+			new AlgebraicElement<Double>(factory.createDecomposition(subtree, new Element(true, b, false)), new AlgebraicTerminal<Double>(0.0)));
 
 		final DecompositionASDD<Double> result = (DecompositionASDD<Double>) AlgebraicOperatorApplication.sum(countA, countB);
 		return result;
