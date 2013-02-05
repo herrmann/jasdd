@@ -83,7 +83,7 @@ public class SDDFactory {
 	// Factory methods corresponding to Element constructors
 
 	public Element createElement(final Variable v1, final boolean s1, final Variable v2, final boolean s2) {
-		return createElement(new LiteralSDD(v1, s1), new LiteralSDD(v2, s2));
+		return createElement(createLiteral(v1, s1), createLiteral(v2, s2));
 	}
 
 	public Element createElement(final Variable v1, final Variable v2) {
@@ -111,11 +111,11 @@ public class SDDFactory {
 	}
 
 	public Element createElement(final Variable v1, final boolean s1, final boolean s2) {
-		return createElement(new LiteralSDD(v1, s1), new ConstantSDD(s2));
+		return createElement(createLiteral(v1, s1), new ConstantSDD(s2));
 	}
 
 	public Element createElement(final boolean s1, final Variable v2, final boolean s2) {
-		return createElement(new ConstantSDD(s1), new LiteralSDD(v2, s2));
+		return createElement(new ConstantSDD(s1), createLiteral(v2, s2));
 	}
 
 	public Element createElement(final boolean s1, final boolean s2) {
@@ -131,7 +131,7 @@ public class SDDFactory {
 	}
 
 	public Element createElement(final SDD prime, final Variable v2, final boolean s2) {
-		return createElement(prime, new LiteralSDD(v2, s2));
+		return createElement(prime, createLiteral(v2, s2));
 	}
 
 	public Element createElement(final SDD prime, final Variable v2) {
@@ -139,7 +139,7 @@ public class SDDFactory {
 	}
 
 	public Element createElement(final Variable v1, final boolean s1, final SDD sub) {
-		return createElement(new LiteralSDD(v1, s1), sub);
+		return createElement(createLiteral(v1, s1), sub);
 	}
 
 	public Element createElement(final Variable v1, final SDD sub) {
@@ -202,6 +202,20 @@ public class SDDFactory {
 		elems[0] = createElement(v, true, s1);
 		elems[1] = createElement(v, false, s2);
 		return elems;
+	}
+
+	// Additional helper factory methods for Literal SDDs
+
+	public LiteralSDD createLiteral(final int index, final boolean sign) {
+		return createLiteral(new Variable(index), sign);
+	}
+
+	public LiteralSDD createLiteral(final int index) {
+		return createLiteral(new Variable(index), true);
+	}
+
+	public LiteralSDD createLiteral(final Variable variable) {
+		return createLiteral(variable, true);
 	}
 
 }

@@ -70,7 +70,7 @@ public class TestSDD {
 
 	@Test
 	public void singleLiteralPairedBoxSerialization() {
-		Assert.assertEquals("[(1 /\\ T), (-1 /\\ F)]", new LiteralSDD(1).expansion().toString());
+		Assert.assertEquals("[(1 /\\ T), (-1 /\\ F)]", factory.createLiteral(1).expansion().toString());
 	}
 
 	@Test
@@ -190,7 +190,7 @@ public class TestSDD {
 		final Variable a = new Variable(1);
 		final Variable b = new Variable(2);
 		final InternalVTree vtree = new InternalVTree(a, b);
-		final SDD sdd1 = new LiteralSDD(a);
+		final SDD sdd1 = factory.createLiteral(a);
 		final SDD sdd2 = AbstractSDD.decomposition(vtree, factory.createElement(a, b, false), factory.createElement(a, false, false));
 		final SDD result = sdd1.and(sdd2);
 		Assert.assertEquals("[(1,2), ((1 /\\ -2) \\/ (-1 /\\ F))]", result.toString());
@@ -201,7 +201,7 @@ public class TestSDD {
 		final Variable a = new Variable(1);
 		final Variable b = new Variable(2);
 		final InternalVTree vtree = new InternalVTree(a, b);
-		final SDD sdd1 = new LiteralSDD(b);
+		final SDD sdd1 = factory.createLiteral(b);
 		final SDD sdd2 = AbstractSDD.decomposition(vtree, factory.createElement(a, b, false), factory.createElement(a, false, false));
 		final SDD result = sdd1.and(sdd2);
 		Assert.assertEquals("F", result.toString());

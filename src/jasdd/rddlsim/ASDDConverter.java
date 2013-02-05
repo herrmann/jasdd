@@ -10,6 +10,7 @@ import jasdd.bool.DecompositionSDD;
 import jasdd.bool.LiteralSDD;
 import jasdd.bool.OperatorApplication;
 import jasdd.bool.SDD;
+import jasdd.bool.SDDFactory;
 import jasdd.logic.Variable;
 import jasdd.vtree.AVTree;
 import jasdd.vtree.InternalAVTree;
@@ -130,7 +131,7 @@ public class ASDDConverter {
 		if (vtree instanceof VariableLeaf) {
 			final int index = ((VariableLeaf) vtree).getVariable().getIndex(); 
 			if (assignments.containsKey(index)) {
-				return cachedSdd(new LiteralSDD(index, assignments.get(index)));
+				return cachedSdd(SDDFactory.getInstance().createLiteral(index, assignments.get(index)));
 			} else {
 				return cachedSdd(new ConstantSDD(true));
 			}

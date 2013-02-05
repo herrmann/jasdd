@@ -17,23 +17,23 @@ public class LiteralSDD extends TerminalSDD {
 
 	private Literal literal;
 
-	public LiteralSDD(final LiteralSDD sdd) {
+	private LiteralSDD(final LiteralSDD sdd) {
 		this.literal = new Literal(sdd.getLiteral());
 	}
 
-	public LiteralSDD(final int index, final boolean sign) {
+	private LiteralSDD(final int index, final boolean sign) {
 		this.literal = new Literal(new Variable(index), sign);
 	}
 
-	public LiteralSDD(final int index) {
+	private LiteralSDD(final int index) {
 		this.literal = new Literal(new Variable(index), true);
 	}
 
-	public LiteralSDD(final Variable variable, final boolean sign) {
+	/* package */ LiteralSDD(final Variable variable, final boolean sign) {
 		this.literal = new Literal(variable, sign);
 	}
 
-	public LiteralSDD(final Variable variable) {
+	private LiteralSDD(final Variable variable) {
 		this(variable, true);
 	}
 

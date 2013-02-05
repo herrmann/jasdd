@@ -17,7 +17,7 @@ public class OrOperator implements BooleanOperator {
 		if (s1.getSign()) {
 			return new ConstantSDD(true);
 		} else {
-			return new LiteralSDD(s2);
+			return SDDFactory.getInstance().createLiteral(s2);
 		}
 	}
 

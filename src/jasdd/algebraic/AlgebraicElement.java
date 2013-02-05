@@ -2,6 +2,7 @@ package jasdd.algebraic;
 
 import jasdd.bool.LiteralSDD;
 import jasdd.bool.SDD;
+import jasdd.bool.SDDFactory;
 import jasdd.logic.Variable;
 import jasdd.util.StringBuildable;
 import jasdd.visitor.ASDDVisitor;
@@ -22,7 +23,7 @@ public class AlgebraicElement<T> implements StringBuildable {
 	}
 
 	public AlgebraicElement(final Variable v1, final boolean s1, final ASDD<T> sub) {
-		this(new LiteralSDD(v1, s1), sub);
+		this(SDDFactory.getInstance().createLiteral(v1, s1), sub);
 	}
 
 	public AlgebraicElement(final Variable v1, final ASDD<T> sub) {

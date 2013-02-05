@@ -15,7 +15,7 @@ public class AndOperator implements BooleanOperator {
 
 	public SDD apply(final ConstantSDD s1, final LiteralSDD s2) {
 		if (s1.getSign()) {
-			return new LiteralSDD(s2);
+			return SDDFactory.getInstance().createLiteral(s2);
 		} else {
 			return new ConstantSDD(false);
 		}

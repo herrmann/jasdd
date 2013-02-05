@@ -19,6 +19,7 @@ import graph.Graph;
 
 import jasdd.algebraic.ASDD;
 import jasdd.algebraic.DecompositionASDD;
+import jasdd.bool.DecompositionSDD;
 import jasdd.logic.VariableRegistry;
 import jasdd.rddlsim.ASDDConverter;
 import jasdd.stat.Summary;
@@ -383,7 +384,7 @@ public class VI extends Policy {
 		// ////////////////////////////////////////////////////////////
 		// Iterate until convergence (or max iterations)
 		// ////////////////////////////////////////////////////////////
-		_nHorizon = 2;
+		_nHorizon = 20;
 		while (_nIter < _nHorizon) {
 
 			// Cache maintenance
@@ -418,9 +419,18 @@ public class VI extends Policy {
 				}
 			}
 			if (_nIter == _nHorizon - 1) {
+				final int skews = 101;
 				int i = 0;
-				System.err.println("id avtree size algDecomps decomps algElems elems terms depth microsec");
-				for (final Tree dissection : VTreeUtils.dissect(variables)) {
+				System.err.println("id avtree size factor algDecomps decomps algElems elems terms depth microsec trimSize");
+				System.err.println("Total variables: " + variables.size());
+//				for (final Tree dissection : VTreeUtils.dissections(variables)) {
+				Tree lastTree = null;
+				for (final Tree dissection : VTreeUtils.skews(skews, variables)) {
+					if (dissection.equals(lastTree)) {
+						i++;
+						continue;
+					}
+					lastTree = dissection;
 					final ASDDConverter converter = new ASDDConverter(_context);
 					final long start = System.nanoTime();
 					final ASDD<Double> asdd = converter.dissect((AVTree) dissection, _valueDD);
@@ -428,18 +438,23 @@ public class VI extends Policy {
 					try {
 						if (asdd instanceof DecompositionASDD<?>) {
 							final DecompositionASDD<?> decomp = (DecompositionASDD<?>) asdd;
-							GraphvizDumper.dump(decomp, vars,  "asdd/dissect_" + i + ".dot");
+							final double sigma = ((double) i / (skews - 1));
+							GraphvizDumper.dump(decomp, vars, "asdd/navigation_i" + _nIter + "/dissect_" + sigma + ".dot");
+							final DecompositionASDD<Double> trimmed = (DecompositionASDD<Double>) decomp.trimmed();
+							GraphvizDumper.dump(trimmed, vars, "asdd/navigation_i" + _nIter + "/dissect_trim_" + sigma + ".dot");
 							final Summary stats = Summary.from(decomp);
 							System.err.println(i
 									+ " " + dissection
 									+ " " + asdd.size()
+									+ " " + sigma
 									+ " " + stats.getAlgebraicDecompositions()
 									+ " " + stats.getDecompositions()
 									+ " " + stats.getAlgebraicElements()
 									+ " " + stats.getElements()
 									+ " " + stats.getAlgebraicTerminals()
 									+ " " + stats.getDepth()
-									+ " " + ((end - start) / 1000));
+									+ " " + ((end - start) / 1000)
+									+ " " + trimmed.size());
 						}
 					} catch (FileNotFoundException e) {
 						// TODO Auto-generated catch block
@@ -447,6 +462,7 @@ public class VI extends Policy {
 					}
 					i++;
 				}
+				// End of ASDD block
 			}
 
 			// Cache maintenance -- clear out previous nodes, but save Q-functions
