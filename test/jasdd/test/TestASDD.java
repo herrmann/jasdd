@@ -210,11 +210,11 @@ public class TestASDD {
 
 		@SuppressWarnings("unchecked")
 		final DecompositionASDD<Double> countA = new DecompositionASDD<Double>(avtree, AlgebraicElement.shannon(a,
-			new DecompositionASDD<Double>(subtree, new AlgebraicElement<Double>(new ConstantSDD(true), new AlgebraicTerminal<Double>(1.0))),
-			new DecompositionASDD<Double>(subtree, new AlgebraicElement<Double>(new ConstantSDD(true), new AlgebraicTerminal<Double>(0.0)))));
+			new DecompositionASDD<Double>(subtree, new AlgebraicElement<Double>(new AlgebraicTerminal<Double>(1.0))),
+			new DecompositionASDD<Double>(subtree, new AlgebraicElement<Double>(new AlgebraicTerminal<Double>(0.0)))));
 		
 		@SuppressWarnings("unchecked")
-		final DecompositionASDD<Double> countB = new DecompositionASDD<Double>(avtree, new AlgebraicElement<Double>(new ConstantSDD(true),
+		final DecompositionASDD<Double> countB = new DecompositionASDD<Double>(avtree, new AlgebraicElement<Double>(
 			new DecompositionASDD<Double>(subtree, AlgebraicElement.shannon(b, new AlgebraicTerminal<Double>(1.0), new AlgebraicTerminal<Double>(0.0)))));
 
 		final DecompositionASDD<Double> result = (DecompositionASDD<Double>) AlgebraicOperatorApplication.sum(countA, countB);

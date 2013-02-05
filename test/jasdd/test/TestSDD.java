@@ -65,7 +65,7 @@ public class TestSDD {
 
 	@Test
 	public void booleanPairedBoxSerialization() {
-		Assert.assertEquals("[(T /\\ T)]", new ConstantSDD(true).expansion().toString());
+		Assert.assertEquals("[(T /\\ T)]", factory.createTrue().expansion().toString());
 	}
 
 	@Test
@@ -336,7 +336,7 @@ public class TestSDD {
 		Assert.assertEquals(vtree, ((DecompositionSDD) sdd).getVTree());
 		Assert.assertEquals(2, sdd.expansion().size());
 		final Element elem = sdd.expansion().iterator().next();
-		Assert.assertEquals(new ConstantSDD(true), elem.getSub());
+		Assert.assertEquals(factory.createTrue(), elem.getSub());
 		Assert.assertEquals(vtree.getLeft(), ((DecompositionSDD) elem.getPrime()).getVTree());
 		Assert.assertEquals(1, elem.getPrime().expansion().size());
 	}
@@ -350,7 +350,7 @@ public class TestSDD {
 		Assert.assertEquals(vtree, ((DecompositionSDD) sdd).getVTree());
 		Assert.assertEquals(2, sdd.expansion().size());
 		final Element elem = sdd.expansion().iterator().next();
-		Assert.assertEquals(new ConstantSDD(true), elem.getSub());
+		Assert.assertEquals(factory.createTrue(), elem.getSub());
 		Assert.assertEquals(vtree.getLeft(), ((DecompositionSDD) elem.getPrime()).getVTree());
 		Assert.assertEquals(2, elem.getPrime().expansion().size());
 	}
@@ -364,7 +364,7 @@ public class TestSDD {
 		Assert.assertEquals(vtree, ((DecompositionSDD) sdd).getVTree());
 		Assert.assertEquals(1, sdd.expansion().size());
 		final Element elem = sdd.expansion().iterator().next();
-		Assert.assertEquals(new ConstantSDD(true), elem.getPrime());
+		Assert.assertEquals(factory.createTrue(), elem.getPrime());
 		Assert.assertEquals(vtree.getRight(), ((DecompositionSDD) elem.getSub()).getVTree());
 		Assert.assertEquals(1, elem.getSub().expansion().size());
 	}
@@ -378,7 +378,7 @@ public class TestSDD {
 		Assert.assertEquals(vtree, ((DecompositionSDD) sdd).getVTree());
 		Assert.assertEquals(1, sdd.expansion().size());
 		final Element elem = sdd.expansion().iterator().next();
-		Assert.assertEquals(new ConstantSDD(true), elem.getPrime());
+		Assert.assertEquals(factory.createTrue(), elem.getPrime());
 		Assert.assertEquals(vtree.getRight(), ((DecompositionSDD) elem.getSub()).getVTree());
 		Assert.assertEquals(2, elem.getSub().expansion().size());
 	}
@@ -578,7 +578,7 @@ public class TestSDD {
 	@Test
 	public void trimTrue() {
 		final DecompositionSDD sdd = factory.createDecomposition((InternalVTree) vtree1(), factory.createElement(true, true));
-		Assert.assertEquals(new ConstantSDD(true), sdd.trimmed());
+		Assert.assertEquals(factory.createTrue(), sdd.trimmed());
 	}
 
 }

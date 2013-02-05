@@ -174,12 +174,13 @@ public class OperatorApplication {
 		}
 		final int size = elements.size();
 		// Apply light trimming if possible
-		if (size == 1 && elements.get(0).getPrime().equals(new ConstantSDD(true)) && elements.get(0).getSub() instanceof ConstantSDD) {
-			return SDDFactory.getInstance().createConstant(((ConstantSDD) elements.get(0).getSub()).getSign());
+		final SDDFactory factory = SDDFactory.getInstance();
+		if (size == 1 && elements.get(0).getPrime().equals(factory.createTrue()) && elements.get(0).getSub() instanceof ConstantSDD) {
+			return factory.createConstant(((ConstantSDD) elements.get(0).getSub()).getSign());
 		} else {
 			final Element[] elems = new Element[size];
 			elements.toArray(elems);
-			return SDDFactory.getInstance().createDecomposition(sdd1.getVTree(), elems);
+			return factory.createDecomposition(sdd1.getVTree(), elems);
 		}
 	}
 

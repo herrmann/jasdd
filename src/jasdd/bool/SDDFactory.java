@@ -40,6 +40,14 @@ public class SDDFactory {
 		return (ConstantSDD) cache(new ConstantSDD(sign));
 	}
 
+	public ConstantSDD createFalse() {
+		return createConstant(false);
+	}
+
+	public ConstantSDD createTrue() {
+		return createConstant(true);
+	}
+
 	public LiteralSDD createLiteral(final Variable variable, final boolean sign) {
 		return (LiteralSDD) cache(new LiteralSDD(variable, sign));
 	}
@@ -111,23 +119,23 @@ public class SDDFactory {
 	}
 
 	public Element createElement(final Variable v1, final boolean s1, final boolean s2) {
-		return createElement(createLiteral(v1, s1), new ConstantSDD(s2));
+		return createElement(createLiteral(v1, s1), createConstant(s2));
 	}
 
 	public Element createElement(final boolean s1, final Variable v2, final boolean s2) {
-		return createElement(new ConstantSDD(s1), createLiteral(v2, s2));
+		return createElement(createConstant(s1), createLiteral(v2, s2));
 	}
 
 	public Element createElement(final boolean s1, final boolean s2) {
-		return createElement(new ConstantSDD(s1), new ConstantSDD(s2));
+		return createElement(createConstant(s1), createConstant(s2));
 	}
 
 	public Element createElement(final SDD prime, final boolean s2) {
-		return createElement(prime, new ConstantSDD(s2));
+		return createElement(prime, createConstant(s2));
 	}
 
 	public Element createElement(final boolean s1, final SDD sub) {
-		return createElement(new ConstantSDD(s1), sub);
+		return createElement(createConstant(s1), sub);
 	}
 
 	public Element createElement(final SDD prime, final Variable v2, final boolean s2) {

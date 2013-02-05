@@ -15,11 +15,11 @@ public class ConstantSDD extends TerminalSDD {
 
 	private boolean sign;
 
-	public ConstantSDD(final boolean sign) {
+	/* package */ ConstantSDD(final boolean sign) {
 		this.sign = sign;
 	}
 
-	public ConstantSDD(final ConstantSDD sdd) {
+	private ConstantSDD(final ConstantSDD sdd) {
 		this(sdd.getSign());
 	}
 

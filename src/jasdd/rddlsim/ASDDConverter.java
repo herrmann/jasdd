@@ -128,15 +128,16 @@ public class ASDDConverter {
 	}
 
 	private SDD createPartition(final VTree vtree, final Map<Integer, Boolean> assignments) {
+		final SDDFactory factory = SDDFactory.getInstance();
 		if (vtree instanceof VariableLeaf) {
 			final int index = ((VariableLeaf) vtree).getVariable().getIndex(); 
 			if (assignments.containsKey(index)) {
-				return cachedSdd(SDDFactory.getInstance().createLiteral(index, assignments.get(index)));
+				return cachedSdd(factory.createLiteral(index, assignments.get(index)));
 			} else {
-				return cachedSdd(new ConstantSDD(true));
+				return cachedSdd(factory.createTrue());
 			}
 		} else {
-			SDD sdd = cachedSdd(new ConstantSDD(true));
+			SDD sdd = cachedSdd(factory.createTrue());
 			for (final Entry<Integer, Boolean> entry : assignments.entrySet()) {
 				final int index = entry.getKey();
 				final boolean sign = entry.getValue();
@@ -157,7 +158,7 @@ public class ASDDConverter {
 				final AlgebraicTerminal<Double> asdd = cachedAsdd(new AlgebraicTerminal<Double>(value));
 				return asdd;
 			} else {
-				final SDD prime = new ConstantSDD(true);
+				final SDD prime = SDDFactory.getInstance().createTrue();
 				final AVTree rightTree = ((InternalAVTree) avtree).getRight();
 				final ASDD<Double> sub = dissect(rightTree, nodeId);
 				final AlgebraicElement<Double> elem = cachedAlgebraicElement(new AlgebraicElement<Double>(prime, sub));

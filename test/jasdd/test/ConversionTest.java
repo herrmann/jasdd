@@ -3,6 +3,7 @@ package jasdd.test;
 import jasdd.bool.ConstantSDD;
 import jasdd.bool.DecompositionSDD;
 import jasdd.bool.SDD;
+import jasdd.bool.SDDFactory;
 import jasdd.logic.VariableRegistry;
 import jasdd.viz.GraphvizDumper;
 import jasdd.vtree.InternalVTree;
@@ -32,13 +33,14 @@ public class ConversionTest {
 		// final Scanner scan = new Scanner(new File("testdata/cnf/partial_c432.isc.cnf"));
 		final Scanner scan = new Scanner(new File("testdata/cnf/simple.cnf"));
 		InternalVTree vtree = null;
-		SDD conjunction = new ConstantSDD(true);
+		final SDDFactory factory = SDDFactory.getInstance();
+		SDD conjunction = factory.createTrue();
 		int clauses = 0;
 		while (scan.hasNext()) {
 			if (scan.hasNextInt()) {
 				int var;
 				boolean eol = false;
-				SDD disjunction = new ConstantSDD(false);
+				SDD disjunction = factory.createFalse();
 				do {
 					var = scan.nextInt();
 					if (var != 0) {

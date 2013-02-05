@@ -193,9 +193,12 @@ public class DecompositionSDD extends AbstractSDD {
 		for (final Element element : getElements()) {
 			elements.add(element.trimmed());
 		}
-		if (elements.size() == 1 && elements.get(0).getPrime().equals(new ConstantSDD(true))) {
+		final SDDFactory factory = SDDFactory.getInstance();
+		final ConstantSDD trueNode = factory.createTrue();
+		final ConstantSDD falseNode = factory.createFalse();
+		if (elements.size() == 1 && elements.get(0).getPrime().equals(trueNode)) {
 			return elements.get(0).getSub().trimmed();
-		} else if (elements.size() == 2 && elements.get(0).getSub().equals(new ConstantSDD(true)) && elements.get(1).getSub().equals(new ConstantSDD(false))) {
+		} else if (elements.size() == 2 && elements.get(0).getSub().equals(trueNode) && elements.get(1).getSub().equals(falseNode)) {
 			return elements.get(0).getPrime().trimmed();
 		} else {
 			final Element[] elems = new Element[elements.size()];
