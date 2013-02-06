@@ -36,8 +36,8 @@ public class NumericMaxOperation<T extends Number> extends AbstractASDDVisitor<T
 			@SuppressWarnings("unchecked")
 			@Override
 			public void visit(final AlgebraicTerminal<T> other) {
-				final Double max = Math.max(terminal.getValue().doubleValue(), other.getValue().doubleValue());
-				result = (ASDD<T>) new AlgebraicTerminal<Double>(max);
+				final double max = Math.max(terminal.getValue().doubleValue(), other.getValue().doubleValue());
+				result = (ASDD<T>) ASDDFactory.getInstance().createTerminal(max);
 			}
 
 			@Override
@@ -71,13 +71,13 @@ public class NumericMaxOperation<T extends Number> extends AbstractASDDVisitor<T
 	private ASDD<T> maxScalarToDecomposition(final DecompositionASDD<T> decomp, final AlgebraicTerminal<T> terminal) {
 		// TODO: structural caching
 		final List<AlgebraicElement<T>> origElements = decomp.getElements();
-		final List<AlgebraicElement<T>> elements = new ArrayList<AlgebraicElement<T>>(origElements.size());
+		final List<AlgebraicElement> elements = new ArrayList<AlgebraicElement>(origElements.size());
 		for (final AlgebraicElement<T> element : origElements) {
 			final SDD prime = element.getPrime();
 			final ASDD<T> sub = AlgebraicOperatorApplication.max(element.getSub(), terminal);
-			elements.add(new AlgebraicElement<T>(prime, sub));
+			elements.add(ASDDFactory.getInstance().createElement(prime, sub));
 		}
-		return new DecompositionASDD<T>(decomp.getTree(), elements);
+		return ASDDFactory.getInstance().createDecomposition(decomp.getTree(), elements);
 	}
 
 	private ASDD<T> maxDecompositions(final DecompositionASDD<T> decomp, final DecompositionASDD<T> other) {
@@ -85,16 +85,16 @@ public class NumericMaxOperation<T extends Number> extends AbstractASDDVisitor<T
 			throw new UnsupportedOperationException("Maximization of decompositions using different avtrees is not supported yet");
 		}
 		// TODO: structural caching
-		final List<AlgebraicElement<T>> elements = new ArrayList<AlgebraicElement<T>>();
+		final List<AlgebraicElement> elements = new ArrayList<AlgebraicElement>();
 		for (final AlgebraicElement<T> leftElem : decomp.getElements()) {
 			for (final AlgebraicElement<T> rightElem : other.getElements()) {
 				final SDD prime = new OperatorApplication(leftElem.getPrime(), rightElem.getPrime(), new AndOperator()).apply();
 				final ASDD<T> sub = AlgebraicOperatorApplication.max(leftElem.getSub(), rightElem.getSub());
 				// TODO: compression
-				elements.add(new AlgebraicElement<T>(prime, sub));
+				elements.add(ASDDFactory.getInstance().createElement(prime, sub));
 			}
 		}
-		return new DecompositionASDD<T>(decomp.getTree(), elements);
+		return ASDDFactory.getInstance().createDecomposition(decomp.getTree(), elements);
 	}
 
 	public static <T extends Number> ASDD<T> evaluate(final ASDD<T> left, final ASDD<T> right) {

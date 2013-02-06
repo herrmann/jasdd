@@ -1,6 +1,5 @@
 package jasdd.algebraic;
 
-import jasdd.bool.ConstantSDD;
 import jasdd.bool.DecompositionSDD;
 import jasdd.bool.Element;
 import jasdd.bool.OperatorApplication;
@@ -27,27 +26,27 @@ public class DecompositionASDD<T> implements ASDD<T> {
 
 	private List<AlgebraicElement<T>> elements;
 
-	public DecompositionASDD(final InternalAVTree avtree, final List<AlgebraicElement<T>> elements) {
+	private DecompositionASDD(final InternalAVTree avtree, final List<AlgebraicElement<T>> elements) {
 		this.avtree = avtree;
 		this.elements = Collections.unmodifiableList(elements);
 	}
 
-	public DecompositionASDD(final InternalAVTree avtree, final AlgebraicElement<T>... elements) {
+	/* package */ DecompositionASDD(final InternalAVTree avtree, final AlgebraicElement<T>... elements) {
 		this.avtree = avtree;
 		this.elements = new ArrayList<AlgebraicElement<T>>(elements.length);
 		for (final AlgebraicElement<T> element : elements) {
-			this.elements.add(element);
+			addElement(element);
 		}
 	}
 
 	// TODO: avoid mutation, specially now that there's a constructor that creates a immutable list of elements.
-	public void addElement(AlgebraicElement<T> newElement) {
+	private void addElement(AlgebraicElement<T> newElement) {
 		// Apply compression if possible
 		for (final AlgebraicElement<T> element : elements) {
 			final ASDD<T> sub = element.getSub();
 			if (sub.equals(newElement.getSub())) {
 				final SDD newPrime = new OperatorApplication(element.getPrime(), newElement.getPrime(), new OrOperator()).apply();
-				newElement = new AlgebraicElement<T>(newPrime, sub);
+				newElement = ASDDFactory.getInstance().createElement(newPrime, sub);
 				elements.remove(element);
 				break;
 			}

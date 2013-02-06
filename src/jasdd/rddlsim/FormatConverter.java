@@ -1,6 +1,7 @@
 package jasdd.rddlsim;
 
 import jasdd.algebraic.ASDD;
+import jasdd.algebraic.ASDDFactory;
 import jasdd.algebraic.AlgebraicElement;
 import jasdd.algebraic.AlgebraicTerminal;
 import jasdd.algebraic.DecompositionASDD;
@@ -100,7 +101,7 @@ public class FormatConverter {
 	private ASDD<Double> addToAsdd(final VariableRegistry vars, AVTree tree, final ADDNode add) {
 		if (add instanceof ADDDNode) {
 			final ADDDNode dnode = ((ADDDNode) add);
-			final AlgebraicTerminal<Double> asdd = new AlgebraicTerminal<Double>(dnode._dLower);
+			final AlgebraicTerminal<Double> asdd = ASDDFactory.getInstance().createTerminal(dnode._dLower);
 			return cachedCopy(asdd);
 		} else if (add instanceof ADDINode) {
 			final ADDINode inode = ((ADDINode) add);
@@ -120,7 +121,7 @@ public class FormatConverter {
 			final ASDD<Double> left = addToAsdd(vars, subtree, high);
 			final ASDD<Double> right = addToAsdd(vars, subtree, low);
 			final AlgebraicElement<Double>[] elems = AlgebraicElement.shannon(var, left, right);
-			final DecompositionASDD<Double> asdd = new DecompositionASDD<Double>((InternalAVTree) tree, elems);
+			final DecompositionASDD<Double> asdd = ASDDFactory.getInstance().createDecomposition((InternalAVTree) tree, elems);
 			return cachedCopy(asdd);
 		}
 		return null;
@@ -162,7 +163,7 @@ public class FormatConverter {
 				cluster(elements, subLowHigh, partitionLowHigh);
 				cluster(elements, subLowLow, partitionLowLow);
 
-				final DecompositionASDD<Double> asdd = new DecompositionASDD<Double>((InternalAVTree) tree, compress(elements));
+				final DecompositionASDD<Double> asdd = ASDDFactory.getInstance().createDecomposition((InternalAVTree) tree, compress(elements));
 				return cachedCopy(asdd);
 			}
 		}
@@ -180,9 +181,9 @@ public class FormatConverter {
 				while (iter.hasNext()) {
 					prime = prime.or(iter.next());
 				}
-				partitions[i++] = new AlgebraicElement<Double>(prime, elem.getKey());
+				partitions[i++] = ASDDFactory.getInstance().createElement(prime, elem.getKey());
 			} else {
-				partitions[i++] = new AlgebraicElement<Double>(elem.getValue().iterator().next(), elem.getKey());
+				partitions[i++] = ASDDFactory.getInstance().createElement(elem.getValue().iterator().next(), elem.getKey());
 			}
 		}
 		return partitions;
