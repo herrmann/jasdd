@@ -69,40 +69,18 @@ public class FormatConverter {
 		}
 	}
 
-	private Map<ASDD<Double>, ASDD<Double>> asddCache = null;
-
-	private ASDD<Double> cachedCopy(final ASDD<Double> asdd) {
-		if (asddCache.containsKey(asdd)) {
-			return asddCache.get(asdd);
-		} else {
-			asddCache.put(asdd, asdd);
-			return asdd;
-		}
-	}
-
-	private void initCache() {
-		asddCache = new HashMap<ASDD<Double>, ASDD<Double>>();
-	}
-
 	public ASDD<Double> addToAsdd(final VariableRegistry vars, final AVTree tree, final int nodeId) {
-		initCache();
-		final ASDD<Double> asdd = addToAsdd(vars, tree, context.getNode(nodeId));
-		asddCache = null;
-		return asdd;
+		return addToAsdd(vars, tree, context.getNode(nodeId));
 	}
 
 	public ASDD<Double> pairwise(final VariableRegistry vars, final AVTree tree, final int nodeId) {
-		initCache();
-		final ASDD<Double> asdd = pairwise(vars, tree, context.getNode(nodeId));
-		asddCache = null;
-		return asdd;
+		return pairwise(vars, tree, context.getNode(nodeId));
 	}
 
 	private ASDD<Double> addToAsdd(final VariableRegistry vars, AVTree tree, final ADDNode add) {
 		if (add instanceof ADDDNode) {
 			final ADDDNode dnode = ((ADDDNode) add);
-			final AlgebraicTerminal<Double> asdd = ASDDFactory.getInstance().createTerminal(dnode._dLower);
-			return cachedCopy(asdd);
+			return ASDDFactory.getInstance().createTerminal(dnode._dLower);
 		} else if (add instanceof ADDINode) {
 			final ADDINode inode = ((ADDINode) add);
 			final String varName = varNameInAdd(inode._nTestVarID);
@@ -121,8 +99,7 @@ public class FormatConverter {
 			final ASDD<Double> left = addToAsdd(vars, subtree, high);
 			final ASDD<Double> right = addToAsdd(vars, subtree, low);
 			final AlgebraicElement<Double>[] elems = AlgebraicElement.shannon(var, left, right);
-			final DecompositionASDD<Double> asdd = ASDDFactory.getInstance().createDecomposition((InternalAVTree) tree, elems);
-			return cachedCopy(asdd);
+			return ASDDFactory.getInstance().createDecomposition((InternalAVTree) tree, elems);
 		}
 		return null;
 	}
@@ -163,8 +140,7 @@ public class FormatConverter {
 				cluster(elements, subLowHigh, partitionLowHigh);
 				cluster(elements, subLowLow, partitionLowLow);
 
-				final DecompositionASDD<Double> asdd = ASDDFactory.getInstance().createDecomposition((InternalAVTree) tree, compress(elements));
-				return cachedCopy(asdd);
+				return ASDDFactory.getInstance().createDecomposition((InternalAVTree) tree, compress(elements));
 			}
 		}
 		return null;
