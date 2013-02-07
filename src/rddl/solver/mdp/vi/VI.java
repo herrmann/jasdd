@@ -29,6 +29,7 @@ import jasdd.vtree.Tree;
 import jasdd.vtree.VTreeUtils;
 
 import java.io.FileNotFoundException;
+import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.DecimalFormat;
@@ -384,7 +385,7 @@ public class VI extends Policy {
 		// ////////////////////////////////////////////////////////////
 		// Iterate until convergence (or max iterations)
 		// ////////////////////////////////////////////////////////////
-		_nHorizon = 20;
+		_nHorizon = 2;
 		while (_nIter < _nHorizon) {
 
 			// Cache maintenance
@@ -419,50 +420,63 @@ public class VI extends Policy {
 				}
 			}
 			if (_nIter == _nHorizon - 1) {
-				final int skews = 101;
 				int i = 0;
-				System.err.println("id avtree size factor algDecomps decomps algElems elems terms depth microsec trimSize");
 				System.err.println("Total variables: " + variables.size());
-//				for (final Tree dissection : VTreeUtils.dissections(variables)) {
-				Tree lastTree = null;
-				for (final Tree dissection : VTreeUtils.skews(skews, variables)) {
-					if (dissection.equals(lastTree)) {
-						i++;
-						continue;
-					}
-					lastTree = dissection;
-					final ASDDConverter converter = new ASDDConverter(_context);
-					final long start = System.nanoTime();
-					final ASDD<Double> asdd = converter.dissect((AVTree) dissection, _valueDD);
-					final long end = System.nanoTime();
-					try {
-						if (asdd instanceof DecompositionASDD<?>) {
-							final DecompositionASDD<?> decomp = (DecompositionASDD<?>) asdd;
-							final double sigma = ((double) i / (skews - 1));
-							GraphvizDumper.dump(decomp, vars, "asdd/navigation_i" + _nIter + "/dissect_" + sigma + ".dot");
-							final DecompositionASDD<Double> trimmed = (DecompositionASDD<Double>) decomp.trimmed();
-							GraphvizDumper.dump(trimmed, vars, "asdd/navigation_i" + _nIter + "/dissect_trim_" + sigma + ".dot");
-							final Summary stats = Summary.from(decomp);
-							System.err.println(i
-									+ " " + dissection
-									+ " " + asdd.size()
-									+ " " + sigma
-									+ " " + stats.getAlgebraicDecompositions()
-									+ " " + stats.getDecompositions()
-									+ " " + stats.getAlgebraicElements()
-									+ " " + stats.getElements()
-									+ " " + stats.getAlgebraicTerminals()
-									+ " " + stats.getDepth()
-									+ " " + ((end - start) / 1000)
-									+ " " + trimmed.size());
+				final String name = "life3";
+				PrintWriter dat = null;
+				try {
+					dat = new PrintWriter(name + "_i" + _nIter + ".dat");
+					dat.println("id avtree size factor algDecomps decomps algElems elems terms depth microsec trimSize");
+					final int skews = 101;
+					for (final Tree dissection : VTreeUtils.dissections(variables)) {
+//					Tree lastTree = null;
+//					for (final Tree dissection : VTreeUtils.skews(skews, variables)) {
+//						if (dissection.equals(lastTree)) {
+//							i++;
+//							continue;
+//						}
+//						lastTree = dissection;
+						final ASDDConverter converter = new ASDDConverter(_context);
+						final long start = System.nanoTime();
+						final ASDD<Double> asdd = converter.dissect((AVTree) dissection, _valueDD);
+						final long end = System.nanoTime();
+						try {
+							if (asdd instanceof DecompositionASDD<?>) {
+								final DecompositionASDD<?> decomp = (DecompositionASDD<?>) asdd;
+								final double sigma = ((double) i / (skews - 1));
+								GraphvizDumper.dump(decomp, vars, "asdd/" + name + "_i" + _nIter + "/dissect_" + sigma + ".dot");
+								final DecompositionASDD<Double> trimmed = (DecompositionASDD<Double>) decomp.trimmed();
+								GraphvizDumper.dump(trimmed, vars, "asdd/" + name + "_i" + _nIter + "/dissect_trim_" + sigma + ".dot");
+								final Summary stats = Summary.from(decomp);
+								final String statsLine = i
+										+ " " + dissection
+										+ " " + asdd.size()
+										+ " " + sigma
+										+ " " + stats.getAlgebraicDecompositions()
+										+ " " + stats.getDecompositions()
+										+ " " + stats.getAlgebraicElements()
+										+ " " + stats.getElements()
+										+ " " + stats.getAlgebraicTerminals()
+										+ " " + stats.getDepth()
+										+ " " + ((end - start) / 1000)
+										+ " " + trimmed.size();
+								dat.println(statsLine);
+								System.err.println(statsLine);
+							}
+						} catch (FileNotFoundException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
 						}
-					} catch (FileNotFoundException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						i++;
 					}
-					i++;
+				} catch (final FileNotFoundException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} finally {
+					if (dat != null) {
+						dat.close();
+					}
 				}
-				// End of ASDD block
 			}
 
 			// Cache maintenance -- clear out previous nodes, but save Q-functions
