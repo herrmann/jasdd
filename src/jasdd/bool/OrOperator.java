@@ -32,6 +32,11 @@ public class OrOperator implements BooleanOperator {
 	}
 
 	@Override
+	public int hashCode() {
+		return 2;
+	}
+
+	@Override
 	public boolean apply(boolean s1, boolean s2) {
 		return s1 || s2;
 	}

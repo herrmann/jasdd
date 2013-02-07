@@ -32,6 +32,11 @@ public class AndOperator implements BooleanOperator {
 	}
 
 	@Override
+	public int hashCode() {
+		return 1;
+	}
+
+	@Override
 	public boolean apply(boolean s1, boolean s2) {
 		return s1 && s2;
 	}
