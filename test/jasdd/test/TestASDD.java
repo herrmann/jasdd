@@ -6,9 +6,7 @@ import jasdd.algebraic.AlgebraicElement;
 import jasdd.algebraic.AlgebraicOperatorApplication;
 import jasdd.algebraic.AlgebraicTerminal;
 import jasdd.algebraic.DecompositionASDD;
-import jasdd.bool.ConstantSDD;
 import jasdd.bool.DecompositionSDD;
-import jasdd.bool.Element;
 import jasdd.bool.SDDFactory;
 import jasdd.logic.Variable;
 import jasdd.logic.VariableRegistry;
@@ -159,21 +157,21 @@ public class TestASDD {
 		final DecompositionASDD<Float> asdd =
 		algFactory.createDecomposition(root,
 			algFactory.createElement(
-					factory.createDecomposition(upperLeft, Element.shannon(x1y1, x1y2, false)),
+					factory.createDecomposition(upperLeft, factory.shannon(x1y1, x1y2, false)),
 				algFactory.createDecomposition(right,
 					algFactory.createElement(
-							factory.createDecomposition(lowerLeft, Element.shannon(x2y1, true, x2y2)), high),
+							factory.createDecomposition(lowerLeft, factory.shannon(x2y1, true, x2y2)), high),
 						algFactory.createElement(
-								factory.createDecomposition(lowerLeft, Element.shannon(x2y1, false, x2y2, false)), low))),
+								factory.createDecomposition(lowerLeft, factory.shannon(x2y1, false, x2y2, false)), low))),
 			algFactory.createElement(
-					factory.createDecomposition(upperLeft, Element.shannon(x1y1, x1y2, false, x1y2)),
+					factory.createDecomposition(upperLeft, factory.shannon(x1y1, x1y2, false, x1y2)),
 				algFactory.createDecomposition(right,
 					algFactory.createElement(
-							factory.createDecomposition(lowerLeft, Element.shannon(x2y1, x2y2, false)), high),
+							factory.createDecomposition(lowerLeft, factory.shannon(x2y1, x2y2, false)), high),
 						algFactory.createElement(
-								factory.createDecomposition(lowerLeft, Element.shannon(x2y1, x2y2, false, true)), low))),
+								factory.createDecomposition(lowerLeft, factory.shannon(x2y1, x2y2, false, true)), low))),
 			algFactory.createElement(
-					factory.createDecomposition(upperLeft, Element.shannon(x1y1, false, x1y2, false)), low));
+					factory.createDecomposition(upperLeft, factory.shannon(x1y1, false, x1y2, false)), low));
 
 		Assert.assertEquals(21, asdd.size());
 
@@ -240,8 +238,8 @@ public class TestASDD {
 
 		@SuppressWarnings("unchecked")
 		final DecompositionASDD<Double> countA = algFactory.createDecomposition(avtree,
-			algFactory.createElement(factory.createDecomposition(subtree, Element.shannon(a, true, false)), algFactory.createTerminal(1.0)),
-			algFactory.createElement(factory.createDecomposition(subtree, Element.shannon(a, false, true)), algFactory.createTerminal(0.0)));
+			algFactory.createElement(factory.createDecomposition(subtree, factory.shannon(a, true, false)), algFactory.createTerminal(1.0)),
+			algFactory.createElement(factory.createDecomposition(subtree, factory.shannon(a, false, true)), algFactory.createTerminal(0.0)));
 
 		@SuppressWarnings("unchecked")
 		final DecompositionASDD<Double> countB = algFactory.createDecomposition(avtree,

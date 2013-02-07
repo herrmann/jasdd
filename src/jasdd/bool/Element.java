@@ -166,55 +166,8 @@ public class Element implements Sentence, StringBuildable {
 	}
 
 	public Element trimmed() {
-		return new Element(getPrime().trimmed(), getSub().trimmed());
-	}
-
-	public static Element[] shannon(final Variable v, final Variable v1, final Variable v2, final boolean s2) {
-		return shannon(v, v1, true, v2, s2);
-	}
-
-	public static Element[] shannon(final Variable v, final Variable v1, final boolean s1, final Variable v2) {
-		return shannon(v, v1, s1, v2, true);
-	}
-
-	public static Element[] shannon(final Variable v, final Variable v1, final Variable v2) {
-		return shannon(v, v1, true, v2, true);
-	}
-
-	public static Element[] shannon(final Variable v, final Variable v1, final boolean s1, final Variable v2, final boolean s2) {
-		final Element[] elems = new Element[2];
-		elems[0] = new Element(v, true, v1, s1);
-		elems[1] = new Element(v, false, v2, s2);
-		return elems;
-	}
-
-	public static Element[] shannon(final Variable v, final Variable v1, final boolean s2) {
-		return shannon(v, v1, true, s2);
-	}
-
-	public static Element[] shannon(final Variable v, final Variable v1, final boolean s1, final boolean s2) {
-		final Element[] elems = new Element[2];
-		elems[0] = new Element(v, true, v1, s1);
-		elems[1] = new Element(v, false, s2);
-		return elems;
-	}
-
-	public static Element[] shannon(final Variable v, final boolean s1, final Variable v2) {
-		return shannon(v, s1, v2, true);
-	}
-
-	public static Element[] shannon(final Variable v, final boolean s1, final Variable v2, final boolean s2) {
-		final Element[] elems = new Element[2];
-		elems[0] = new Element(v, true, s1);
-		elems[1] = new Element(v, false, v2, s2);
-		return elems;
-	}
-
-	public static Element[] shannon(final Variable v, final boolean s1, final boolean s2) {
-		final Element[] elems = new Element[2];
-		elems[0] = new Element(v, true, s1);
-		elems[1] = new Element(v, false, s2);
-		return elems;
+		final SDDFactory factory = SDDFactory.getInstance();
+		return factory.createElement(getPrime().trimmed(), getSub().trimmed());
 	}
 
 	public void accept(final SDDVisitor visitor) {

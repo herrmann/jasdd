@@ -161,7 +161,7 @@ public class DecompositionSDD extends AbstractSDD {
 		if (left instanceof VariableLeaf) {
 			final Variable treeVar = ((VariableLeaf) left).getVariable();
 			if (treeVar.equals(v)) {
-				return new DecompositionSDD(vtree, Element.shannon(v, lit.getSign(), !lit.getSign()));
+				return factory.createDecomposition(vtree, factory.shannon(v, lit.getSign(), !lit.getSign()));
 			}
 		}
 		// Case 2: right vtree is the variable itself
@@ -169,19 +169,19 @@ public class DecompositionSDD extends AbstractSDD {
 		if (right instanceof VariableLeaf) {
 			final Variable treeVar = ((VariableLeaf) right).getVariable();
 			if (treeVar.equals(v)) {
-				return new DecompositionSDD(vtree, factory.createElement(true, lit));
+				return factory.createDecomposition(vtree, factory.createElement(true, lit));
 			}
 		}
 		// Case 3: variable is in the left vtree
 		if (left.variables().contains(v)) {
 			final SDD top = buildNormalized((InternalVTree) left, lit);
 			final SDD bottom = buildNormalized((InternalVTree) left, lit.opposite());
-			return new DecompositionSDD(vtree, factory.createElement(top, true), factory.createElement(bottom, false));
+			return factory.createDecomposition(vtree, factory.createElement(top, true), factory.createElement(bottom, false));
 		}
 		// Case 4: variable is in the right vtree
 		if (right.variables().contains(v)) {
 			final SDD sub = buildNormalized((InternalVTree) right, lit);
-			return new DecompositionSDD(vtree, factory.createElement(true, sub));
+			return factory.createDecomposition(vtree, factory.createElement(true, sub));
 		}
 		// Case 5: there's no case 5. What went wrong?
 		throw new IllegalArgumentException("Variable " + v.toString() + " is not in the vtree " + vtree.toString());
@@ -203,7 +203,7 @@ public class DecompositionSDD extends AbstractSDD {
 		} else {
 			final Element[] elems = new Element[elements.size()];
 			elements.toArray(elems);
-			return new DecompositionSDD(getVTree(), elems);
+			return factory.createDecomposition(getVTree(), elems);
 		}
 	}
 
