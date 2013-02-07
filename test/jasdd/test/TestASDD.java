@@ -253,7 +253,6 @@ public class TestASDD {
 	@Test
 	public void sumDecompositionsLeftLinear() {
 		final DecompositionASDD<Double> result = leftLinearExample();
-		System.out.println(result);
 		Assert.assertEquals("[((0,1),VALUE), (([(0,1), ((0 /\\ 1) \\/ (-0 /\\ F))] /\\ 2.0) \\/ ([(0,1), ((0 /\\ -1) \\/ (-0 /\\ 1))] /\\ 1.0) \\/ ([(0,1), ((0 /\\ F) \\/ (-0 /\\ -1))] /\\ 0.0))]", result.toString());
 	}
 
