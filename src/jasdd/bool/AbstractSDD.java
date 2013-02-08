@@ -38,4 +38,14 @@ public abstract class AbstractSDD implements SDD {
 		return apply(sdd, new OrOperator());
 	}
 
+	@Override
+	public SDD xor(final SDD sdd) {
+		return apply(sdd, new XorOperator());
+	}
+
+	@Override
+	public SDD not() {
+		return apply(SDDFactory.getInstance().createTrue(), new XorOperator());
+	}
+
 }

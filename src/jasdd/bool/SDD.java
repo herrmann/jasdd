@@ -24,6 +24,8 @@ public interface SDD extends Sentence, StringBuildable {
 
 	SDD and(SDD sdd);
 	SDD or(SDD sdd);
+	SDD xor(SDD sdd);
+	SDD not();
 
 	Collection<Element> expansion();
 	SDD trimmed();

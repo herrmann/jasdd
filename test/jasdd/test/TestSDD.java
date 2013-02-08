@@ -581,4 +581,9 @@ public class TestSDD {
 		Assert.assertEquals(factory.createTrue(), sdd.trimmed());
 	}
 
+	@Test
+	public void notConstant() {
+		Assert.assertEquals(factory.createFalse(), factory.createTrue().not());
+	}
+
 }
