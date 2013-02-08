@@ -64,18 +64,19 @@ public class OperatorApplication {
 	}
 
 	private SDD apply(final LiteralSDD sdd1, final ConstantSDD sdd2, final BooleanOperator op) {
+		final SDDFactory factory = SDDFactory.getInstance();
 		if (op.equals(AND)) {
 			if (sdd2.getSign()) {
-				return SDDFactory.getInstance().createLiteral(sdd1);
+				return factory.createLiteral(sdd1);
 			} else {
-				return SDDFactory.getInstance().createConstant(false);
+				return factory.createConstant(false);
 			}
 		}
 		if (op.equals(OR)) {
 			if (sdd2.getSign()) {
-				return SDDFactory.getInstance().createConstant(true);
+				return factory.createConstant(true);
 			} else {
-				return SDDFactory.getInstance().createLiteral(sdd1);
+				return factory.createLiteral(sdd1);
 			}
 		}
 		return null;
