@@ -18,8 +18,10 @@ public class ASDDFactory {
 
 	private static ASDDFactory instance;
 
+	@SuppressWarnings("rawtypes")
 	private Map<ASDD, ASDD> cache = new HashMap<ASDD, ASDD>();
 
+	@SuppressWarnings("rawtypes")
 	private final Map<AlgebraicElement, AlgebraicElement> elementCache = new HashMap<AlgebraicElement, AlgebraicElement>();
 
 	public static ASDDFactory getInstance() {
@@ -29,7 +31,8 @@ public class ASDDFactory {
 		return instance;
 	}
 
-	private ASDD cache(final ASDD asdd) {
+	@SuppressWarnings("unchecked")
+	private <T> ASDD<T> cache(final ASDD<T> asdd) {
 		if (cache.containsKey(asdd)) {
 			return cache.get(asdd);
 		} else {
@@ -38,7 +41,8 @@ public class ASDDFactory {
 		}
 	}
 
-	private AlgebraicElement cache(final AlgebraicElement elem) {
+	@SuppressWarnings("unchecked")
+	private <T> AlgebraicElement<T> cache(final AlgebraicElement<T> elem) {
 		if (elementCache.containsKey(elem)) {
 			return elementCache.get(elem);
 		} else {
@@ -47,19 +51,20 @@ public class ASDDFactory {
 		}
 	}
 
-	public DecompositionASDD createDecomposition(final InternalAVTree avtree, final AlgebraicElement... elements) {
-		return (DecompositionASDD) cache(new DecompositionASDD(avtree, elements));
+	public <T> DecompositionASDD<T> createDecomposition(final InternalAVTree avtree, final AlgebraicElement<T>... elements) {
+		return (DecompositionASDD<T>) cache(new DecompositionASDD<T>(avtree, elements));
 	}
 
-	public AlgebraicTerminal createTerminal(final Object value) {
-		return (AlgebraicTerminal) cache(new AlgebraicTerminal(value));
+	public <T> AlgebraicTerminal<T> createTerminal(final T value) {
+		return (AlgebraicTerminal<T>) cache(new AlgebraicTerminal<T>(value));
 	}
 
-	public AlgebraicElement createElement(final SDD prime, final ASDD sub) {
-		return cache(new AlgebraicElement(prime, sub));
+	public <T> AlgebraicElement<T> createElement(final SDD prime, final ASDD<T> sub) {
+		return cache(new AlgebraicElement<T>(prime, sub));
 	}
 
 	public <T> AlgebraicElement<T>[] shannon(final Variable v, final ASDD<T> high, final ASDD<T> low) {
+		@SuppressWarnings("unchecked")
 		final AlgebraicElement<T>[] elems = new AlgebraicElement[2];
 		elems[0] = createElement(v, high);
 		elems[1] = createElement(v, false, low);
@@ -68,24 +73,25 @@ public class ASDDFactory {
 
 	// Auxiliary
 
-	public DecompositionASDD createDecomposition(final InternalAVTree avtree, final List<AlgebraicElement> elements) {
-		final AlgebraicElement[] elems = new AlgebraicElement[elements.size()];
+	public <T> DecompositionASDD<T> createDecomposition(final InternalAVTree avtree, final List<AlgebraicElement<T>> elements) {
+		@SuppressWarnings("unchecked")
+		final AlgebraicElement<T>[] elems = new AlgebraicElement[elements.size()];
 		int i = 0;
-		for (final AlgebraicElement elem : elements) {
+		for (final AlgebraicElement<T> elem : elements) {
 			elems[i++] = elem;
 		}
 		return createDecomposition(avtree, elems);
 	}
 
-	public AlgebraicElement createElement(final ASDD sub) {
+	public <T> AlgebraicElement<T> createElement(final ASDD<T> sub) {
 		return createElement(SDDFactory.getInstance().createTrue(), sub);
 	}
 
-	public AlgebraicElement createElement(final Variable v1, final boolean s1, final ASDD sub) {
+	public <T> AlgebraicElement<T> createElement(final Variable v1, final boolean s1, final ASDD<T> sub) {
 		return createElement(SDDFactory.getInstance().createLiteral(v1, s1), sub);
 	}
 
-	public AlgebraicElement createElement(final Variable v1, final ASDD sub) {
+	public <T> AlgebraicElement<T> createElement(final Variable v1, final ASDD<T> sub) {
 		return createElement(v1, true, sub);
 	}
 

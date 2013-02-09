@@ -94,12 +94,12 @@ public class ASDDConverter {
 		}
 		final Map<Integer, Boolean> assignments = new HashMap<Integer, Boolean>();
 		final ASDDFactory algFactory = ASDDFactory.getInstance();
-		final List<AlgebraicElement> elems = new ArrayList<AlgebraicElement>();
+		final List<AlgebraicElement<Double>> elems = new ArrayList<AlgebraicElement<Double>>();
 		dissect(elems, avtree, nodeId, fringe, assignments);
 		return algFactory.createDecomposition(avtree, elems);
 	}
 
-	public void dissect(final List<AlgebraicElement> elems, final InternalAVTree avtree, final int nodeId, final Set<Integer> fringe, final Map<Integer, Boolean> assignments) {
+	public void dissect(final List<AlgebraicElement<Double>> elems, final InternalAVTree avtree, final int nodeId, final Set<Integer> fringe, final Map<Integer, Boolean> assignments) {
 		final ADDNode node = context.getNode(nodeId);
 		if (node instanceof ADDINode) {
 			final ADDINode inode = (ADDINode) node;

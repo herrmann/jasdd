@@ -71,7 +71,7 @@ public class NumericMaxOperation<T extends Number> extends AbstractASDDVisitor<T
 	private ASDD<T> maxScalarToDecomposition(final DecompositionASDD<T> decomp, final AlgebraicTerminal<T> terminal) {
 		// TODO: structural caching
 		final List<AlgebraicElement<T>> origElements = decomp.getElements();
-		final List<AlgebraicElement> elements = new ArrayList<AlgebraicElement>(origElements.size());
+		final List<AlgebraicElement<T>> elements = new ArrayList<AlgebraicElement<T>>(origElements.size());
 		for (final AlgebraicElement<T> element : origElements) {
 			final SDD prime = element.getPrime();
 			final ASDD<T> sub = AlgebraicOperatorApplication.max(element.getSub(), terminal);
@@ -85,7 +85,7 @@ public class NumericMaxOperation<T extends Number> extends AbstractASDDVisitor<T
 			throw new UnsupportedOperationException("Maximization of decompositions using different avtrees is not supported yet");
 		}
 		// TODO: structural caching
-		final List<AlgebraicElement> elements = new ArrayList<AlgebraicElement>();
+		final List<AlgebraicElement<T>> elements = new ArrayList<AlgebraicElement<T>>();
 		for (final AlgebraicElement<T> leftElem : decomp.getElements()) {
 			for (final AlgebraicElement<T> rightElem : other.getElements()) {
 				final SDD prime = new OperatorApplication(leftElem.getPrime(), rightElem.getPrime(), new AndOperator()).apply();

@@ -37,7 +37,7 @@ public class NumericSumOperation<T extends Number> extends AbstractASDDVisitor<T
 			@Override
 			public void visit(final AlgebraicTerminal<T> other) {
 				final double sum = terminal.getValue().doubleValue() + other.getValue().doubleValue();
-				result = ASDDFactory.getInstance().createTerminal(sum);
+				result = (ASDD<T>) ASDDFactory.getInstance().createTerminal(sum);
 			}
 
 			@Override
@@ -72,7 +72,7 @@ public class NumericSumOperation<T extends Number> extends AbstractASDDVisitor<T
 		// TODO: structural caching
 		final ASDDFactory algFactory = ASDDFactory.getInstance();
 		final List<AlgebraicElement<T>> origElements = decomp.getElements();
-		final List<AlgebraicElement> elements = new ArrayList<AlgebraicElement>(origElements.size());
+		final List<AlgebraicElement<T>> elements = new ArrayList<AlgebraicElement<T>>(origElements.size());
 		for (final AlgebraicElement<T> element : origElements) {
 			final SDD prime = element.getPrime();
 			final ASDD<T> sub = AlgebraicOperatorApplication.sum(element.getSub(), terminal);
@@ -87,7 +87,7 @@ public class NumericSumOperation<T extends Number> extends AbstractASDDVisitor<T
 		}
 		// TODO: structural caching
 		final ASDDFactory algFactory = ASDDFactory.getInstance();
-		final List<AlgebraicElement> elements = new ArrayList<AlgebraicElement>();
+		final List<AlgebraicElement<T>> elements = new ArrayList<AlgebraicElement<T>>();
 		for (final AlgebraicElement<T> leftElem : decomp.getElements()) {
 			for (final AlgebraicElement<T> rightElem : other.getElements()) {
 				final SDD prime = new OperatorApplication(leftElem.getPrime(), rightElem.getPrime(), new AndOperator()).apply();
