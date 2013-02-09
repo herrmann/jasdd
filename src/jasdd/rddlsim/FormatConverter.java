@@ -3,7 +3,6 @@ package jasdd.rddlsim;
 import jasdd.algebraic.ASDD;
 import jasdd.algebraic.ASDDFactory;
 import jasdd.algebraic.AlgebraicElement;
-import jasdd.algebraic.AlgebraicTerminal;
 import jasdd.algebraic.DecompositionASDD;
 import jasdd.bool.DecompositionSDD;
 import jasdd.bool.SDD;

@@ -1,10 +1,8 @@
 package jasdd.test;
 
 import jasdd.bool.AbstractSDD;
-import jasdd.bool.ConstantSDD;
 import jasdd.bool.DecompositionSDD;
 import jasdd.bool.Element;
-import jasdd.bool.LiteralSDD;
 import jasdd.bool.SDD;
 import jasdd.bool.SDDFactory;
 import jasdd.logic.Variable;
@@ -16,12 +14,10 @@ import jasdd.vtree.VTreeUtils;
 import jasdd.vtree.VariableLeaf;
 
 import java.io.FileNotFoundException;
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-
 
 import org.junit.Assert;
 import org.junit.Test;

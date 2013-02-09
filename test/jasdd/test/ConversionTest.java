@@ -1,6 +1,5 @@
 package jasdd.test;
 
-import jasdd.bool.ConstantSDD;
 import jasdd.bool.DecompositionSDD;
 import jasdd.bool.SDD;
 import jasdd.bool.SDDFactory;

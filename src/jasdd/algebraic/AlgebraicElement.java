@@ -1,6 +1,5 @@
 package jasdd.algebraic;
 
-import jasdd.bool.LiteralSDD;
 import jasdd.bool.SDD;
 import jasdd.bool.SDDFactory;
 import jasdd.logic.Variable;
