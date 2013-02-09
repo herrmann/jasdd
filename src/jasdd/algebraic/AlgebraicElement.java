@@ -41,7 +41,7 @@ public class AlgebraicElement<T> implements StringBuildable {
 		return sub;
 	}
 
-	public static <T> AlgebraicElement<T>[] shannon(final Variable v, final ASDD<T> high, final ASDD<T> low) {
+	private static <T> AlgebraicElement<T>[] shannon(final Variable v, final ASDD<T> high, final ASDD<T> low) {
 		@SuppressWarnings("unchecked")
 		final AlgebraicElement<T>[] elems = new AlgebraicElement[2];
 		elems[0] = new AlgebraicElement<T>(v, high);

@@ -59,6 +59,13 @@ public class ASDDFactory {
 		return cache(new AlgebraicElement(prime, sub));
 	}
 
+	public <T> AlgebraicElement<T>[] shannon(final Variable v, final ASDD<T> high, final ASDD<T> low) {
+		final AlgebraicElement<T>[] elems = new AlgebraicElement[2];
+		elems[0] = createElement(v, high);
+		elems[1] = createElement(v, false, low);
+		return elems;
+	}
+
 	// Auxiliary
 
 	public DecompositionASDD createDecomposition(final InternalAVTree avtree, final List<AlgebraicElement> elements) {

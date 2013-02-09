@@ -77,9 +77,10 @@ public class FormatConverter {
 	}
 
 	private ASDD<Double> addToAsdd(final VariableRegistry vars, AVTree tree, final ADDNode add) {
+		final ASDDFactory algFactory = ASDDFactory.getInstance();
 		if (add instanceof ADDDNode) {
 			final ADDDNode dnode = ((ADDDNode) add);
-			return ASDDFactory.getInstance().createTerminal(dnode._dLower);
+			return algFactory.createTerminal(dnode._dLower);
 		} else if (add instanceof ADDINode) {
 			final ADDINode inode = ((ADDINode) add);
 			final String varName = varNameInAdd(inode._nTestVarID);
@@ -97,8 +98,8 @@ public class FormatConverter {
 			final ADDNode high = context.getNode(inode._nHigh);
 			final ASDD<Double> left = addToAsdd(vars, subtree, high);
 			final ASDD<Double> right = addToAsdd(vars, subtree, low);
-			final AlgebraicElement<Double>[] elems = AlgebraicElement.shannon(var, left, right);
-			return ASDDFactory.getInstance().createDecomposition((InternalAVTree) tree, elems);
+			final AlgebraicElement<Double>[] elems = algFactory.shannon(var, left, right);
+			return algFactory.createDecomposition((InternalAVTree) tree, elems);
 		}
 		return null;
 	}

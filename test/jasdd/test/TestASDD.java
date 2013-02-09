@@ -192,7 +192,7 @@ public class TestASDD {
 		final Variable a = vars.register("A");
 		final ASDD<Double> low = algFactory.createTerminal(1.0);
 		final ASDD<Double> high = algFactory.createTerminal(2.0);
-		final AlgebraicElement<Double>[] elements = AlgebraicElement.shannon(a, high, low);
+		final AlgebraicElement<Double>[] elements = algFactory.shannon(a, high, low);
 		final InternalAVTree avtree = new InternalAVTree(a, new ValueLeaf());
 		final ASDD<Double> asdd = algFactory.createDecomposition(avtree, elements);
 		final ASDD<Double> increment = algFactory.createTerminal(0.5);
@@ -210,13 +210,13 @@ public class TestASDD {
 		final InternalAVTree avtree = new InternalAVTree(a, subtree);
 
 		@SuppressWarnings("unchecked")
-		final DecompositionASDD<Double> countA = algFactory.createDecomposition(avtree, AlgebraicElement.shannon(a,
+		final DecompositionASDD<Double> countA = algFactory.createDecomposition(avtree, algFactory.shannon(a,
 			algFactory.createDecomposition(subtree, algFactory.createElement(algFactory.createTerminal(1.0))),
 			algFactory.createDecomposition(subtree, algFactory.createElement(algFactory.createTerminal(0.0)))));
 		
 		@SuppressWarnings("unchecked")
 		final DecompositionASDD<Double> countB = algFactory.createDecomposition(avtree, algFactory.createElement(
-			algFactory.createDecomposition(subtree, AlgebraicElement.shannon(b, algFactory.createTerminal(1.0), algFactory.createTerminal(0.0)))));
+			algFactory.createDecomposition(subtree, algFactory.shannon(b, algFactory.createTerminal(1.0), algFactory.createTerminal(0.0)))));
 
 		final DecompositionASDD<Double> result = (DecompositionASDD<Double>) AlgebraicOperatorApplication.sum(countA, countB);
 
