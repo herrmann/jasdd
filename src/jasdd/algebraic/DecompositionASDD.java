@@ -179,4 +179,13 @@ public class DecompositionASDD<T> implements ASDD<T> {
 		}
 	}
 
+	@Override
+	public Set<T> terminals() {
+		final Set<T> terminals = new HashSet<T>();
+		for (final AlgebraicElement<T> element : getElements()) {
+			terminals.addAll(element.getSub().terminals());
+		}
+		return terminals;
+	}
+
 }

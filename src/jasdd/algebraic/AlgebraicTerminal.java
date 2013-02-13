@@ -1,5 +1,8 @@
 package jasdd.algebraic;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import jasdd.visitor.ASDDVisitor;
 import jasdd.vtree.ValueLeaf;
 
@@ -84,6 +87,13 @@ public class AlgebraicTerminal<T> implements ASDD<T> {
 	@Override
 	public ASDD<T> trimmed() {
 		return this;
+	}
+
+	@Override
+	public Set<T> terminals() {
+		final Set<T> set = new HashSet<T>();
+		set.add(value);
+		return set;
 	}
 
 }

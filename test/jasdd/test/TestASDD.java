@@ -18,6 +18,7 @@ import jasdd.vtree.ValueLeaf;
 import jasdd.vtree.VariableLeaf;
 
 import java.io.FileNotFoundException;
+import java.util.Set;
 
 import junit.framework.Assert;
 
@@ -274,6 +275,16 @@ public class TestASDD {
 		Assert.assertEquals(3, stats.getDecompositions());
 		Assert.assertEquals(2, stats.getDepth());
 		Assert.assertEquals(9, result.size());
+	}
+
+	@Test
+	public void terminals() {
+		final DecompositionASDD<Double> result = leftLinearExample();
+		final Set<Double> terminals = result.terminals();
+		Assert.assertEquals(3, terminals.size());
+		for (int i = 0; i < 3; i++) {
+			terminals.contains(i);
+		}
 	}
 
 }
