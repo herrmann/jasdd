@@ -26,11 +26,6 @@ public class DecompositionASDD<T> implements ASDD<T> {
 
 	private List<AlgebraicElement<T>> elements;
 
-	private DecompositionASDD(final InternalAVTree avtree, final List<AlgebraicElement<T>> elements) {
-		this.avtree = avtree;
-		this.elements = Collections.unmodifiableList(elements);
-	}
-
 	/* package */ DecompositionASDD(final InternalAVTree avtree, final AlgebraicElement<T>... elements) {
 		this.avtree = avtree;
 		this.elements = new ArrayList<AlgebraicElement<T>>(elements.length);

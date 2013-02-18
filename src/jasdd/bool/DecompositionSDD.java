@@ -28,12 +28,6 @@ public class DecompositionSDD extends AbstractSDD {
 	private InternalVTree vtree;
 	private List<Element> elements = new ArrayList<Element>();
 
-	private DecompositionSDD(final DecompositionSDD sdd) {
-		this.vtree = sdd.getVTree();
-		this.elements = (List<Element>) sdd.getElements();
-		// TODO: Deep copy
-	}
-
 	/* package*/ DecompositionSDD(final VTree node, final Element... elements) {
 		this((InternalVTree) node, elements);
 	}

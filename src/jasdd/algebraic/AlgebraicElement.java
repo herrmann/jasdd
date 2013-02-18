@@ -16,10 +16,6 @@ public class AlgebraicElement<T> implements StringBuildable {
 	private SDD prime;
 	private ASDD<T> sub;
 
-	private AlgebraicElement(final ASDD<T> sub) {
-		this(SDDFactory.getInstance().createTrue(), sub);
-	}
-
 	/* package */ AlgebraicElement(final SDD prime, final ASDD<T> sub) {
 		this.prime = prime;
 		this.sub = sub;
