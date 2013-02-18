@@ -51,7 +51,7 @@ public class ConstantSDD extends TerminalSDD {
 	@Override
 	public Collection<Element> expansion() {
 		final Collection<Element> expansion = new ArrayList<Element>(1);
-		expansion.add(SDDFactory.getInstance().createElement(true, getSign()));
+		expansion.add(CachingSDDFactory.getInstance().createElement(true, getSign()));
 		return expansion;
 	}
 

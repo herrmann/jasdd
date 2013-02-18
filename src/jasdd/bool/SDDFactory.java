@@ -4,70 +4,18 @@ import jasdd.logic.Literal;
 import jasdd.logic.Variable;
 import jasdd.vtree.InternalVTree;
 
-import java.util.HashMap;
-import java.util.Map;
+public interface SDDFactory {
 
-/**
- * Creates and caches different types of SDDs.
- * 
- * @author Ricardo Herrmann
- */
-public class SDDFactory {
-	
-	private static SDDFactory instance;
+	ConstantSDD createConstant(boolean sign);
 
-	private Map<SDD, SDD> cache = new HashMap<SDD, SDD>();
+	ConstantSDD createFalse();
 
-	private final Map<Element, Element> elementCache = new HashMap<Element, Element>();
+	ConstantSDD createTrue();
 
-	public static SDDFactory getInstance() {
-		if (null == instance) {
-			instance = new SDDFactory();
-		}
-		return instance;
-	}
+	LiteralSDD createLiteral(Variable variable, boolean sign);
 
-	private SDD cache(final SDD sdd) {
-		if (cache.containsKey(sdd)) {
-			return cache.get(sdd);
-		} else {
-			cache.put(sdd, sdd);
-			return sdd;
-		}
-	}
-
-	public ConstantSDD createConstant(final boolean sign) {
-		return (ConstantSDD) cache(new ConstantSDD(sign));
-	}
-
-	public ConstantSDD createFalse() {
-		return createConstant(false);
-	}
-
-	public ConstantSDD createTrue() {
-		return createConstant(true);
-	}
-
-	public LiteralSDD createLiteral(final Variable variable, final boolean sign) {
-		return (LiteralSDD) cache(new LiteralSDD(variable, sign));
-	}
-
-	public DecompositionSDD createDecomposition(final InternalVTree node, final Element... elements) {
-		final Element[] elems = new Element[elements.length];
-		for (int i = 0; i < elems.length; i++) {
-			elems[i] = cache(elements[i]);
-		}
-		return (DecompositionSDD) cache(new DecompositionSDD(node, elems));
-	}
-
-	private Element cache(final Element elem) {
-		if (elementCache.containsKey(elem)) {
-			return elementCache.get(elem);
-		} else {
-			elementCache.put(elem, elem);
-			return elem;
-		}
-	}
+	DecompositionSDD createDecomposition(InternalVTree node,
+			Element... elements);
 
 	/**
 	 * Base factory method for Elements.
@@ -76,154 +24,71 @@ public class SDDFactory {
 	 * @param sub the sub SDD
 	 * @return the cached instance of the Element
 	 */
-	public Element createElement(final SDD prime, final SDD sub) {
-		return cache(new Element(prime, sub));
-	}
+	Element createElement(SDD prime, SDD sub);
 
-	public SDD createLiteral(final LiteralSDD sdd) {
-		return cache(sdd);
-	}
+	SDD createLiteral(LiteralSDD sdd);
 
-	public SDD createDecomposition(final DecompositionSDD sdd) {
-		return cache(sdd);
-	}
+	SDD createDecomposition(DecompositionSDD sdd);
 
-	// Factory methods corresponding to Element constructors
+	Element createElement(Variable v1, boolean s1, Variable v2, boolean s2);
 
-	public Element createElement(final Variable v1, final boolean s1, final Variable v2, final boolean s2) {
-		return createElement(createLiteral(v1, s1), createLiteral(v2, s2));
-	}
+	Element createElement(Variable v1, Variable v2);
 
-	public Element createElement(final Variable v1, final Variable v2) {
-		return createElement(v1, true, v2, true);
-	}
+	Element createElement(Variable v1, boolean s2);
 
-	public Element createElement(final Variable v1, final boolean s2) {
-		return createElement(v1, true, s2);
-	}
+	Element createElement(boolean s1, Variable v2);
 
-	public Element createElement(final boolean s1, final Variable v2) {
-		return createElement(s1, v2, true);
-	}
+	Element createElement(boolean s1, Literal l2);
 
-	public Element createElement(final boolean s1, final Literal l2) {
-		return createElement(s1, l2.getVariable(), l2.getSign());
-	}
+	Element createElement(Variable v1, boolean s1, Variable v2);
 
-	public Element createElement(final Variable v1, final boolean s1, final Variable v2) {
-		return createElement(v1, s1, v2, true);
-	}
+	Element createElement(Variable v1, Variable v2, boolean s2);
 
-	public Element createElement(final Variable v1, final Variable v2, final boolean s2) {
-		return createElement(v1, true, v2, s2);
-	}
+	Element createElement(Variable v1, boolean s1, boolean s2);
 
-	public Element createElement(final Variable v1, final boolean s1, final boolean s2) {
-		return createElement(createLiteral(v1, s1), createConstant(s2));
-	}
+	Element createElement(boolean s1, Variable v2, boolean s2);
 
-	public Element createElement(final boolean s1, final Variable v2, final boolean s2) {
-		return createElement(createConstant(s1), createLiteral(v2, s2));
-	}
+	Element createElement(boolean s1, boolean s2);
 
-	public Element createElement(final boolean s1, final boolean s2) {
-		return createElement(createConstant(s1), createConstant(s2));
-	}
+	Element createElement(SDD prime, boolean s2);
 
-	public Element createElement(final SDD prime, final boolean s2) {
-		return createElement(prime, createConstant(s2));
-	}
+	Element createElement(boolean s1, SDD sub);
 
-	public Element createElement(final boolean s1, final SDD sub) {
-		return createElement(createConstant(s1), sub);
-	}
+	Element createElement(SDD prime, Variable v2, boolean s2);
 
-	public Element createElement(final SDD prime, final Variable v2, final boolean s2) {
-		return createElement(prime, createLiteral(v2, s2));
-	}
+	Element createElement(SDD prime, Variable v2);
 
-	public Element createElement(final SDD prime, final Variable v2) {
-		return createElement(prime, v2, true);
-	}
+	Element createElement(Variable v1, boolean s1, SDD sub);
 
-	public Element createElement(final Variable v1, final boolean s1, final SDD sub) {
-		return createElement(createLiteral(v1, s1), sub);
-	}
+	Element createElement(Variable v1, SDD sub);
 
-	public Element createElement(final Variable v1, final SDD sub) {
-		return createElement(v1, true, sub);
-	}
+	Element createElement(Literal l1, boolean s2);
 
-	public Element createElement(final Literal l1, boolean s2) {
-		return createElement(l1.getVariable(), l1.getSign(), s2);
-	}
+	Element createElement(Literal l1, Literal l2);
 
-	public Element createElement(final Literal l1, final Literal l2) {
-		return createElement(l1.getVariable(), l1.getSign(), l2.getVariable(), l2.getSign());
-	}
+	Element[] shannon(Variable v, Variable v1, Variable v2, boolean s2);
 
-	// Shannon decompositions
+	Element[] shannon(Variable v, Variable v1, boolean s1, Variable v2);
 
-	public Element[] shannon(final Variable v, final Variable v1, final Variable v2, final boolean s2) {
-		return shannon(v, v1, true, v2, s2);
-	}
+	Element[] shannon(Variable v, Variable v1, Variable v2);
 
-	public Element[] shannon(final Variable v, final Variable v1, final boolean s1, final Variable v2) {
-		return shannon(v, v1, s1, v2, true);
-	}
+	Element[] shannon(Variable v, Variable v1, boolean s1, Variable v2,
+			boolean s2);
 
-	public Element[] shannon(final Variable v, final Variable v1, final Variable v2) {
-		return shannon(v, v1, true, v2, true);
-	}
+	Element[] shannon(Variable v, Variable v1, boolean s2);
 
-	public Element[] shannon(final Variable v, final Variable v1, final boolean s1, final Variable v2, final boolean s2) {
-		final Element[] elems = new Element[2];
-		elems[0] = createElement(v, true, v1, s1);
-		elems[1] = createElement(v, false, v2, s2);
-		return elems;
-	}
+	Element[] shannon(Variable v, Variable v1, boolean s1, boolean s2);
 
-	public Element[] shannon(final Variable v, final Variable v1, final boolean s2) {
-		return shannon(v, v1, true, s2);
-	}
+	Element[] shannon(Variable v, boolean s1, Variable v2);
 
-	public Element[] shannon(final Variable v, final Variable v1, final boolean s1, final boolean s2) {
-		final Element[] elems = new Element[2];
-		elems[0] = createElement(v, true, v1, s1);
-		elems[1] = createElement(v, false, s2);
-		return elems;
-	}
+	Element[] shannon(Variable v, boolean s1, Variable v2, boolean s2);
 
-	public Element[] shannon(final Variable v, final boolean s1, final Variable v2) {
-		return shannon(v, s1, v2, true);
-	}
+	Element[] shannon(Variable v, boolean s1, boolean s2);
 
-	public Element[] shannon(final Variable v, final boolean s1, final Variable v2, final boolean s2) {
-		final Element[] elems = new Element[2];
-		elems[0] = createElement(v, true, s1);
-		elems[1] = createElement(v, false, v2, s2);
-		return elems;
-	}
+	LiteralSDD createLiteral(int index, boolean sign);
 
-	public Element[] shannon(final Variable v, final boolean s1, final boolean s2) {
-		final Element[] elems = new Element[2];
-		elems[0] = createElement(v, true, s1);
-		elems[1] = createElement(v, false, s2);
-		return elems;
-	}
+	LiteralSDD createLiteral(int index);
 
-	// Additional helper factory methods for Literal SDDs
-
-	public LiteralSDD createLiteral(final int index, final boolean sign) {
-		return createLiteral(new Variable(index), sign);
-	}
-
-	public LiteralSDD createLiteral(final int index) {
-		return createLiteral(new Variable(index), true);
-	}
-
-	public LiteralSDD createLiteral(final Variable variable) {
-		return createLiteral(variable, true);
-	}
+	LiteralSDD createLiteral(Variable variable);
 
 }

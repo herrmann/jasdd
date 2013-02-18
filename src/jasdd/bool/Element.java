@@ -21,7 +21,7 @@ public class Element implements Sentence, StringBuildable {
 	}
 
 	private Element(final Variable v1, final boolean s1, final Variable v2, final boolean s2) {
-		this(SDDFactory.getInstance().createLiteral(v1, s1), SDDFactory.getInstance().createLiteral(v2, s2));
+		this(CachingSDDFactory.getInstance().createLiteral(v1, s1), CachingSDDFactory.getInstance().createLiteral(v2, s2));
 	}
 
 	private Element(final Variable v1, final Variable v2) {
@@ -49,27 +49,27 @@ public class Element implements Sentence, StringBuildable {
 	}
 
 	private Element(final Variable v1, final boolean s1, final boolean s2) {
-		this(SDDFactory.getInstance().createLiteral(v1, s1), SDDFactory.getInstance().createConstant(s2));
+		this(CachingSDDFactory.getInstance().createLiteral(v1, s1), CachingSDDFactory.getInstance().createConstant(s2));
 	}
 
 	private Element(final boolean s1, final Variable v2, final boolean s2) {
-		this(SDDFactory.getInstance().createConstant(s1), SDDFactory.getInstance().createLiteral(v2, s2));
+		this(CachingSDDFactory.getInstance().createConstant(s1), CachingSDDFactory.getInstance().createLiteral(v2, s2));
 	}
 
 	private Element(final boolean s1, final boolean s2) {
-		this(SDDFactory.getInstance().createConstant(s1), SDDFactory.getInstance().createConstant(s2));
+		this(CachingSDDFactory.getInstance().createConstant(s1), CachingSDDFactory.getInstance().createConstant(s2));
 	}
 
 	private Element(final SDD prime, final boolean s2) {
-		this(prime, SDDFactory.getInstance().createConstant(s2));
+		this(prime, CachingSDDFactory.getInstance().createConstant(s2));
 	}
 
 	private Element(final boolean s1, final SDD sub) {
-		this(SDDFactory.getInstance().createConstant(s1), sub);
+		this(CachingSDDFactory.getInstance().createConstant(s1), sub);
 	}
 
 	private Element(final SDD prime, final Variable v2, final boolean s2) {
-		this(prime, SDDFactory.getInstance().createLiteral(v2, s2));
+		this(prime, CachingSDDFactory.getInstance().createLiteral(v2, s2));
 	}
 
 	private Element(final SDD prime, final Variable v2) {
@@ -77,7 +77,7 @@ public class Element implements Sentence, StringBuildable {
 	}
 
 	private Element(final Variable v1, final boolean s1, final SDD sub) {
-		this(SDDFactory.getInstance().createLiteral(v1, s1), sub);
+		this(CachingSDDFactory.getInstance().createLiteral(v1, s1), sub);
 	}
 
 	private Element(final Variable v1, final SDD sub) {
@@ -166,7 +166,7 @@ public class Element implements Sentence, StringBuildable {
 	}
 
 	public Element trimmed() {
-		final SDDFactory factory = SDDFactory.getInstance();
+		final SDDFactory factory = CachingSDDFactory.getInstance();
 		return factory.createElement(getPrime().trimmed(), getSub().trimmed());
 	}
 

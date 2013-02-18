@@ -6,9 +6,10 @@ import jasdd.algebraic.AlgebraicElement;
 import jasdd.algebraic.AlgebraicTerminal;
 import jasdd.bool.AndOperator;
 import jasdd.bool.DecompositionSDD;
+import jasdd.bool.SDDFactory;
 import jasdd.bool.OperatorApplication;
 import jasdd.bool.SDD;
-import jasdd.bool.SDDFactory;
+import jasdd.bool.CachingSDDFactory;
 import jasdd.logic.Variable;
 import jasdd.vtree.AVTree;
 import jasdd.vtree.InternalAVTree;
@@ -124,7 +125,7 @@ public class ASDDConverter {
 	}
 
 	private SDD createPartition(final VTree vtree, final Map<Integer, Boolean> assignments) {
-		final SDDFactory factory = SDDFactory.getInstance();
+		final SDDFactory factory = CachingSDDFactory.getInstance();
 		if (vtree instanceof VariableLeaf) {
 			final int index = ((VariableLeaf) vtree).getVariable().getIndex(); 
 			if (assignments.containsKey(index)) {
@@ -154,7 +155,7 @@ public class ASDDConverter {
 				final AlgebraicTerminal<Double> asdd = ASDDFactory.getInstance().createTerminal(value);
 				return asdd;
 			} else {
-				final SDD prime = SDDFactory.getInstance().createTrue();
+				final SDD prime = CachingSDDFactory.getInstance().createTrue();
 				final AVTree rightTree = ((InternalAVTree) avtree).getRight();
 				final ASDD<Double> sub = dissect(rightTree, nodeId);
 				final AlgebraicElement<Double> elem = ASDDFactory.getInstance().createElement(prime, sub);

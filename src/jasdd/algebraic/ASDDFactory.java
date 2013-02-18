@@ -1,7 +1,7 @@
 package jasdd.algebraic;
 
 import jasdd.bool.SDD;
-import jasdd.bool.SDDFactory;
+import jasdd.bool.CachingSDDFactory;
 import jasdd.logic.Variable;
 import jasdd.vtree.InternalAVTree;
 
@@ -84,11 +84,11 @@ public class ASDDFactory {
 	}
 
 	public <T> AlgebraicElement<T> createElement(final ASDD<T> sub) {
-		return createElement(SDDFactory.getInstance().createTrue(), sub);
+		return createElement(CachingSDDFactory.getInstance().createTrue(), sub);
 	}
 
 	public <T> AlgebraicElement<T> createElement(final Variable v1, final boolean s1, final ASDD<T> sub) {
-		return createElement(SDDFactory.getInstance().createLiteral(v1, s1), sub);
+		return createElement(CachingSDDFactory.getInstance().createLiteral(v1, s1), sub);
 	}
 
 	public <T> AlgebraicElement<T> createElement(final Variable v1, final ASDD<T> sub) {

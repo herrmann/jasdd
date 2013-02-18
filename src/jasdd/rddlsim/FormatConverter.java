@@ -5,8 +5,9 @@ import jasdd.algebraic.ASDDFactory;
 import jasdd.algebraic.AlgebraicElement;
 import jasdd.algebraic.DecompositionASDD;
 import jasdd.bool.DecompositionSDD;
-import jasdd.bool.SDD;
 import jasdd.bool.SDDFactory;
+import jasdd.bool.SDD;
+import jasdd.bool.CachingSDDFactory;
 import jasdd.logic.Variable;
 import jasdd.logic.VariableRegistry;
 import jasdd.viz.GraphvizDumper;
@@ -123,7 +124,7 @@ public class FormatConverter {
 				final InternalVTree subtree = (InternalVTree) ((InternalAVTree) tree).getLeft();
 				final Variable leftVar = ((VariableLeaf) subtree.getLeft()).getVariable();
 				final Variable rightVar = ((VariableLeaf) subtree.getRight()).getVariable();
-				final SDDFactory factory = SDDFactory.getInstance();
+				final SDDFactory factory = CachingSDDFactory.getInstance();
 				final DecompositionSDD partitionHighHigh = factory.createDecomposition(subtree, factory.shannon(leftVar, rightVar, false)); // A /\ B
 				final DecompositionSDD partitionHighLow = factory.createDecomposition(subtree, factory.shannon(leftVar, rightVar, false, false)); // A /\ ~B
 				final DecompositionSDD partitionLowHigh = factory.createDecomposition(subtree, factory.shannon(leftVar, false, rightVar)); // ~A /\ B

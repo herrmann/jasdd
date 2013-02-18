@@ -10,11 +10,11 @@ import jasdd.logic.BooleanOperator;
 public class AndOperator implements BooleanOperator {
 
 	public SDD apply(final ConstantSDD s1, final ConstantSDD s2) {
-		return SDDFactory.getInstance().createConstant(s1.getSign() && s2.getSign());
+		return CachingSDDFactory.getInstance().createConstant(s1.getSign() && s2.getSign());
 	}
 
 	public SDD apply(final ConstantSDD s1, final LiteralSDD s2) {
-		final SDDFactory factory = SDDFactory.getInstance();
+		final SDDFactory factory = CachingSDDFactory.getInstance();
 		if (s1.getSign()) {
 			return factory.createLiteral(s2);
 		} else {

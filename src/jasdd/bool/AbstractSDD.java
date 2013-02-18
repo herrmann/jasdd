@@ -11,7 +11,7 @@ import jasdd.vtree.InternalVTree;
 public abstract class AbstractSDD implements SDD {
 
 	public static SDD decomposition(final InternalVTree node, final Element... elements) {
-		return SDDFactory.getInstance().createDecomposition(node, elements);
+		return CachingSDDFactory.getInstance().createDecomposition(node, elements);
 	}
 
 	public boolean isTrivial() {
@@ -45,7 +45,7 @@ public abstract class AbstractSDD implements SDD {
 
 	@Override
 	public SDD not() {
-		return apply(SDDFactory.getInstance().createTrue(), new XorOperator());
+		return apply(CachingSDDFactory.getInstance().createTrue(), new XorOperator());
 	}
 
 }

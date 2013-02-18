@@ -3,8 +3,9 @@ package jasdd.test;
 import jasdd.bool.AbstractSDD;
 import jasdd.bool.DecompositionSDD;
 import jasdd.bool.Element;
-import jasdd.bool.SDD;
 import jasdd.bool.SDDFactory;
+import jasdd.bool.SDD;
+import jasdd.bool.CachingSDDFactory;
 import jasdd.logic.Variable;
 import jasdd.logic.VariableRegistry;
 import jasdd.viz.GraphvizDumper;
@@ -29,7 +30,7 @@ import org.junit.Test;
  */
 public class TestSDD {
 
-	private SDDFactory factory = SDDFactory.getInstance();
+	private SDDFactory factory = CachingSDDFactory.getInstance();
 
 	@Test
 	public void platformHasSaneSetComparison() {

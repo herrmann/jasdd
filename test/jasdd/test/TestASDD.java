@@ -8,6 +8,7 @@ import jasdd.algebraic.AlgebraicTerminal;
 import jasdd.algebraic.DecompositionASDD;
 import jasdd.bool.DecompositionSDD;
 import jasdd.bool.SDDFactory;
+import jasdd.bool.CachingSDDFactory;
 import jasdd.logic.Variable;
 import jasdd.logic.VariableRegistry;
 import jasdd.stat.Summary;
@@ -91,7 +92,7 @@ public class TestASDD {
 		final AlgebraicTerminal<Float> high = algFactory.createTerminal(0.9f); 
 		final AlgebraicTerminal<Float> low = algFactory.createTerminal(0.1f); 
 
-		final SDDFactory factory = SDDFactory.getInstance();
+		final SDDFactory factory = CachingSDDFactory.getInstance();
 
 		final DecompositionASDD<Float> a22 = algFactory.createDecomposition(
 			(InternalAVTree) right.getRight(),
@@ -152,7 +153,7 @@ public class TestASDD {
 		final AlgebraicTerminal<Float> high = algFactory.createTerminal(0.9f); 
 		final AlgebraicTerminal<Float> low = algFactory.createTerminal(0.1f); 
 
-		final SDDFactory factory = SDDFactory.getInstance();
+		final SDDFactory factory = CachingSDDFactory.getInstance();
 
 		@SuppressWarnings("unchecked")
 		final DecompositionASDD<Float> asdd =
@@ -235,7 +236,7 @@ public class TestASDD {
 		final InternalVTree subtree = new InternalVTree(a, b);
 		final InternalAVTree avtree = new InternalAVTree(subtree, new ValueLeaf());
 
-		final SDDFactory factory = SDDFactory.getInstance();
+		final SDDFactory factory = CachingSDDFactory.getInstance();
 
 		@SuppressWarnings("unchecked")
 		final DecompositionASDD<Double> countA = algFactory.createDecomposition(avtree,

@@ -60,11 +60,11 @@ public class OperatorApplication {
 	}
 
 	private SDD apply(final ConstantSDD sdd1, final ConstantSDD sdd2, final BooleanOperator op) {
-		return SDDFactory.getInstance().createConstant(op.apply(sdd1.getSign(), sdd2.getSign()));
+		return CachingSDDFactory.getInstance().createConstant(op.apply(sdd1.getSign(), sdd2.getSign()));
 	}
 
 	private SDD apply(final LiteralSDD sdd1, final ConstantSDD sdd2, final BooleanOperator op) {
-		final SDDFactory factory = SDDFactory.getInstance();
+		final SDDFactory factory = CachingSDDFactory.getInstance();
 		if (op.equals(AND)) {
 			if (sdd2.getSign()) {
 				return factory.createLiteral(sdd1);
@@ -86,28 +86,28 @@ public class OperatorApplication {
 		final Literal literal = sdd1.getLiteral();
 		final Literal otherLiteral = sdd2.getLiteral();
 		if (literal.equals(otherLiteral)) {
-			return SDDFactory.getInstance().createLiteral(sdd1);
+			return CachingSDDFactory.getInstance().createLiteral(sdd1);
 		} else if (literal.equals(otherLiteral.opposite())) {
 			if (op.equals(AND)) {
-				return SDDFactory.getInstance().createConstant(false);
+				return CachingSDDFactory.getInstance().createConstant(false);
 			}
 			if (op.equals(OR)) {
-				return SDDFactory.getInstance().createConstant(true);
+				return CachingSDDFactory.getInstance().createConstant(true);
 			}
 		} else {
 			// TODO: Respect and match vtrees
-			final SDDFactory factory = SDDFactory.getInstance();
+			final SDDFactory factory = CachingSDDFactory.getInstance();
 			if (op.equals(AND)) {
 				// createDecomposition takes care of caching elements
 				final Element elem1 = factory.createElement(literal, otherLiteral);
 				final Element elem2 = factory.createElement(literal.opposite(), false);
-				return SDDFactory.getInstance().createDecomposition(null, elem1, elem2);
+				return CachingSDDFactory.getInstance().createDecomposition(null, elem1, elem2);
 			}
 			if (op.equals(OR)) {
 				// createDecomposition takes care of caching elements
 				final Element elem1 = factory.createElement(literal, true);
 				final Element elem2 = factory.createElement(literal.opposite(), otherLiteral);
-				return SDDFactory.getInstance().createDecomposition(null, elem1, elem2);
+				return CachingSDDFactory.getInstance().createDecomposition(null, elem1, elem2);
 			}
 		}
 		return null;
@@ -116,16 +116,16 @@ public class OperatorApplication {
 	private SDD apply(final DecompositionSDD sdd1, final ConstantSDD sdd2, final BooleanOperator op) {
 		if (op.equals(AND)) {
 			if (sdd2.getSign()) {
-				return SDDFactory.getInstance().createDecomposition(sdd1);
+				return CachingSDDFactory.getInstance().createDecomposition(sdd1);
 			} else {
-				return SDDFactory.getInstance().createConstant(false);
+				return CachingSDDFactory.getInstance().createConstant(false);
 			}
 		}
 		if (op.equals(OR)) {
 			if (sdd2.getSign()) {
-				return SDDFactory.getInstance().createConstant(true);
+				return CachingSDDFactory.getInstance().createConstant(true);
 			} else {
-				return SDDFactory.getInstance().createDecomposition(sdd1);
+				return CachingSDDFactory.getInstance().createDecomposition(sdd1);
 			}
 		}
 		return null;
@@ -133,7 +133,7 @@ public class OperatorApplication {
 
 	private SDD apply(final DecompositionSDD sdd1, final LiteralSDD sdd2, final BooleanOperator op) {
 		final Variable variable = sdd2.getLiteral().getVariable();
-		final SDDFactory factory = SDDFactory.getInstance();
+		final SDDFactory factory = CachingSDDFactory.getInstance();
 		DecompositionSDD decomp;
 		if (sdd1.getVTree().getLeft().variables().contains(variable)) {
 			final Literal literal = sdd2.getLiteral();
@@ -167,7 +167,7 @@ public class OperatorApplication {
 						elements.remove(elem);
 						prime = or(elem.getPrime(), prime);
 					}
-					final Element element = SDDFactory.getInstance().createElement(prime, sub);
+					final Element element = CachingSDDFactory.getInstance().createElement(prime, sub);
 					elements.add(element);
 					subs.put(sub, element);
 				}
@@ -175,7 +175,7 @@ public class OperatorApplication {
 		}
 		final int size = elements.size();
 		// Apply light trimming if possible
-		final SDDFactory factory = SDDFactory.getInstance();
+		final SDDFactory factory = CachingSDDFactory.getInstance();
 		if (size == 1 && elements.get(0).getPrime().equals(factory.createTrue()) && elements.get(0).getSub() instanceof ConstantSDD) {
 			return factory.createConstant(((ConstantSDD) elements.get(0).getSub()).getSign());
 		} else {

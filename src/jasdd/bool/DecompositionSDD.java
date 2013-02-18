@@ -148,7 +148,7 @@ public class DecompositionSDD extends AbstractSDD {
 	}
 
 	public static DecompositionSDD buildNormalized(final InternalVTree vtree, final Literal lit) {
-		final SDDFactory factory = SDDFactory.getInstance();
+		final SDDFactory factory = CachingSDDFactory.getInstance();
 		final Variable v = lit.getVariable();
 		// Case 1: left vtree is the variable itself
 		final VTree left = vtree.getLeft();
@@ -187,7 +187,7 @@ public class DecompositionSDD extends AbstractSDD {
 		for (final Element element : getElements()) {
 			elements.add(element.trimmed());
 		}
-		final SDDFactory factory = SDDFactory.getInstance();
+		final SDDFactory factory = CachingSDDFactory.getInstance();
 		final ConstantSDD trueNode = factory.createTrue();
 		final ConstantSDD falseNode = factory.createFalse();
 		if (elements.size() == 1 && elements.get(0).getPrime().equals(trueNode)) {
