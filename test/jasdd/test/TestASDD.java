@@ -2,6 +2,7 @@ package jasdd.test;
 
 import jasdd.algebraic.ASDD;
 import jasdd.algebraic.ASDDFactory;
+import jasdd.algebraic.CachingASDDFactory;
 import jasdd.algebraic.AlgebraicElement;
 import jasdd.algebraic.AlgebraicOperatorApplication;
 import jasdd.algebraic.AlgebraicTerminal;
@@ -32,7 +33,7 @@ import org.junit.Test;
  */
 public class TestASDD {
 
-	private ASDDFactory algFactory = ASDDFactory.getInstance();
+	private ASDDFactory algFactory = CachingASDDFactory.getInstance();
 
 	@Test
 	@SuppressWarnings("unchecked")

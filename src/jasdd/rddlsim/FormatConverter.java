@@ -2,6 +2,7 @@ package jasdd.rddlsim;
 
 import jasdd.algebraic.ASDD;
 import jasdd.algebraic.ASDDFactory;
+import jasdd.algebraic.CachingASDDFactory;
 import jasdd.algebraic.AlgebraicElement;
 import jasdd.algebraic.DecompositionASDD;
 import jasdd.bool.DecompositionSDD;
@@ -78,7 +79,7 @@ public class FormatConverter {
 	}
 
 	private ASDD<Double> addToAsdd(final VariableRegistry vars, AVTree tree, final ADDNode add) {
-		final ASDDFactory algFactory = ASDDFactory.getInstance();
+		final ASDDFactory algFactory = CachingASDDFactory.getInstance();
 		if (add instanceof ADDDNode) {
 			final ADDDNode dnode = ((ADDDNode) add);
 			return algFactory.createTerminal(dnode._dLower);
@@ -141,7 +142,7 @@ public class FormatConverter {
 				cluster(elements, subLowHigh, partitionLowHigh);
 				cluster(elements, subLowLow, partitionLowLow);
 
-				return ASDDFactory.getInstance().createDecomposition((InternalAVTree) tree, compress(elements));
+				return CachingASDDFactory.getInstance().createDecomposition((InternalAVTree) tree, compress(elements));
 			}
 		}
 		return null;
@@ -158,9 +159,9 @@ public class FormatConverter {
 				while (iter.hasNext()) {
 					prime = prime.or(iter.next());
 				}
-				partitions[i++] = ASDDFactory.getInstance().createElement(prime, elem.getKey());
+				partitions[i++] = CachingASDDFactory.getInstance().createElement(prime, elem.getKey());
 			} else {
-				partitions[i++] = ASDDFactory.getInstance().createElement(elem.getValue().iterator().next(), elem.getKey());
+				partitions[i++] = CachingASDDFactory.getInstance().createElement(elem.getValue().iterator().next(), elem.getKey());
 			}
 		}
 		return partitions;

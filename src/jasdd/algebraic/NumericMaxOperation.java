@@ -37,7 +37,7 @@ public class NumericMaxOperation<T extends Number> extends AbstractASDDVisitor<T
 			@Override
 			public void visit(final AlgebraicTerminal<T> other) {
 				final double max = Math.max(terminal.getValue().doubleValue(), other.getValue().doubleValue());
-				result = (ASDD<T>) ASDDFactory.getInstance().createTerminal(max);
+				result = (ASDD<T>) CachingASDDFactory.getInstance().createTerminal(max);
 			}
 
 			@Override
@@ -75,9 +75,9 @@ public class NumericMaxOperation<T extends Number> extends AbstractASDDVisitor<T
 		for (final AlgebraicElement<T> element : origElements) {
 			final SDD prime = element.getPrime();
 			final ASDD<T> sub = AlgebraicOperatorApplication.max(element.getSub(), terminal);
-			elements.add(ASDDFactory.getInstance().createElement(prime, sub));
+			elements.add(CachingASDDFactory.getInstance().createElement(prime, sub));
 		}
-		return ASDDFactory.getInstance().createDecomposition(decomp.getTree(), elements);
+		return CachingASDDFactory.getInstance().createDecomposition(decomp.getTree(), elements);
 	}
 
 	private ASDD<T> maxDecompositions(final DecompositionASDD<T> decomp, final DecompositionASDD<T> other) {
@@ -91,10 +91,10 @@ public class NumericMaxOperation<T extends Number> extends AbstractASDDVisitor<T
 				final SDD prime = new OperatorApplication(leftElem.getPrime(), rightElem.getPrime(), new AndOperator()).apply();
 				final ASDD<T> sub = AlgebraicOperatorApplication.max(leftElem.getSub(), rightElem.getSub());
 				// TODO: compression
-				elements.add(ASDDFactory.getInstance().createElement(prime, sub));
+				elements.add(CachingASDDFactory.getInstance().createElement(prime, sub));
 			}
 		}
-		return ASDDFactory.getInstance().createDecomposition(decomp.getTree(), elements);
+		return CachingASDDFactory.getInstance().createDecomposition(decomp.getTree(), elements);
 	}
 
 	public static <T extends Number> ASDD<T> evaluate(final ASDD<T> left, final ASDD<T> right) {

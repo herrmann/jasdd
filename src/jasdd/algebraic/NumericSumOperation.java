@@ -37,7 +37,7 @@ public class NumericSumOperation<T extends Number> extends AbstractASDDVisitor<T
 			@Override
 			public void visit(final AlgebraicTerminal<T> other) {
 				final double sum = terminal.getValue().doubleValue() + other.getValue().doubleValue();
-				result = (ASDD<T>) ASDDFactory.getInstance().createTerminal(sum);
+				result = (ASDD<T>) CachingASDDFactory.getInstance().createTerminal(sum);
 			}
 
 			@Override
@@ -70,7 +70,7 @@ public class NumericSumOperation<T extends Number> extends AbstractASDDVisitor<T
 
 	private ASDD<T> addScalarToDecomposition(final DecompositionASDD<T> decomp, final AlgebraicTerminal<T> terminal) {
 		// TODO: structural caching
-		final ASDDFactory algFactory = ASDDFactory.getInstance();
+		final ASDDFactory algFactory = CachingASDDFactory.getInstance();
 		final List<AlgebraicElement<T>> origElements = decomp.getElements();
 		final List<AlgebraicElement<T>> elements = new ArrayList<AlgebraicElement<T>>(origElements.size());
 		for (final AlgebraicElement<T> element : origElements) {
@@ -86,7 +86,7 @@ public class NumericSumOperation<T extends Number> extends AbstractASDDVisitor<T
 			throw new UnsupportedOperationException("Sum of decompositions using different avtrees is not supported yet");
 		}
 		// TODO: structural caching
-		final ASDDFactory algFactory = ASDDFactory.getInstance();
+		final ASDDFactory algFactory = CachingASDDFactory.getInstance();
 		final List<AlgebraicElement<T>> elements = new ArrayList<AlgebraicElement<T>>();
 		for (final AlgebraicElement<T> leftElem : decomp.getElements()) {
 			for (final AlgebraicElement<T> rightElem : other.getElements()) {

@@ -41,7 +41,7 @@ public class DecompositionASDD<T> implements ASDD<T> {
 			final ASDD<T> sub = element.getSub();
 			if (sub.equals(newElement.getSub())) {
 				final SDD newPrime = new OperatorApplication(element.getPrime(), newElement.getPrime(), new OrOperator()).apply();
-				newElement = ASDDFactory.getInstance().createElement(newPrime, sub);
+				newElement = CachingASDDFactory.getInstance().createElement(newPrime, sub);
 				elements.remove(element);
 				break;
 			}
