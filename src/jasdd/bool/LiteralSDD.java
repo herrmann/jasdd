@@ -1,5 +1,6 @@
 package jasdd.bool;
 
+import jasdd.logic.Formula;
 import jasdd.logic.Literal;
 import jasdd.logic.Variable;
 import jasdd.visitor.SDDVisitor;
@@ -123,6 +124,11 @@ public class LiteralSDD extends TerminalSDD {
 	@Override
 	public void accept(final SDDVisitor visitor) {
 		visitor.visit(this);
+	}
+
+	@Override
+	public Formula getFormula() {
+		return new Literal(literal);
 	}
 
 }

@@ -1,6 +1,5 @@
 package jasdd.logic;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -8,16 +7,15 @@ import java.util.List;
  *
  * @author Ricardo Herrmann
  */
-public class Conjunction implements Formula {
+public class Conjunction extends AssociativeConnectorFormula {
 
-	private final List<Formula> elements;
-
-	public Conjunction(final List<Formula> elements) {
-		this.elements = Collections.unmodifiableList(elements);
+	public Conjunction(final List<Formula> formulas) {
+		super(formulas);
 	}
 
-	public List<Formula> getElements() {
-		return elements;
+	@Override
+	public CharSequence getConnectorString() {
+		return "/\\";
 	}
 
 }

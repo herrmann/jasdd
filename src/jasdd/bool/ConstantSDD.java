@@ -1,5 +1,7 @@
 package jasdd.bool;
 
+import jasdd.logic.Constant;
+import jasdd.logic.Formula;
 import jasdd.visitor.SDDVisitor;
 
 import java.util.ArrayList;
@@ -99,6 +101,11 @@ public class ConstantSDD extends TerminalSDD {
 	@Override
 	public void accept(final SDDVisitor visitor) {
 		visitor.visit(this);
+	}
+
+	@Override
+	public Formula getFormula() {
+		return new Constant(sign);
 	}
 
 }

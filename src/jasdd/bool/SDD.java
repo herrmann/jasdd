@@ -1,6 +1,7 @@
 package jasdd.bool;
 
 import jasdd.logic.BooleanOperator;
+import jasdd.logic.Formula;
 import jasdd.logic.Sentence;
 import jasdd.util.StringBuildable;
 import jasdd.visitor.SDDVisitor;
@@ -33,6 +34,8 @@ public interface SDD extends Sentence, StringBuildable {
 	SDD trimmed();
 
 	int size();
+
+	Formula getFormula();
 
 	/**
 	 * For debugging purposes only.

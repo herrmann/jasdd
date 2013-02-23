@@ -1,5 +1,7 @@
 package jasdd.bool;
 
+import jasdd.logic.Disjunction;
+import jasdd.logic.Formula;
 import jasdd.logic.Literal;
 import jasdd.logic.Variable;
 import jasdd.visitor.SDDVisitor;
@@ -302,6 +304,16 @@ public class DecompositionSDD extends AbstractSDD {
 			}
 			visitor.postVisit(this);
 		}
+	}
+
+	@Override
+	public Formula getFormula() {
+		final Collection<Element> elems = getElements();
+		final List<Formula> formulas = new ArrayList<Formula>(elems.size());
+		for (final Element elem : elems) {
+			formulas.add(elem.getFormula());
+		}
+		return new Disjunction(formulas);
 	}
 
 }

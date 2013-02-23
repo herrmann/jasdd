@@ -6,6 +6,7 @@ import jasdd.bool.DecompositionSDD;
 import jasdd.bool.Element;
 import jasdd.bool.SDD;
 import jasdd.bool.SDDFactory;
+import jasdd.logic.Formula;
 import jasdd.logic.Variable;
 import jasdd.logic.VariableRegistry;
 import jasdd.viz.GraphvizDumper;
@@ -581,6 +582,12 @@ public class TestSDD {
 	@Test
 	public void notConstant() {
 		Assert.assertEquals(factory.createFalse(), factory.createTrue().not());
+	}
+
+	@Test
+	public void darwicheExampleFormula() {
+		final Formula formula = exampleDarwiche().getFormula();
+		Assert.assertEquals("(((2 /\\ 1) \\/ (-2 /\\ F)) /\\ T) \\/ (((-2 /\\ F) \\/ (2 /\\ -1)) /\\ 3) \\/ (-2 /\\ ((4 /\\ 3) \\/ (-4 /\\ F)))", formula.toString());
 	}
 
 }

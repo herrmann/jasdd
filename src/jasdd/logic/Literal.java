@@ -5,7 +5,7 @@ package jasdd.logic;
  *
  * @author Ricardo Herrmann
  */
-public class Literal implements Formula {
+public class Literal implements TerminalFormula {
 
 	private final Variable variable;
 	private final boolean sign;

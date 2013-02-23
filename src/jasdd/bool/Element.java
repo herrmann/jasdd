@@ -1,10 +1,14 @@
 package jasdd.bool;
 
+import jasdd.logic.Conjunction;
+import jasdd.logic.Formula;
 import jasdd.logic.Literal;
 import jasdd.logic.Sentence;
 import jasdd.logic.Variable;
 import jasdd.util.StringBuildable;
 import jasdd.visitor.SDDVisitor;
+
+import java.util.Arrays;
 
 /**
  * A pair of SDDs representing one element of a decomposition.
@@ -183,6 +187,10 @@ public class Element implements Sentence, StringBuildable {
 			getSub().accept(visitor);
 			visitor.postVisit(this);
 		}
+	}
+
+	public Formula getFormula() {
+		return new Conjunction(Arrays.asList(getPrime().getFormula(), getSub().getFormula()));
 	}
 
 }
