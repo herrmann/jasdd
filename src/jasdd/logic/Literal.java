@@ -2,14 +2,14 @@ package jasdd.logic;
 
 /**
  * A true or false variable.
- * 
+ *
  * @author Ricardo Herrmann
  */
-public class Literal {
+public class Literal implements Formula {
 
-	private Variable variable;
-	private boolean sign;
-	
+	private final Variable variable;
+	private final boolean sign;
+
 	public Literal(final Literal literal) {
 		this.variable = literal.getVariable();
 		this.sign = literal.getSign();
