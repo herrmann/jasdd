@@ -8,12 +8,12 @@ import java.util.Collection;
 
 /**
  * Constant SDD, which is either true or false.
- * 
+ *
  * @author Ricardo Herrmann
  */
 public class ConstantSDD extends TerminalSDD {
 
-	private boolean sign;
+	private final boolean sign;
 
 	/* package */ ConstantSDD(final boolean sign) {
 		this.sign = sign;
@@ -69,16 +69,20 @@ public class ConstantSDD extends TerminalSDD {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
+	public boolean equals(final Object obj) {
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
-		ConstantSDD other = (ConstantSDD) obj;
-		if (sign != other.sign)
+		}
+		final ConstantSDD other = (ConstantSDD) obj;
+		if (sign != other.sign) {
 			return false;
+		}
 		return true;
 	}
 

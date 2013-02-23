@@ -1,11 +1,11 @@
 package jasdd.test;
 
 import jasdd.bool.AbstractSDD;
+import jasdd.bool.CachingSDDFactory;
 import jasdd.bool.DecompositionSDD;
 import jasdd.bool.Element;
-import jasdd.bool.SDDFactory;
 import jasdd.bool.SDD;
-import jasdd.bool.CachingSDDFactory;
+import jasdd.bool.SDDFactory;
 import jasdd.logic.Variable;
 import jasdd.logic.VariableRegistry;
 import jasdd.viz.GraphvizDumper;
@@ -25,12 +25,12 @@ import org.junit.Test;
 
 /**
  * Integration tests for SDD construction and manipulation.
- *  
+ *
  * @author Ricardo Herrmann
  */
 public class TestSDD {
 
-	private SDDFactory factory = CachingSDDFactory.getInstance();
+	private final SDDFactory factory = CachingSDDFactory.getInstance();
 
 	@Test
 	public void platformHasSaneSetComparison() {
@@ -132,7 +132,7 @@ public class TestSDD {
 		final SDD sdd1 = AbstractSDD.decomposition(vtree,
 			factory.createElement(a, b, false),
 			factory.createElement(a, false, false));
-		
+
 		// -A /\ B
 		final SDD sdd2 = AbstractSDD.decomposition(vtree,
 			factory.createElement(a, false, b),
@@ -163,13 +163,13 @@ public class TestSDD {
 		final Variable a = new Variable(1);
 		final Variable b = new Variable(2);
 		final Variable c = new Variable(3);
-		
+
 		final VTree va = new VariableLeaf(a);
 		final VTree vb = new VariableLeaf(b);
 		final VTree vc = new VariableLeaf(c);
 		final VTree v1 = new InternalVTree(va, vb);
 		final InternalVTree v0 = new InternalVTree(v1, vc);
-		
+
 		final SDD aOrC = AbstractSDD.decomposition(v0,
 			factory.createElement(a, true),
 			factory.createElement(a, false, c));
@@ -242,7 +242,7 @@ public class TestSDD {
 		final InternalVTree l2 = (InternalVTree) l1.getRight();
 		final InternalVTree l3 = (InternalVTree) l2.getRight();
 		final InternalVTree l4 = (InternalVTree) l3.getRight();
-		
+
 		final DecompositionSDD a22 = factory.createDecomposition(l4, factory.createElement(vars.register("alive(x2,y2)"), true), factory.createElement(vars.register("alive(x2,y2)"), false, false));
 		final DecompositionSDD a212 = factory.createDecomposition(l3, factory.createElement(vars.register("alive(x2,y1)"), true), factory.createElement(vars.register("alive(x2,y1)"), false, a22));
 		final DecompositionSDD a211 = factory.createDecomposition(l3, factory.createElement(vars.register("alive(x2,y1)"), a22), factory.createElement(vars.register("alive(x2,y1)"), false, false));
@@ -269,11 +269,11 @@ public class TestSDD {
 		final DecompositionSDD part1 = factory.createDecomposition(left,
 			factory.createElement(vars.register("alive(x1,y1)"), vars.register("alive(x1,y2)")),
 			factory.createElement(vars.register("alive(x1,y1)"), false, false));
-		
+
 		final DecompositionSDD part2 = factory.createDecomposition(left,
 			factory.createElement(vars.register("alive(x1,y1)"), vars.register("alive(x1,y2)"), false),
 			factory.createElement(vars.register("alive(x1,y1)"), false, vars.register("alive(x1,y2)")));
-			
+
 		final DecompositionSDD part3 = factory.createDecomposition(left,
 			factory.createElement(vars.register("alive(x1,y1)"), false),
 			factory.createElement(vars.register("alive(x1,y1)"), false, vars.register("alive(x1,y2)"), false));
@@ -414,7 +414,7 @@ public class TestSDD {
 		final SDD sdd = sdd1.or(sdd2).or(sdd3);
 		try {
 			GraphvizDumper.dump((DecompositionSDD) sdd, vars, "dnf2.dot");
-		} catch (FileNotFoundException e) {
+		} catch (final FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -434,7 +434,7 @@ public class TestSDD {
 		final SDD sdd = sdd1.or(sdd2);
 		try {
 			GraphvizDumper.dump((DecompositionSDD) sdd, vars, "dnf3.dot");
-		} catch (FileNotFoundException e) {
+		} catch (final FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -462,17 +462,17 @@ public class TestSDD {
 		final SDD sddD = DecompositionSDD.buildNormalized(vtree, d);
 		final SDD sddNotE = DecompositionSDD.buildNormalized(vtree, e, false);
 		final SDD sddF = DecompositionSDD.buildNormalized(vtree, f);
-		
+
 		final SDD sdd1 = sddA.or(sddB).or(sddNotC);
 		final SDD sdd2 = sddNotA.or(sddC).or(sddD);
 		final SDD sdd3 = sddA.or(sddB).or(sddNotE);
 		final SDD sdd4 = sddB.or(sddF);
-		
+
 		final SDD sdd = sdd1.and(sdd2).and(sdd3).and(sdd4);
-		
+
 		try {
 			GraphvizDumper.dump((DecompositionSDD) sdd, vars, "cnf4.dot");
-		} catch (FileNotFoundException ex) {
+		} catch (final FileNotFoundException ex) {
 			// TODO Auto-generated catch block
 			ex.printStackTrace();
 		}
@@ -491,7 +491,7 @@ public class TestSDD {
 		final VTree v4 = new VariableLeaf(c);
 		final VTree v5 = new InternalVTree(v3, v4);
 		final VTree v6 = new InternalVTree(v2, v5);
-		
+
 		return v6;
 	}
 

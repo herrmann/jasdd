@@ -7,8 +7,6 @@ import jasdd.visitor.SDDVisitor;
 
 import java.util.Collection;
 
-
-
 /**
  * Methods shared by all kinds of SDDs.
  * 
@@ -23,11 +21,15 @@ public interface SDD extends Sentence, StringBuildable {
 	SDD apply(SDD sdd, BooleanOperator op);
 
 	SDD and(SDD sdd);
+
 	SDD or(SDD sdd);
+
 	SDD xor(SDD sdd);
+
 	SDD not();
 
 	Collection<Element> expansion();
+
 	SDD trimmed();
 
 	int size();

@@ -20,13 +20,13 @@ import java.util.Set;
 
 /**
  * SDD for a (X,Y)-decomposition of a boolean function.
- * 
+ *
  * @author Ricardo Herrmann
  */
 public class DecompositionSDD extends AbstractSDD {
 
 	private InternalVTree vtree;
-	private List<Element> elements = new ArrayList<Element>();
+	private final List<Element> elements = new ArrayList<Element>();
 
 	/* package*/ DecompositionSDD(final VTree node, final Element... elements) {
 		this((InternalVTree) node, elements);
@@ -135,7 +135,7 @@ public class DecompositionSDD extends AbstractSDD {
 		return false;
 	}
 
-	public static DecompositionSDD buildNormalized(final InternalVTree vtree, final Variable v, boolean sign) {
+	public static DecompositionSDD buildNormalized(final InternalVTree vtree, final Variable v, final boolean sign) {
 		return buildNormalized(vtree, new Literal(v, sign));
 	}
 
@@ -254,10 +254,12 @@ public class DecompositionSDD extends AbstractSDD {
 			}
 		}
 		if (vtree == null) {
-			if (other.vtree != null)
+			if (other.vtree != null) {
 				return false;
-		} else if (!vtree.equals(other.vtree))
+			}
+		} else if (!vtree.equals(other.vtree)) {
 			return false;
+		}
 		return true;
 	}
 

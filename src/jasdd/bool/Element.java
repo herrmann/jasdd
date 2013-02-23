@@ -8,12 +8,12 @@ import jasdd.visitor.SDDVisitor;
 
 /**
  * A pair of SDDs representing one element of a decomposition.
- * 
+ *
  * @author Ricardo Herrmann
  */
 public class Element implements Sentence, StringBuildable {
 
-	private SDD prime, sub;
+	private final SDD prime, sub;
 
 	/* package */ Element(final SDD prime, final SDD sub) {
 		this.prime = prime;
@@ -84,7 +84,7 @@ public class Element implements Sentence, StringBuildable {
 		this(v1, true, sub);
 	}
 
-	private Element(final Literal l1, boolean s2) {
+	private Element(final Literal l1, final boolean s2) {
 		this(l1.getVariable(), l1.getSign(), s2);
 	}
 
@@ -144,24 +144,31 @@ public class Element implements Sentence, StringBuildable {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
+	public boolean equals(final Object obj) {
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
-		Element other = (Element) obj;
+		}
+		final Element other = (Element) obj;
 		if (prime == null) {
-			if (other.prime != null)
+			if (other.prime != null) {
 				return false;
-		} else if (!prime.equals(other.prime))
+			}
+		} else if (!prime.equals(other.prime)) {
 			return false;
+		}
 		if (sub == null) {
-			if (other.sub != null)
+			if (other.sub != null) {
 				return false;
-		} else if (!sub.equals(other.sub))
+			}
+		} else if (!sub.equals(other.sub)) {
 			return false;
+		}
 		return true;
 	}
 

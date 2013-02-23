@@ -10,12 +10,12 @@ import java.util.Collection;
 
 /**
  * SDD for a single literal.
- * 
+ *
  * @author Ricardo Herrmann
  */
 public class LiteralSDD extends TerminalSDD {
 
-	private Literal literal;
+	private final Literal literal;
 
 	private LiteralSDD(final LiteralSDD sdd) {
 		this.literal = new Literal(sdd.getLiteral());
@@ -84,19 +84,24 @@ public class LiteralSDD extends TerminalSDD {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
+	public boolean equals(final Object obj) {
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
-		LiteralSDD other = (LiteralSDD) obj;
+		}
+		final LiteralSDD other = (LiteralSDD) obj;
 		if (literal == null) {
-			if (other.literal != null)
+			if (other.literal != null) {
 				return false;
-		} else if (!literal.equals(other.literal))
+			}
+		} else if (!literal.equals(other.literal)) {
 			return false;
+		}
 		return true;
 	}
 
