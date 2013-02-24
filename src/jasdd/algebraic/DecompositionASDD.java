@@ -5,13 +5,20 @@ import jasdd.bool.Element;
 import jasdd.bool.OperatorApplication;
 import jasdd.bool.OrOperator;
 import jasdd.bool.SDD;
+import jasdd.logic.Conjunction;
+import jasdd.logic.Constant;
+import jasdd.logic.Disjunction;
+import jasdd.logic.Formula;
 import jasdd.visitor.ASDDVisitor;
 import jasdd.vtree.InternalAVTree;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -188,6 +195,36 @@ public class DecompositionASDD<T> implements ASDD<T> {
 			terminals.addAll(element.getSub().terminals());
 		}
 		return terminals;
+	}
+
+	/**
+	 * Extract a map from every algebraic terminal to the boolean formula that
+	 * evaluates to each terminal.
+	 *
+	 * @return a map from terminals to formulas
+	 */
+	public Map<T, Formula> extractFunction() {
+		return extractFunction(new Constant(true), new HashMap<T, Formula>());
+	}
+
+	public Map<T, Formula> extractFunction(final Formula partition, Map<T, Formula> partial) {
+		for (final AlgebraicElement<T> elem : getElements()) {
+			final Formula refinement = elem.getPrime().getFormula();
+			final Formula primeFormula = Conjunction.from(Arrays.asList(partition, refinement)).trim();
+			final ASDD<T> sub = elem.getSub();
+			if (sub instanceof AlgebraicTerminal) {
+				final T value = ((AlgebraicTerminal<T>) sub).getValue();
+				final Formula currentFormula = partial.get(value);
+				if (null == currentFormula) {
+					partial.put(value, primeFormula);
+				} else {
+					partial.put(value, Disjunction.from(Arrays.asList(currentFormula, primeFormula)).trim());
+				}
+			} else {
+				partial = ((DecompositionASDD<T>) sub).extractFunction(primeFormula, partial);
+			}
+		}
+		return partial;
 	}
 
 }

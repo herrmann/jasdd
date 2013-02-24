@@ -10,6 +10,7 @@ import jasdd.algebraic.DecompositionASDD;
 import jasdd.bool.CachingSDDFactory;
 import jasdd.bool.DecompositionSDD;
 import jasdd.bool.SDDFactory;
+import jasdd.logic.Formula;
 import jasdd.logic.Variable;
 import jasdd.logic.VariableRegistry;
 import jasdd.stat.Summary;
@@ -20,6 +21,7 @@ import jasdd.vtree.ValueLeaf;
 import jasdd.vtree.VariableLeaf;
 
 import java.io.FileNotFoundException;
+import java.util.Map;
 import java.util.Set;
 
 import junit.framework.Assert;
@@ -203,8 +205,7 @@ public class TestASDD {
 		Assert.assertEquals("[(0,VALUE), ((0 /\\ 2.5) \\/ (-0 /\\ 1.5))]", result.toString());
 	}
 
-	@Test
-	public void sumDecompositions() {
+	public DecompositionASDD<Double> sumDecompositions() {
 		final VariableRegistry vars = new VariableRegistry();
 		final Variable a = vars.register("A");
 		final Variable b = vars.register("B");
@@ -222,7 +223,12 @@ public class TestASDD {
 			algFactory.createDecomposition(subtree, algFactory.shannon(b, algFactory.createTerminal(1.0), algFactory.createTerminal(0.0)))));
 
 		final DecompositionASDD<Double> result = (DecompositionASDD<Double>) AlgebraicOperatorApplication.sum(countA, countB);
+		return result;
+	}
 
+	@Test
+	public void sumDecompositionsStructuralCheck() {
+		final ASDD<Double> result = sumDecompositions();
 		Assert.assertEquals("[(0,(1,VALUE)), ((0 /\\ [(1,VALUE), ((1 /\\ 2.0) \\/ (-1 /\\ 1.0))]) \\/ (-0 /\\ [(1,VALUE), ((1 /\\ 1.0) \\/ (-1 /\\ 0.0))]))]", result.toString());
 	}
 
@@ -287,6 +293,13 @@ public class TestASDD {
 		for (int i = 0; i < 3; i++) {
 			terminals.contains(i);
 		}
+	}
+
+	@Test
+	public void vtreeIndependentExtractedFunction() {
+		final Map<Double, Formula> function = sumDecompositions().extractFunction();
+		Assert.assertEquals(3, function.size());
+		Assert.assertEquals(function, leftLinearExample().extractFunction());
 	}
 
 }
