@@ -1,6 +1,8 @@
 package jasdd.logic;
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 
 /**
@@ -9,6 +11,15 @@ import java.util.Collection;
  * @author Ricardo Herrmann
  */
 public class Disjunction extends AssociativeConnectorFormula {
+
+	public static Formula from(final Collection<? extends Formula> formulas) {
+		final Set<Formula> unique = new HashSet<Formula>(formulas);
+		if (unique.size() == 1) {
+			return unique.iterator().next();
+		} else {
+			return new Disjunction(unique);
+		}
+	}
 
 	public Disjunction(final Collection<? extends Formula> formulas) {
 		super(formulas);
