@@ -7,4 +7,6 @@ package jasdd.logic;
  */
 public interface Formula {
 
+	Formula trim();
+
 }

@@ -590,4 +590,10 @@ public class TestSDD {
 		Assert.assertEquals("(((2 /\\ 1) \\/ (-2 /\\ F)) /\\ T) \\/ (((-2 /\\ F) \\/ (2 /\\ -1)) /\\ 3) \\/ (-2 /\\ ((4 /\\ 3) \\/ (-4 /\\ F)))", formula.toString());
 	}
 
+	@Test
+	public void trimmedDarwicheExampleFormula() {
+		final Formula trimmedFormula = exampleDarwiche().getFormula().trim();
+		Assert.assertEquals("(2 /\\ 1) \\/ ((2 /\\ -1) /\\ 3) \\/ (-2 /\\ (4 /\\ 3))", trimmedFormula.toString());
+	}
+
 }

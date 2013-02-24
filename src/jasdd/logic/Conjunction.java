@@ -18,4 +18,14 @@ public class Conjunction extends AssociativeConnectorFormula {
 		return "/\\";
 	}
 
+	@Override
+	public Formula getTrimmingConstant() {
+		return new Constant(false);
+	}
+
+	@Override
+	public Formula getDummyConstant() {
+		return new Constant(true);
+	}
+
 }
