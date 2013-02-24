@@ -17,7 +17,11 @@ public abstract class AssociativeConnectorFormula implements Formula {
 	private final Set<Formula> formulas;
 
 	public AssociativeConnectorFormula(final Collection<? extends Formula> formulas) {
-		this.formulas = Collections.unmodifiableSet(new HashSet<Formula>(formulas));
+		final Set<Formula> set = new HashSet<Formula>(formulas);
+		if (set.size() < 2) {
+			throw new IllegalArgumentException("Cannot construct connector formula of less than two formulas");
+		}
+		this.formulas = Collections.unmodifiableSet(set);
 	}
 
 	public Set<Formula> getFormulas() {
