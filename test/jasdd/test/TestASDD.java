@@ -2,14 +2,14 @@ package jasdd.test;
 
 import jasdd.algebraic.ASDD;
 import jasdd.algebraic.ASDDFactory;
-import jasdd.algebraic.CachingASDDFactory;
 import jasdd.algebraic.AlgebraicElement;
 import jasdd.algebraic.AlgebraicOperatorApplication;
 import jasdd.algebraic.AlgebraicTerminal;
+import jasdd.algebraic.CachingASDDFactory;
 import jasdd.algebraic.DecompositionASDD;
+import jasdd.bool.CachingSDDFactory;
 import jasdd.bool.DecompositionSDD;
 import jasdd.bool.SDDFactory;
-import jasdd.bool.CachingSDDFactory;
 import jasdd.logic.Variable;
 import jasdd.logic.VariableRegistry;
 import jasdd.stat.Summary;
@@ -28,12 +28,12 @@ import org.junit.Test;
 
 /**
  * Integration tests for SDD construction and manipulation.
- *  
+ *
  * @author Ricardo Herrmann
  */
 public class TestASDD {
 
-	private ASDDFactory algFactory = CachingASDDFactory.getInstance();
+	private final ASDDFactory algFactory = CachingASDDFactory.getInstance();
 
 	@Test
 	@SuppressWarnings("unchecked")
@@ -52,8 +52,8 @@ public class TestASDD {
 		final InternalAVTree ll2 = new InternalAVTree(new VariableLeaf(vars.register("alive(x1,y2)")), ll3);
 		final InternalAVTree ll1 = new InternalAVTree(new VariableLeaf(vars.register("alive(x1,y1)")), ll2);
 
-		final AlgebraicTerminal<Float> high = algFactory.createTerminal(0.9f); 
-		final AlgebraicTerminal<Float> low = algFactory.createTerminal(0.1f); 
+		final AlgebraicTerminal<Float> high = algFactory.createTerminal(0.9f);
+		final AlgebraicTerminal<Float> low = algFactory.createTerminal(0.1f);
 
 		final DecompositionASDD<Float> a22  = algFactory.createDecomposition(ll4, algFactory.createElement(vars.register("alive(x2,y2)"), high), algFactory.createElement(vars.register("alive(x2,y2)"), false, low ));
 		final DecompositionASDD<Float> a212 = algFactory.createDecomposition(ll3, algFactory.createElement(vars.register("alive(x2,y1)"), high), algFactory.createElement(vars.register("alive(x2,y1)"), false, a22 ));
@@ -90,8 +90,8 @@ public class TestASDD {
 		);
 		final InternalAVTree root = new InternalAVTree(left, right);
 
-		final AlgebraicTerminal<Float> high = algFactory.createTerminal(0.9f); 
-		final AlgebraicTerminal<Float> low = algFactory.createTerminal(0.1f); 
+		final AlgebraicTerminal<Float> high = algFactory.createTerminal(0.9f);
+		final AlgebraicTerminal<Float> low = algFactory.createTerminal(0.1f);
 
 		final SDDFactory factory = CachingSDDFactory.getInstance();
 
@@ -151,8 +151,8 @@ public class TestASDD {
 		final InternalAVTree right = new InternalAVTree(lowerLeft);
 		final InternalAVTree root = new InternalAVTree(upperLeft, right);
 
-		final AlgebraicTerminal<Float> high = algFactory.createTerminal(0.9f); 
-		final AlgebraicTerminal<Float> low = algFactory.createTerminal(0.1f); 
+		final AlgebraicTerminal<Float> high = algFactory.createTerminal(0.9f);
+		final AlgebraicTerminal<Float> low = algFactory.createTerminal(0.1f);
 
 		final SDDFactory factory = CachingSDDFactory.getInstance();
 
@@ -216,7 +216,7 @@ public class TestASDD {
 		final DecompositionASDD<Double> countA = algFactory.createDecomposition(avtree, algFactory.shannon(a,
 			algFactory.createDecomposition(subtree, algFactory.createElement(algFactory.createTerminal(1.0))),
 			algFactory.createDecomposition(subtree, algFactory.createElement(algFactory.createTerminal(0.0)))));
-		
+
 		@SuppressWarnings("unchecked")
 		final DecompositionASDD<Double> countB = algFactory.createDecomposition(avtree, algFactory.createElement(
 			algFactory.createDecomposition(subtree, algFactory.shannon(b, algFactory.createTerminal(1.0), algFactory.createTerminal(0.0)))));

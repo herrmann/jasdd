@@ -14,17 +14,16 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-
 /**
  * The algebraic equivalent of a decomposition SDD.
- * 
+ *
  * @author Ricardo Herrmann
  */
 public class DecompositionASDD<T> implements ASDD<T> {
 
-	private InternalAVTree avtree;
+	private final InternalAVTree avtree;
 
-	private List<AlgebraicElement<T>> elements;
+	private final List<AlgebraicElement<T>> elements;
 
 	/* package */ DecompositionASDD(final InternalAVTree avtree, final AlgebraicElement<T>... elements) {
 		this.avtree = avtree;
@@ -104,25 +103,33 @@ public class DecompositionASDD<T> implements ASDD<T> {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
+	public boolean equals(final Object obj) {
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		@SuppressWarnings("unchecked")
+		final
 		DecompositionASDD<T> other = (DecompositionASDD<T>) obj;
 		if (avtree == null) {
-			if (other.avtree != null)
+			if (other.avtree != null) {
 				return false;
-		} else if (!avtree.equals(other.avtree))
+			}
+		} else if (!avtree.equals(other.avtree)) {
 			return false;
+		}
 		if (elements == null) {
-			if (other.elements != null)
+			if (other.elements != null) {
 				return false;
-		} else if (!elements.equals(other.elements))
+			}
+		} else if (!elements.equals(other.elements)) {
 			return false;
+		}
 		return true;
 	}
 
