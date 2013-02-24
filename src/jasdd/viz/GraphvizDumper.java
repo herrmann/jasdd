@@ -8,7 +8,12 @@ import jasdd.bool.DecompositionSDD;
 import jasdd.bool.Element;
 import jasdd.bool.LiteralSDD;
 import jasdd.bool.SDD;
+import jasdd.logic.AssociativeConnectorFormula;
+import jasdd.logic.Conjunction;
+import jasdd.logic.Disjunction;
+import jasdd.logic.Formula;
 import jasdd.logic.Literal;
+import jasdd.logic.TerminalFormula;
 import jasdd.logic.Variable;
 import jasdd.logic.VariableRegistry;
 import jasdd.vtree.InternalTree;
@@ -22,11 +27,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import java.util.Set;
 
 /**
  * Conversion of SDDs to Graphviz dot format.
- * 
+ *
  * @author Ricardo Herrmann
  */
 public class GraphvizDumper {
@@ -281,7 +286,7 @@ public class GraphvizDumper {
 			if (!prime.isTerminal()) {
 				leftId = dumpDecomposition((DecompositionSDD) prime, nextId, elemCache, decompCache, vtreeMap, vars);
 			}
-			int rightId = dumpAlgebraicDecomposition(sub, leftId, elemCache, algebraicElemCache, decompCache, algebraicCache, vtreeMap, vars);
+			final int rightId = dumpAlgebraicDecomposition(sub, leftId, elemCache, algebraicElemCache, decompCache, algebraicCache, vtreeMap, vars);
 			final int elementId = rightId + 1;
 			algebraicElemCache.put(element, elementId);
 			out.println("  e" + elementId + " [style=filled,fillcolor=\"" + COLOR_ELEM_AL + "\",shape=record,label=\"<f0> " + primeLabel + "|<f1> " + subLabel + "\"]");
@@ -295,6 +300,48 @@ public class GraphvizDumper {
 			final int elementId = algebraicElemCache.get(element);
 			out.println("  d" + decompId + " -> e" + elementId);
 			return nextId;
+		}
+	}
+
+	public static String formulaSymbol(final Formula formula) {
+		if (formula instanceof Conjunction) {
+			return "&#8743;";
+		} else if (formula instanceof Disjunction) {
+			return "&#8744;";
+		} else {
+			return "&#8855;";
+		}
+	}
+
+	public static void dump(final Formula formula, final String fileName) throws FileNotFoundException {
+		final PrintStream oldOut = out;
+		setOutput(fileName);
+		dump(formula);
+		out = oldOut;
+	}
+
+	public static void dump(final Formula formula) {
+		out.println("digraph f {");
+		dump(formula, 0, -1);
+		out.println("}");
+	}
+
+	public static int dump(final Formula formula, final int nextId, final int parentId) {
+		if (parentId >= 0) {
+			out.println(parentId + " -> " + nextId);
+		}
+		if (formula instanceof TerminalFormula) {
+			out.println(nextId + " [label=\"" + formula + "\"]");
+			return nextId + 1;
+		} else {
+			out.println(nextId + " [label=\"" + formulaSymbol(formula) + "\"]");
+			final Set<Formula> subs = ((AssociativeConnectorFormula) formula).getFormulas();
+			final int parent = nextId;
+			int id = nextId + 1;
+			for (final Formula sub : subs) {
+				id = dump(sub, id, parent);
+			}
+			return id;
 		}
 	}
 
