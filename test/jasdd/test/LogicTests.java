@@ -16,6 +16,22 @@ import org.junit.Test;
 public class LogicTests {
 
 	@Test
+	public void oppositeLiteralsInDisjunction() {
+		Assert.assertEquals(
+				new Constant(true),
+				new Disjunction(Arrays.asList(new Literal(new Variable(1)),
+						new Literal(new Variable(1), false))).trim());
+	}
+
+	@Test
+	public void oppositeLiteralsInConjunction() {
+		Assert.assertEquals(
+				new Constant(false),
+				new Conjunction(Arrays.asList(new Literal(new Variable(1)),
+						new Literal(new Variable(1), false))).trim());
+	}
+
+	@Test
 	public void falseEliminationFromDisjunctionTrimming() {
 		final Formula a = new Literal(new Variable(1));
 		final Formula b = new Literal(new Variable(2));

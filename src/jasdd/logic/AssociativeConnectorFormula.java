@@ -68,6 +68,11 @@ public abstract class AssociativeConnectorFormula implements Formula {
 				return trimmingFormula;
 			}
 			if (!trimmed.equals(dummyFormula)) {
+				if (trimmed instanceof Literal) {
+					if (trimmedFormulas.contains(((Literal) trimmed).opposite())) {
+						return trimmingFormula;
+					}
+				}
 				// TODO: incorporate formulas if it uses the same type of connector
 				trimmedFormulas.add(trimmed);
 			}
