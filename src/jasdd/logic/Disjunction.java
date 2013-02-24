@@ -1,6 +1,7 @@
 package jasdd.logic;
 
-import java.util.List;
+import java.util.Collection;
+
 
 /**
  * Disjunction of many formulas.
@@ -9,7 +10,7 @@ import java.util.List;
  */
 public class Disjunction extends AssociativeConnectorFormula {
 
-	public Disjunction(final List<? extends Formula> formulas) {
+	public Disjunction(final Collection<? extends Formula> formulas) {
 		super(formulas);
 	}
 

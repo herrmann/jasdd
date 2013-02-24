@@ -1,8 +1,10 @@
 package jasdd.logic;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Template for formulas composed of a list of sub-formulas joined by a specific
@@ -12,13 +14,13 @@ import java.util.List;
  */
 public abstract class AssociativeConnectorFormula implements Formula {
 
-	private final List<Formula> formulas;
+	private final Set<Formula> formulas;
 
-	public AssociativeConnectorFormula(final List<? extends Formula> formulas) {
-		this.formulas = Collections.unmodifiableList(formulas);
+	public AssociativeConnectorFormula(final Collection<? extends Formula> formulas) {
+		this.formulas = Collections.unmodifiableSet(new HashSet<Formula>(formulas));
 	}
 
-	public List<Formula> getFormulas() {
+	public Set<Formula> getFormulas() {
 		return formulas;
 	}
 
@@ -51,7 +53,7 @@ public abstract class AssociativeConnectorFormula implements Formula {
 	 */
 	@Override
 	public Formula trim() {
-		final List<Formula> formulas = getFormulas();
+		final Set<Formula> formulas = getFormulas();
 		final ArrayList<Formula> trimmedFormulas = new ArrayList<Formula>(
 				formulas.size());
 		final Formula trimmingFormula = getTrimmingConstant();
@@ -67,7 +69,7 @@ public abstract class AssociativeConnectorFormula implements Formula {
 			}
 		}
 		try {
-			return getClass().getConstructor(List.class).newInstance(trimmedFormulas);
+			return getClass().getConstructor(Collection.class).newInstance(trimmedFormulas);
 		} catch (final Exception e) {
 			throw new RuntimeException(e);
 		}

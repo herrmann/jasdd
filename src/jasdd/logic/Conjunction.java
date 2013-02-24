@@ -1,6 +1,6 @@
 package jasdd.logic;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * Conjunction of many formulas.
@@ -9,7 +9,7 @@ import java.util.List;
  */
 public class Conjunction extends AssociativeConnectorFormula {
 
-	public Conjunction(final List<Formula> formulas) {
+	public Conjunction(final Collection<? extends Formula> formulas) {
 		super(formulas);
 	}
 
