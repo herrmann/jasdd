@@ -62,6 +62,7 @@ public abstract class AssociativeConnectorFormula implements Formula {
 				formulas.size());
 		final Formula trimmingFormula = getTrimmingConstant();
 		final Formula dummyFormula = getDummyConstant();
+		final Class<? extends AssociativeConnectorFormula> clazz = getClass();
 		for (final Formula formula : formulas) {
 			final Formula trimmed = formula.trim();
 			if (trimmed.equals(trimmingFormula)) {
@@ -73,8 +74,12 @@ public abstract class AssociativeConnectorFormula implements Formula {
 						return trimmingFormula;
 					}
 				}
-				// TODO: incorporate formulas if it uses the same type of connector
-				trimmedFormulas.add(trimmed);
+				if (clazz.equals(trimmed.getClass())) {
+					// Incorporate formulas if it uses the same type of connector
+					trimmedFormulas.addAll(((AssociativeConnectorFormula) trimmed).getFormulas());
+				} else {
+					trimmedFormulas.add(trimmed);
+				}
 			}
 		}
 		if (trimmedFormulas.size() == 1) {

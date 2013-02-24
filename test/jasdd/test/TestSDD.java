@@ -6,7 +6,10 @@ import jasdd.bool.DecompositionSDD;
 import jasdd.bool.Element;
 import jasdd.bool.SDD;
 import jasdd.bool.SDDFactory;
+import jasdd.logic.Conjunction;
+import jasdd.logic.Disjunction;
 import jasdd.logic.Formula;
+import jasdd.logic.Literal;
 import jasdd.logic.Variable;
 import jasdd.logic.VariableRegistry;
 import jasdd.viz.GraphvizDumper;
@@ -585,13 +588,18 @@ public class TestSDD {
 	}
 
 	@Test
-	public void darwicheExampleFormula() {
-		final Formula formula = exampleDarwiche().getFormula();
-	}
-
-	@Test
 	public void trimmedDarwicheExampleFormula() {
-		final Formula trimmedFormula = exampleDarwiche().getFormula().trim();
+		final Disjunction trimmedFormula = (Disjunction) exampleDarwiche().getFormula().trim();
+		final Set<Formula> formulas = trimmedFormula.getFormulas();
+		Assert.assertEquals(3, formulas.size());
+		for (final Formula formula : formulas) {
+			final Set<Formula> subFormulas = ((Conjunction) formula).getFormulas();
+			final int size = subFormulas.size();
+			Assert.assertTrue(size == 2 || size == 3);
+			for (final Formula subSub : subFormulas) {
+				Assert.assertTrue(subSub instanceof Literal);
+			}
+		}
 	}
 
 }
