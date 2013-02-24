@@ -72,10 +72,14 @@ public abstract class AssociativeConnectorFormula implements Formula {
 				trimmedFormulas.add(trimmed);
 			}
 		}
-		try {
-			return getClass().getConstructor(Collection.class).newInstance(trimmedFormulas);
-		} catch (final Exception e) {
-			throw new RuntimeException(e);
+		if (trimmedFormulas.size() == 1) {
+			return trimmedFormulas.get(0);
+		} else {
+			try {
+				return getClass().getConstructor(Collection.class).newInstance(trimmedFormulas);
+			} catch (final Exception e) {
+				throw new RuntimeException(e);
+			}
 		}
 	}
 
