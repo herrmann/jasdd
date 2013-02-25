@@ -19,7 +19,7 @@ public class CnfPrinter {
 				first = false;
 				System.out.print(lit);
 			}
-			System.out.println();
+			System.out.println(" 0");
 		}
 	}
 
