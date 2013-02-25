@@ -39,4 +39,16 @@ public class Conjunction extends AssociativeConnectorFormula {
 		return new Constant(true);
 	}
 
+	@Override
+	public Set<Set<Literal>> toCnf() {
+		final Set<Set<Literal>> cnf = new HashSet<Set<Literal>>();
+		for (final Formula f : getFormulas()) {
+			final Set<Set<Literal>> conj = f.toCnf();
+			for (final Set<Literal> disj : conj) {
+				cnf.add(disj);
+			}
+		}
+		return cnf;
+	}
+
 }

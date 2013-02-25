@@ -8,6 +8,7 @@ import jasdd.logic.Literal;
 import jasdd.logic.Variable;
 
 import java.util.Arrays;
+import java.util.Set;
 
 import junit.framework.Assert;
 
@@ -51,6 +52,18 @@ public class LogicTests {
 		final Formula trimmed = formula.trim();
 		final Formula expected = new Conjunction(Arrays.asList(a, b));
 		Assert.assertEquals(expected, trimmed);
+	}
+
+	@Test
+	public void cnf() {
+		final Formula f = Disjunction.from(Arrays.asList(
+			Conjunction.from(Arrays.asList(Literal.from(1), Literal.from(2), Literal.from(3))),
+			Conjunction.from(Arrays.asList(Literal.from(4), Literal.from(5), Literal.from(6)))));
+		final Set<Set<Literal>> cnf = f.toCnf();
+		Assert.assertEquals(9, cnf.size());
+		for (final Set<Literal> disj : cnf) {
+			Assert.assertEquals(2, disj.size());
+		}
 	}
 
 }

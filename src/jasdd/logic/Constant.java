@@ -1,5 +1,7 @@
 package jasdd.logic;
 
+import java.util.Set;
+
 /**
  * A true or false constant.
  *
@@ -46,6 +48,11 @@ public class Constant extends TerminalFormula {
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public Set<Set<Literal>> toCnf() {
+		throw new IllegalStateException("Trivial (constant) boolean functions are not allowed in CNF conversions.");
 	}
 
 }

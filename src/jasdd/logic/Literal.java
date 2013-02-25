@@ -1,5 +1,8 @@
 package jasdd.logic;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * A true or false variable.
  *
@@ -81,6 +84,15 @@ public class Literal extends TerminalFormula {
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public Set<Set<Literal>> toCnf() {
+		final HashSet<Set<Literal>> conjunction = new HashSet<Set<Literal>>(); 
+		final HashSet<Literal> disjunction = new HashSet<Literal>();
+		disjunction.add(this);
+		conjunction.add(disjunction);
+		return conjunction;
 	}
 
 }

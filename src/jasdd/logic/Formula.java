@@ -1,5 +1,7 @@
 package jasdd.logic;
 
+import java.util.Set;
+
 /**
  * Type of Boolean formulas.
  *
@@ -8,5 +10,7 @@ package jasdd.logic;
 public interface Formula {
 
 	Formula trim();
+
+	Set<Set<Literal>> toCnf();
 
 }
