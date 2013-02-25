@@ -20,6 +20,8 @@ import graph.Graph;
 import jasdd.algebraic.ASDD;
 import jasdd.algebraic.DecompositionASDD;
 import jasdd.bool.DecompositionSDD;
+import jasdd.logic.CnfPrinter;
+import jasdd.logic.Formula;
 import jasdd.logic.VariableRegistry;
 import jasdd.rddlsim.ASDDConverter;
 import jasdd.stat.Summary;
@@ -443,6 +445,14 @@ public class VI extends Policy {
 						try {
 							if (asdd instanceof DecompositionASDD<?>) {
 								final DecompositionASDD<?> decomp = (DecompositionASDD<?>) asdd;
+								
+								final Formula f = decomp.extractFunction().get(1.0);
+								if (null != f) {
+									GraphvizDumper.dump(f, "fn.gv");
+									System.out.println(f);
+									CnfPrinter.print(f.toCnf());
+								}
+
 								final double sigma = ((double) i / (skews - 1));
 								GraphvizDumper.dump(decomp, vars, "asdd/" + name + "_i" + _nIter + "/dissect_" + sigma + ".dot");
 								final DecompositionASDD<Double> trimmed = (DecompositionASDD<Double>) decomp.trimmed();
