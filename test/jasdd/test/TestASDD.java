@@ -21,6 +21,7 @@ import jasdd.vtree.ValueLeaf;
 import jasdd.vtree.VariableLeaf;
 
 import java.io.FileNotFoundException;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -205,8 +206,11 @@ public class TestASDD {
 		Assert.assertEquals("[(0,VALUE), ((0 /\\ 2.5) \\/ (-0 /\\ 1.5))]", result.toString());
 	}
 
-	public DecompositionASDD<Double> sumDecompositions() {
-		final VariableRegistry vars = new VariableRegistry();
+	private DecompositionASDD<Double> rightLinearExample() {
+		return rightLinearExample(new VariableRegistry());
+	}
+
+	private DecompositionASDD<Double> rightLinearExample(final VariableRegistry vars) {
 		final Variable a = vars.register("A");
 		final Variable b = vars.register("B");
 
@@ -228,7 +232,7 @@ public class TestASDD {
 
 	@Test
 	public void sumDecompositionsStructuralCheck() {
-		final ASDD<Double> result = sumDecompositions();
+		final ASDD<Double> result = rightLinearExample();
 		Assert.assertEquals("[(0,(1,VALUE)), ((0 /\\ [(1,VALUE), ((1 /\\ 2.0) \\/ (-1 /\\ 1.0))]) \\/ (-0 /\\ [(1,VALUE), ((1 /\\ 1.0) \\/ (-1 /\\ 0.0))]))]", result.toString());
 	}
 
@@ -297,9 +301,89 @@ public class TestASDD {
 
 	@Test
 	public void vtreeIndependentExtractedFunction() {
-		final Map<Double, Formula> function = sumDecompositions().extractFunction();
+		final Map<Double, Formula> function = rightLinearExample().extractFunction();
 		Assert.assertEquals(3, function.size());
 		Assert.assertEquals(function, leftLinearExample().extractFunction());
+	}
+
+	@Test
+	public void evaluate1() {
+		final VariableRegistry vars = new VariableRegistry();
+		final ASDD<Double> result = leftLinearExample(vars);
+		final Set<Variable> trueLiterals = new HashSet<Variable>();
+		trueLiterals.add(vars.register("A"));
+		final double value = result.eval(trueLiterals);
+		Assert.assertEquals(1.0, value);
+	}
+
+	@Test
+	public void evaluate2() {
+		final VariableRegistry vars = new VariableRegistry();
+		final ASDD<Double> result = leftLinearExample(vars);
+		final Set<Variable> trueLiterals = new HashSet<Variable>();
+		trueLiterals.add(vars.register("B"));
+		final double value = result.eval(trueLiterals);
+		Assert.assertEquals(1.0, value);
+	}
+
+	@Test
+	public void evaluate3() {
+		final VariableRegistry vars = new VariableRegistry();
+		final ASDD<Double> result = leftLinearExample(vars);
+		final Set<Variable> trueLiterals = new HashSet<Variable>();
+		final double value = result.eval(trueLiterals);
+		Assert.assertEquals(0.0, value);
+	}
+
+	@Test
+	public void evaluate4() {
+		final VariableRegistry vars = new VariableRegistry();
+		final ASDD<Double> result = leftLinearExample(vars);
+		final Set<Variable> trueLiterals = new HashSet<Variable>();
+		trueLiterals.add(vars.register("A"));
+		trueLiterals.add(vars.register("B"));
+		final double value = result.eval(trueLiterals);
+		Assert.assertEquals(2.0, value);
+	}
+
+	@Test
+	public void evaluate5() {
+		final VariableRegistry vars = new VariableRegistry();
+		final ASDD<Double> result = rightLinearExample(vars);
+		final Set<Variable> trueLiterals = new HashSet<Variable>();
+		trueLiterals.add(vars.register("A"));
+		final double value = result.eval(trueLiterals);
+		Assert.assertEquals(1.0, value);
+	}
+
+	@Test
+	public void evaluate6() {
+		final VariableRegistry vars = new VariableRegistry();
+		final ASDD<Double> result = rightLinearExample(vars);
+		final Set<Variable> trueLiterals = new HashSet<Variable>();
+		trueLiterals.add(vars.register("B"));
+		final double value = result.eval(trueLiterals);
+		Assert.assertEquals(1.0, value);
+	}
+
+	@Test
+	public void evaluate7() {
+		final VariableRegistry vars = new VariableRegistry();
+		final ASDD<Double> result = rightLinearExample(vars);
+		final Set<Variable> trueLiterals = new HashSet<Variable>();
+		final double value = result.eval(trueLiterals);
+		Assert.assertEquals(0.0, value);
+	}
+
+	@Test
+	public void evaluate8() {
+		final VariableRegistry vars = new VariableRegistry();
+		final ASDD<Double> result = rightLinearExample(vars);
+		final Set<Variable> trueLiterals = new HashSet<Variable>();
+		trueLiterals.add(vars.register("A"));
+		trueLiterals.add(vars.register("B"));
+		final double value = result.eval(trueLiterals);
+		Assert.assertEquals(2.0, value);
 	}
 
 }

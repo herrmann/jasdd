@@ -2,10 +2,12 @@ package jasdd.bool;
 
 import jasdd.logic.Constant;
 import jasdd.logic.Formula;
+import jasdd.logic.Variable;
 import jasdd.visitor.SDDVisitor;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Set;
 
 
 /**
@@ -106,6 +108,11 @@ public class ConstantSDD extends TerminalSDD {
 	@Override
 	public Formula getFormula() {
 		return new Constant(sign);
+	}
+
+	@Override
+	public boolean eval(final Set<Variable> trueLiterals) {
+		return sign;
 	}
 
 }

@@ -3,10 +3,12 @@ package jasdd.bool;
 import jasdd.logic.BooleanOperator;
 import jasdd.logic.Formula;
 import jasdd.logic.Sentence;
+import jasdd.logic.Variable;
 import jasdd.util.StringBuildable;
 import jasdd.visitor.SDDVisitor;
 
 import java.util.Collection;
+import java.util.Set;
 
 /**
  * Methods shared by all kinds of SDDs.
@@ -36,6 +38,8 @@ public interface SDD extends Sentence, StringBuildable {
 	int size();
 
 	Formula getFormula();
+
+	boolean eval(Set<Variable> trueLiterals);
 
 	/**
 	 * For debugging purposes only.

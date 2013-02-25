@@ -7,6 +7,7 @@ import jasdd.visitor.SDDVisitor;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Set;
 
 
 /**
@@ -129,6 +130,16 @@ public class LiteralSDD extends TerminalSDD {
 	@Override
 	public Formula getFormula() {
 		return new Literal(literal);
+	}
+
+	@Override
+	public boolean eval(final Set<Variable> trueLiterals) {
+		final Variable var = getLiteral().getVariable();
+		if (trueLiterals.contains(var)) {
+			return getSign();
+		} else {
+			return !getSign();
+		}
 	}
 
 }

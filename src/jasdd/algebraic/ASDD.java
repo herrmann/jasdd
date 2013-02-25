@@ -1,5 +1,6 @@
 package jasdd.algebraic;
 
+import jasdd.logic.Variable;
 import jasdd.util.StringBuildable;
 import jasdd.visitor.ASDDVisitor;
 import jasdd.vtree.AVTree;
@@ -13,8 +14,6 @@ import java.util.Set;
  */
 public interface ASDD<T> extends StringBuildable {
 
-	T evaluate();
-	
 	AVTree getTree();
 
 	boolean isTerminal();
@@ -26,5 +25,7 @@ public interface ASDD<T> extends StringBuildable {
 	ASDD<T> trimmed();
 
 	Set<T> terminals();
+
+	T eval(Set<Variable> trueLiterals);
 
 }

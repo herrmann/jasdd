@@ -9,6 +9,7 @@ import jasdd.util.StringBuildable;
 import jasdd.visitor.SDDVisitor;
 
 import java.util.Arrays;
+import java.util.Set;
 
 /**
  * A pair of SDDs representing one element of a decomposition.
@@ -191,6 +192,10 @@ public class Element implements Sentence, StringBuildable {
 
 	public Formula getFormula() {
 		return new Conjunction(Arrays.asList(getPrime().getFormula(), getSub().getFormula()));
+	}
+
+	public boolean eval(final Set<Variable> trueLiterals) {
+		return getPrime().eval(trueLiterals) && getSub().eval(trueLiterals);
 	}
 
 }

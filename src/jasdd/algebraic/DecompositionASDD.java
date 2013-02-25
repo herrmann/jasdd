@@ -9,6 +9,7 @@ import jasdd.logic.Conjunction;
 import jasdd.logic.Constant;
 import jasdd.logic.Disjunction;
 import jasdd.logic.Formula;
+import jasdd.logic.Variable;
 import jasdd.visitor.ASDDVisitor;
 import jasdd.vtree.InternalAVTree;
 
@@ -57,12 +58,6 @@ public class DecompositionASDD<T> implements ASDD<T> {
 
 	public List<AlgebraicElement<T>> getElements() {
 		return Collections.unmodifiableList(elements);
-	}
-
-	@Override
-	public T evaluate() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override
@@ -225,6 +220,16 @@ public class DecompositionASDD<T> implements ASDD<T> {
 			}
 		}
 		return partial;
+	}
+
+	@Override
+	public T eval(final Set<Variable> trueLiterals) {
+		for (final AlgebraicElement<T> elem : getElements()) {
+			if (elem.getPrime().eval(trueLiterals)) {
+				return elem.getSub().eval(trueLiterals);
+			}
+		}
+		return null;
 	}
 
 }

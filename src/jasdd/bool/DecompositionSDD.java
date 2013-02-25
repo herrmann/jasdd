@@ -316,4 +316,14 @@ public class DecompositionSDD extends AbstractSDD {
 		return new Disjunction(formulas);
 	}
 
+	@Override
+	public boolean eval(final Set<Variable> trueLiterals) {
+		for (final Element elem : getElements()) {
+			if (elem.eval(trueLiterals)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 }
