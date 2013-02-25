@@ -54,9 +54,21 @@ public class Disjunction extends AssociativeConnectorFormula {
 			for (final Set<Literal> pDisj : pCnf) {
 				for (final Set<Literal> qDisj : qCnf) {
 					final Set<Literal> rDisj = new HashSet<Literal>();
-					rDisj.addAll(pDisj);
-					rDisj.addAll(qDisj);
-					rCnf.add(rDisj);
+
+					// Check if there would be any opposite literals
+					boolean prune = false;
+					for (final Literal lit : pDisj) {
+						if (qDisj.contains(lit.opposite())) {
+							prune = true;
+							break;
+						}
+					}
+
+					if (!prune) {
+						rDisj.addAll(pDisj);
+						rDisj.addAll(qDisj);
+						rCnf.add(rDisj);
+					}
 				}
 			}
 			pCnf = rCnf;
