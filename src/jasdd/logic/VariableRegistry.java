@@ -39,12 +39,20 @@ public class VariableRegistry {
 	}
 
 	public boolean exists(final Variable var) {
-		return namesIndex.containsKey(var.getIndex());
+		return exists(var.getIndex());
+	}
+
+	public boolean exists(final int id) {
+		return namesIndex.containsKey(id);
 	}
 
 	public String name(final Variable var) {
 		final int id = var.getIndex();
-		if (exists(var)) {
+		return name(id);
+	}
+
+	public String name(final int id) {
+		if (exists(id)) {
 			return namesIndex.get(id);
 		} else {
 			return "#" + id;
