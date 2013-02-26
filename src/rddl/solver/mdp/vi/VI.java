@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
 import java.util.TreeSet;
@@ -384,10 +385,26 @@ public class VI extends Policy {
 		boolean error_decreasing = true;
 		_lStartTime = System.currentTimeMillis();
 
+		// Extraction of variables for ASDD conversion 
+		final VariableRegistry vars = new VariableRegistry();
+		vars.register("dummy");
+		for (final Object index : _context._alOrder) {
+			final String varName = (String) _context._hmID2VarName.get(index);
+			vars.register(varName);
+		}
+		final ArrayList<Integer> variables = new ArrayList<Integer>();
+		for (final Object obj : _context._alOrder) {
+			final int id = (Integer) obj;
+			final String name = (String) _context._hmID2VarName.get(id);
+			// if (name.endsWith("'")) {
+				variables.add(id);
+			// }
+		}
+		
 		// ////////////////////////////////////////////////////////////
 		// Iterate until convergence (or max iterations)
 		// ////////////////////////////////////////////////////////////
-		_nHorizon = 2;
+		_nHorizon = 20;
 		while (_nIter < _nHorizon) {
 
 			// Cache maintenance
@@ -407,21 +424,7 @@ public class VI extends Policy {
 
 			_context.getGraph(_valueDD).launchViewer();
 
-			final VariableRegistry vars = new VariableRegistry();
-			vars.register("dummy");
-			for (final Object index : _context._alOrder) {
-				vars.register((String) _context._hmID2VarName.get(index));
-			}
-
-			final ArrayList<Integer> variables = new ArrayList<Integer>();
-			for (final Object obj : _context._alOrder) {
-				final int id = (Integer) obj;
-				final String name = (String) _context._hmID2VarName.get(id);
-				if (name.endsWith("'")) {
-					variables.add(id);
-				}
-			}
-			if (_nIter == _nHorizon - 1) {
+			if (false /* _nIter == _nHorizon - 1 */) {
 				int i = 0;
 				System.err.println("Total variables: " + variables.size());
 				final String name = "life3";
@@ -505,11 +508,31 @@ public class VI extends Policy {
 				CString action_name = me.getKey();
 				Action a = me.getValue();
 
+				// Show action ASDD
+				try {
+					final Collection<Tree> dissections = VTreeUtils.dissections(variables);
+					final AVTree avtree = (AVTree) dissections.iterator().next();
+					final ASDDConverter converter = new ASDDConverter(_context);
+					for (final Entry<Integer, Integer> entry : a._hmVarID2CPT.entrySet()) {
+						System.out.println("Action " + a._csActionName + ": showing CPT for variable " + vars.name(entry.getKey()));
+						a._context.getGraph(entry.getValue()).launchViewer();
+						System.out.println("Done");
+						final DecompositionASDD<Double> asdd = (DecompositionASDD<Double>) converter.dissect(avtree, entry.getValue());
+						if (null != asdd) {
+							GraphvizDumper.dump(asdd, vars, "operator.gv");
+						}
+					}
+				} catch (final Exception e) {
+					e.printStackTrace();
+				}
+
 				//////////////////////////////////////////////////////////////
 				// Regress the current value function through each action
 				//////////////////////////////////////////////////////////////
 				int regr = regress(_valueDD, a, true);
 				temp_regr.put(action_name, regr);
+				
+				// _context.getGraph(regr).launchViewer();
 
 				// Show debug info if required
 				if (VERBOSE_LEVEL >= 1) {
