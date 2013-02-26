@@ -1,5 +1,11 @@
 package jasdd;
 
+import jasdd.algebraic.ASDD;
+import jasdd.algebraic.ASDDFactory;
+import jasdd.algebraic.AlgebraicElement;
+import jasdd.algebraic.AlgebraicTerminal;
+import jasdd.algebraic.CachingASDDFactory;
+import jasdd.algebraic.DecompositionASDD;
 import jasdd.bool.CachingSDDFactory;
 import jasdd.bool.ConstantSDD;
 import jasdd.bool.DecompositionSDD;
@@ -9,17 +15,24 @@ import jasdd.bool.SDD;
 import jasdd.bool.SDDFactory;
 import jasdd.logic.Literal;
 import jasdd.logic.Variable;
+import jasdd.vtree.InternalAVTree;
 import jasdd.vtree.InternalVTree;
+
+import java.util.List;
 
 /**
  * Façade for the commonly used facilities provided by JASDD.
  *
  * @author Ricardo Herrmann
  */
-public class JASDD implements SDDFactory {
+public class JASDD implements SDDFactory, ASDDFactory {
 
 	private SDDFactory getFactory() {
 		return CachingSDDFactory.getInstance();
+	}
+
+	private ASDDFactory getAlgFactory() {
+		return CachingASDDFactory.getInstance();
 	}
 
 	@Override
@@ -210,6 +223,46 @@ public class JASDD implements SDDFactory {
 	@Override
 	public LiteralSDD createLiteral(final Variable variable) {
 		return getFactory().createLiteral(variable);
+	}
+
+	@Override
+	public <T> DecompositionASDD<T> createDecomposition(final InternalAVTree avtree, final AlgebraicElement<T>... elements) {
+		return getAlgFactory().createDecomposition(avtree, elements);
+	}
+
+	@Override
+	public <T> AlgebraicTerminal<T> createTerminal(final T value) {
+		return getAlgFactory().createTerminal(value);
+	}
+
+	@Override
+	public <T> AlgebraicElement<T> createElement(final SDD prime, final ASDD<T> sub) {
+		return getAlgFactory().createElement(prime, sub);
+	}
+
+	@Override
+	public <T> AlgebraicElement<T>[] shannon(final Variable v, final ASDD<T> high, final ASDD<T> low) {
+		return getAlgFactory().shannon(v, high, low);
+	}
+
+	@Override
+	public <T> DecompositionASDD<T> createDecomposition(final InternalAVTree avtree, final List<AlgebraicElement<T>> elements) {
+		return getAlgFactory().createDecomposition(avtree, elements);
+	}
+
+	@Override
+	public <T> AlgebraicElement<T> createElement(final ASDD<T> sub) {
+		return getAlgFactory().createElement(sub);
+	}
+
+	@Override
+	public <T> AlgebraicElement<T> createElement(final Variable v1, final boolean s1, final ASDD<T> sub) {
+		return getAlgFactory().createElement(v1, s1, sub);
+	}
+
+	@Override
+	public <T> AlgebraicElement<T> createElement(final Variable v1, final ASDD<T> sub) {
+		return getAlgFactory().createElement(v1, sub);
 	}
 
 }
