@@ -1,11 +1,10 @@
 package jasdd.test;
 
+import jasdd.JASDD;
 import jasdd.bool.AbstractSDD;
-import jasdd.bool.CachingSDDFactory;
 import jasdd.bool.DecompositionSDD;
 import jasdd.bool.Element;
 import jasdd.bool.SDD;
-import jasdd.bool.SDDFactory;
 import jasdd.logic.Conjunction;
 import jasdd.logic.Disjunction;
 import jasdd.logic.Formula;
@@ -33,8 +32,6 @@ import org.junit.Test;
  * @author Ricardo Herrmann
  */
 public class TestSDD {
-
-	private final SDDFactory factory = CachingSDDFactory.getInstance();
 
 	@Test
 	public void platformHasSaneSetComparison() {
@@ -66,12 +63,12 @@ public class TestSDD {
 
 	@Test
 	public void booleanPairedBoxSerialization() {
-		Assert.assertEquals("[(T /\\ T)]", factory.createTrue().expansion().toString());
+		Assert.assertEquals("[(T /\\ T)]", JASDD.createTrue().expansion().toString());
 	}
 
 	@Test
 	public void singleLiteralPairedBoxSerialization() {
-		Assert.assertEquals("[(1 /\\ T), (-1 /\\ F)]", factory.createLiteral(1).expansion().toString());
+		Assert.assertEquals("[(1 /\\ T), (-1 /\\ F)]", JASDD.createLiteral(1).expansion().toString());
 	}
 
 	@Test
@@ -94,14 +91,14 @@ public class TestSDD {
 		final InternalVTree vl = (InternalVTree) root.getLeft();
 		final InternalVTree vr = (InternalVTree) root.getRight();
 
-		final Element n0 = factory.createElement(b, a);
-		final Element n1 = factory.createElement(b, false, false);
-		final Element n2 = factory.createElement(b, a, false);
-		final Element n3 = factory.createElement(d, c);
-		final Element n4 = factory.createElement(d, false, false);
-		final Element n5 = factory.createElement(AbstractSDD.decomposition(vl, n0, n1), true);
-		final Element n6 = factory.createElement(AbstractSDD.decomposition(vl, n1, n2), c);
-		final Element n7 = factory.createElement(b, false, AbstractSDD.decomposition(vr, n3, n4));
+		final Element n0 = JASDD.createElement(b, a);
+		final Element n1 = JASDD.createElement(b, false, false);
+		final Element n2 = JASDD.createElement(b, a, false);
+		final Element n3 = JASDD.createElement(d, c);
+		final Element n4 = JASDD.createElement(d, false, false);
+		final Element n5 = JASDD.createElement(AbstractSDD.decomposition(vl, n0, n1), true);
+		final Element n6 = JASDD.createElement(AbstractSDD.decomposition(vl, n1, n2), c);
+		final Element n7 = JASDD.createElement(b, false, AbstractSDD.decomposition(vr, n3, n4));
 
 		AbstractSDD.decomposition(root, n5, n6, n7);
 	}
@@ -114,13 +111,13 @@ public class TestSDD {
 
 		// A /\ -B
 		final SDD sdd1 = AbstractSDD.decomposition(vtree,
-			factory.createElement(a, b, false),
-			factory.createElement(a, false, false));
+			JASDD.createElement(a, b, false),
+			JASDD.createElement(a, false, false));
 
 		// -A /\ B
 		final SDD sdd2 = AbstractSDD.decomposition(vtree,
-			factory.createElement(a, false, b),
-			factory.createElement(a, false));
+			JASDD.createElement(a, false, b),
+			JASDD.createElement(a, false));
 
 		final SDD result = sdd1.and(sdd2);
 		Assert.assertEquals("F", result.toString());
@@ -134,13 +131,13 @@ public class TestSDD {
 
 		// A /\ -B
 		final SDD sdd1 = AbstractSDD.decomposition(vtree,
-			factory.createElement(a, b, false),
-			factory.createElement(a, false, false));
+			JASDD.createElement(a, b, false),
+			JASDD.createElement(a, false, false));
 
 		// -A /\ B
 		final SDD sdd2 = AbstractSDD.decomposition(vtree,
-			factory.createElement(a, false, b),
-			factory.createElement(a, false));
+			JASDD.createElement(a, false, b),
+			JASDD.createElement(a, false));
 
 		final SDD result = sdd1.or(sdd2);
 		Assert.assertEquals("[(1,2), ((1 /\\ -2) \\/ (-1 /\\ 2))]", result.toString());
@@ -175,12 +172,12 @@ public class TestSDD {
 		final InternalVTree v0 = new InternalVTree(v1, vc);
 
 		final SDD aOrC = AbstractSDD.decomposition(v0,
-			factory.createElement(a, true),
-			factory.createElement(a, false, c));
+			JASDD.createElement(a, true),
+			JASDD.createElement(a, false, c));
 
 		final SDD bOrC = AbstractSDD.decomposition(v0,
-			factory.createElement(b, true),
-			factory.createElement(b, false, c));
+			JASDD.createElement(b, true),
+			JASDD.createElement(b, false, c));
 
 		final SDD result = aOrC.or(bOrC);
 		Assert.assertEquals("[((1,2),3), (([(1,2), ((1 /\\ T) \\/ (-1 /\\ 2))] /\\ T) \\/ ([(1,2), ((-1 /\\ -2) \\/ (1 /\\ F))] /\\ 3))]", result.toString());
@@ -191,8 +188,8 @@ public class TestSDD {
 		final Variable a = new Variable(1);
 		final Variable b = new Variable(2);
 		final InternalVTree vtree = new InternalVTree(a, b);
-		final SDD sdd1 = factory.createLiteral(a);
-		final SDD sdd2 = AbstractSDD.decomposition(vtree, factory.createElement(a, b, false), factory.createElement(a, false, false));
+		final SDD sdd1 = JASDD.createLiteral(a);
+		final SDD sdd2 = AbstractSDD.decomposition(vtree, JASDD.createElement(a, b, false), JASDD.createElement(a, false, false));
 		final SDD result = sdd1.and(sdd2);
 		Assert.assertEquals("[(1,2), ((1 /\\ -2) \\/ (-1 /\\ F))]", result.toString());
 	}
@@ -202,8 +199,8 @@ public class TestSDD {
 		final Variable a = new Variable(1);
 		final Variable b = new Variable(2);
 		final InternalVTree vtree = new InternalVTree(a, b);
-		final SDD sdd1 = factory.createLiteral(b);
-		final SDD sdd2 = AbstractSDD.decomposition(vtree, factory.createElement(a, b, false), factory.createElement(a, false, false));
+		final SDD sdd1 = JASDD.createLiteral(b);
+		final SDD sdd2 = AbstractSDD.decomposition(vtree, JASDD.createElement(a, b, false), JASDD.createElement(a, false, false));
 		final SDD result = sdd1.and(sdd2);
 		Assert.assertEquals("F", result.toString());
 	}
@@ -247,12 +244,12 @@ public class TestSDD {
 		final InternalVTree l3 = (InternalVTree) l2.getRight();
 		final InternalVTree l4 = (InternalVTree) l3.getRight();
 
-		final DecompositionSDD a22 = factory.createDecomposition(l4, factory.createElement(vars.register("alive(x2,y2)"), true), factory.createElement(vars.register("alive(x2,y2)"), false, false));
-		final DecompositionSDD a212 = factory.createDecomposition(l3, factory.createElement(vars.register("alive(x2,y1)"), true), factory.createElement(vars.register("alive(x2,y1)"), false, a22));
-		final DecompositionSDD a211 = factory.createDecomposition(l3, factory.createElement(vars.register("alive(x2,y1)"), a22), factory.createElement(vars.register("alive(x2,y1)"), false, false));
-		final DecompositionSDD a122 = factory.createDecomposition(l2, factory.createElement(vars.register("alive(x1,y2)"), a212), factory.createElement(vars.register("alive(x1,y2)"), false, a211));
-		final DecompositionSDD a121 = factory.createDecomposition(l2, factory.createElement(vars.register("alive(x1,y2)"), a211), factory.createElement(vars.register("alive(x1,y2)"), false, false));
-		final DecompositionSDD a11 = factory.createDecomposition(l1, factory.createElement(vars.register("alive(x1,y1)"), a122), factory.createElement(vars.register("alive(x1,y1)"), false, a121));
+		final DecompositionSDD a22 = JASDD.createDecomposition(l4, JASDD.createElement(vars.register("alive(x2,y2)"), true), JASDD.createElement(vars.register("alive(x2,y2)"), false, false));
+		final DecompositionSDD a212 = JASDD.createDecomposition(l3, JASDD.createElement(vars.register("alive(x2,y1)"), true), JASDD.createElement(vars.register("alive(x2,y1)"), false, a22));
+		final DecompositionSDD a211 = JASDD.createDecomposition(l3, JASDD.createElement(vars.register("alive(x2,y1)"), a22), JASDD.createElement(vars.register("alive(x2,y1)"), false, false));
+		final DecompositionSDD a122 = JASDD.createDecomposition(l2, JASDD.createElement(vars.register("alive(x1,y2)"), a212), JASDD.createElement(vars.register("alive(x1,y2)"), false, a211));
+		final DecompositionSDD a121 = JASDD.createDecomposition(l2, JASDD.createElement(vars.register("alive(x1,y2)"), a211), JASDD.createElement(vars.register("alive(x1,y2)"), false, false));
+		final DecompositionSDD a11 = JASDD.createDecomposition(l1, JASDD.createElement(vars.register("alive(x1,y1)"), a122), JASDD.createElement(vars.register("alive(x1,y1)"), false, a121));
 
 		GraphvizDumper.dump(a11, vars, "sdd.gv");
 	}
@@ -266,26 +263,26 @@ public class TestSDD {
 		final InternalVTree right = (InternalVTree) VTreeUtils.buildRightLinear(vars, "alive(x2,y1)", "alive(x2,y2)", "value");
 		final InternalVTree root = new InternalVTree(left,  right);
 
-		final DecompositionSDD a22 = factory.createDecomposition((InternalVTree) right.getRight(), factory.createElement(vars.register("alive(x2,y2)"), true), factory.createElement(vars.register("alive(x2,y2)"), false, false));
-		final DecompositionSDD a212 = factory.createDecomposition(right, factory.createElement(vars.register("alive(x2,y1)"), true), factory.createElement(vars.register("alive(x2,y1)"), false, a22));
-		final DecompositionSDD a211 = factory.createDecomposition(right, factory.createElement(vars.register("alive(x2,y1)"), a22), factory.createElement(vars.register("alive(x2,y1)"), false, false));
+		final DecompositionSDD a22 = JASDD.createDecomposition((InternalVTree) right.getRight(), JASDD.createElement(vars.register("alive(x2,y2)"), true), JASDD.createElement(vars.register("alive(x2,y2)"), false, false));
+		final DecompositionSDD a212 = JASDD.createDecomposition(right, JASDD.createElement(vars.register("alive(x2,y1)"), true), JASDD.createElement(vars.register("alive(x2,y1)"), false, a22));
+		final DecompositionSDD a211 = JASDD.createDecomposition(right, JASDD.createElement(vars.register("alive(x2,y1)"), a22), JASDD.createElement(vars.register("alive(x2,y1)"), false, false));
 
-		final DecompositionSDD part1 = factory.createDecomposition(left,
-			factory.createElement(vars.register("alive(x1,y1)"), vars.register("alive(x1,y2)")),
-			factory.createElement(vars.register("alive(x1,y1)"), false, false));
+		final DecompositionSDD part1 = JASDD.createDecomposition(left,
+			JASDD.createElement(vars.register("alive(x1,y1)"), vars.register("alive(x1,y2)")),
+			JASDD.createElement(vars.register("alive(x1,y1)"), false, false));
 
-		final DecompositionSDD part2 = factory.createDecomposition(left,
-			factory.createElement(vars.register("alive(x1,y1)"), vars.register("alive(x1,y2)"), false),
-			factory.createElement(vars.register("alive(x1,y1)"), false, vars.register("alive(x1,y2)")));
+		final DecompositionSDD part2 = JASDD.createDecomposition(left,
+			JASDD.createElement(vars.register("alive(x1,y1)"), vars.register("alive(x1,y2)"), false),
+			JASDD.createElement(vars.register("alive(x1,y1)"), false, vars.register("alive(x1,y2)")));
 
-		final DecompositionSDD part3 = factory.createDecomposition(left,
-			factory.createElement(vars.register("alive(x1,y1)"), false),
-			factory.createElement(vars.register("alive(x1,y1)"), false, vars.register("alive(x1,y2)"), false));
+		final DecompositionSDD part3 = JASDD.createDecomposition(left,
+			JASDD.createElement(vars.register("alive(x1,y1)"), false),
+			JASDD.createElement(vars.register("alive(x1,y1)"), false, vars.register("alive(x1,y2)"), false));
 
-		final DecompositionSDD sdd = factory.createDecomposition(root,
-			factory.createElement(part1, a212),
-			factory.createElement(part2, a211),
-			factory.createElement(part3, false));
+		final DecompositionSDD sdd = JASDD.createDecomposition(root,
+			JASDD.createElement(part1, a212),
+			JASDD.createElement(part2, a211),
+			JASDD.createElement(part3, false));
 
 		Assert.assertEquals(15, sdd.size());
 
@@ -310,13 +307,13 @@ public class TestSDD {
 		final InternalVTree apuPart = new InternalVTree(apu, bpuPart);
 		final InternalVTree plPart = new InternalVTree(pl, apuPart);
 		final InternalVTree cPart = new InternalVTree(c, plPart);
-		final SDD boNode = factory.createDecomposition(boPart, factory.createElement(bo, true), factory.createElement(bo, false, false));
-		final SDD bdrNode = factory.createDecomposition(bdrPart, factory.createElement(bdr, boNode), factory.createElement(bdr, false, false));
-		final SDD adrNode = factory.createDecomposition(adrPart, factory.createElement(adr, bdrNode), factory.createElement(adr, false, false));
-		final SDD bpuNode = factory.createDecomposition(bpuPart, factory.createElement(bpu, boNode), factory.createElement(bpu, false, adrNode));
-		final SDD apuNode = factory.createDecomposition(apuPart, factory.createElement(apu, bpuNode), factory.createElement(apu, false, adrNode));
-		final SDD plNode = factory.createDecomposition(plPart, factory.createElement(pl, apuNode), factory.createElement(pl, false, adrNode));
-		final SDD cNode = factory.createDecomposition(cPart, factory.createElement(c, true), factory.createElement(c, false, plNode));
+		final SDD boNode = JASDD.createDecomposition(boPart, JASDD.createElement(bo, true), JASDD.createElement(bo, false, false));
+		final SDD bdrNode = JASDD.createDecomposition(bdrPart, JASDD.createElement(bdr, boNode), JASDD.createElement(bdr, false, false));
+		final SDD adrNode = JASDD.createDecomposition(adrPart, JASDD.createElement(adr, bdrNode), JASDD.createElement(adr, false, false));
+		final SDD bpuNode = JASDD.createDecomposition(bpuPart, JASDD.createElement(bpu, boNode), JASDD.createElement(bpu, false, adrNode));
+		final SDD apuNode = JASDD.createDecomposition(apuPart, JASDD.createElement(apu, bpuNode), JASDD.createElement(apu, false, adrNode));
+		final SDD plNode = JASDD.createDecomposition(plPart, JASDD.createElement(pl, apuNode), JASDD.createElement(pl, false, adrNode));
+		final SDD cNode = JASDD.createDecomposition(cPart, JASDD.createElement(c, true), JASDD.createElement(c, false, plNode));
 		cNode.dump();
 	}
 
@@ -337,7 +334,7 @@ public class TestSDD {
 		Assert.assertEquals(vtree, ((DecompositionSDD) sdd).getVTree());
 		Assert.assertEquals(2, sdd.expansion().size());
 		final Element elem = sdd.expansion().iterator().next();
-		Assert.assertEquals(factory.createTrue(), elem.getSub());
+		Assert.assertEquals(JASDD.createTrue(), elem.getSub());
 		Assert.assertEquals(vtree.getLeft(), ((DecompositionSDD) elem.getPrime()).getVTree());
 		Assert.assertEquals(1, elem.getPrime().expansion().size());
 	}
@@ -351,7 +348,7 @@ public class TestSDD {
 		Assert.assertEquals(vtree, ((DecompositionSDD) sdd).getVTree());
 		Assert.assertEquals(2, sdd.expansion().size());
 		final Element elem = sdd.expansion().iterator().next();
-		Assert.assertEquals(factory.createTrue(), elem.getSub());
+		Assert.assertEquals(JASDD.createTrue(), elem.getSub());
 		Assert.assertEquals(vtree.getLeft(), ((DecompositionSDD) elem.getPrime()).getVTree());
 		Assert.assertEquals(2, elem.getPrime().expansion().size());
 	}
@@ -365,7 +362,7 @@ public class TestSDD {
 		Assert.assertEquals(vtree, ((DecompositionSDD) sdd).getVTree());
 		Assert.assertEquals(1, sdd.expansion().size());
 		final Element elem = sdd.expansion().iterator().next();
-		Assert.assertEquals(factory.createTrue(), elem.getPrime());
+		Assert.assertEquals(JASDD.createTrue(), elem.getPrime());
 		Assert.assertEquals(vtree.getRight(), ((DecompositionSDD) elem.getSub()).getVTree());
 		Assert.assertEquals(1, elem.getSub().expansion().size());
 	}
@@ -379,7 +376,7 @@ public class TestSDD {
 		Assert.assertEquals(vtree, ((DecompositionSDD) sdd).getVTree());
 		Assert.assertEquals(1, sdd.expansion().size());
 		final Element elem = sdd.expansion().iterator().next();
-		Assert.assertEquals(factory.createTrue(), elem.getPrime());
+		Assert.assertEquals(JASDD.createTrue(), elem.getPrime());
 		Assert.assertEquals(vtree.getRight(), ((DecompositionSDD) elem.getSub()).getVTree());
 		Assert.assertEquals(2, elem.getSub().expansion().size());
 	}
@@ -513,14 +510,14 @@ public class TestSDD {
 		final InternalVTree vl = (InternalVTree) root.getLeft();
 		final InternalVTree vr = (InternalVTree) root.getRight();
 
-		final Element n0 = factory.createElement(b, a);
-		final Element n1 = factory.createElement(b, false, false);
-		final Element n2 = factory.createElement(b, a, false);
-		final Element n3 = factory.createElement(d, c);
-		final Element n4 = factory.createElement(d, false, false);
-		final Element n5 = factory.createElement(AbstractSDD.decomposition(vl, n0, n1), true);
-		final Element n6 = factory.createElement(AbstractSDD.decomposition(vl, n1, n2), c);
-		final Element n7 = factory.createElement(b, false, AbstractSDD.decomposition(vr, n3, n4));
+		final Element n0 = JASDD.createElement(b, a);
+		final Element n1 = JASDD.createElement(b, false, false);
+		final Element n2 = JASDD.createElement(b, a, false);
+		final Element n3 = JASDD.createElement(d, c);
+		final Element n4 = JASDD.createElement(d, false, false);
+		final Element n5 = JASDD.createElement(AbstractSDD.decomposition(vl, n0, n1), true);
+		final Element n6 = JASDD.createElement(AbstractSDD.decomposition(vl, n1, n2), c);
+		final Element n7 = JASDD.createElement(b, false, AbstractSDD.decomposition(vr, n3, n4));
 
 		return AbstractSDD.decomposition(root, n5, n6, n7);
 	}
@@ -535,18 +532,18 @@ public class TestSDD {
 		final InternalVTree vl = (InternalVTree) root.getLeft();
 		final InternalVTree vr = (InternalVTree) root.getRight();
 
-		final Element n0 = factory.createElement(b, a);
-		final Element n1 = factory.createElement(b, false, false);
-		final Element n2 = factory.createElement(b, a, false);
-		final Element n3 = factory.createElement(true, c);
-		final Element n4 = factory.createElement(b, false, true);
-		final Element n5 = factory.createElement(b, false);
-		final Element n6 = factory.createElement(d, c);
-		final Element n7 = factory.createElement(d, false, false);
+		final Element n0 = JASDD.createElement(b, a);
+		final Element n1 = JASDD.createElement(b, false, false);
+		final Element n2 = JASDD.createElement(b, a, false);
+		final Element n3 = JASDD.createElement(true, c);
+		final Element n4 = JASDD.createElement(b, false, true);
+		final Element n5 = JASDD.createElement(b, false);
+		final Element n6 = JASDD.createElement(d, c);
+		final Element n7 = JASDD.createElement(d, false, false);
 
-		final Element n8 = factory.createElement(AbstractSDD.decomposition(vl, n0, n1), true);
-		final Element n9 = factory.createElement(AbstractSDD.decomposition(vl, n1, n2), AbstractSDD.decomposition(vr, n3));
-		final Element n10 = factory.createElement(AbstractSDD.decomposition(vl, n4, n5), AbstractSDD.decomposition(vr, n6, n7));
+		final Element n8 = JASDD.createElement(AbstractSDD.decomposition(vl, n0, n1), true);
+		final Element n9 = JASDD.createElement(AbstractSDD.decomposition(vl, n1, n2), AbstractSDD.decomposition(vr, n3));
+		final Element n10 = JASDD.createElement(AbstractSDD.decomposition(vl, n4, n5), AbstractSDD.decomposition(vr, n6, n7));
 
 		return AbstractSDD.decomposition(root, n8, n9, n10);
 	}
@@ -565,26 +562,26 @@ public class TestSDD {
 		final InternalVTree v5 = new InternalVTree(v1, v4);
 		final InternalVTree v6 = new InternalVTree(v0, v5);
 
-		final Element n0 = factory.createElement(c, d);
-		final Element n1 = factory.createElement(c, false, false);
-		final Element n2 = factory.createElement(b, true);
+		final Element n0 = JASDD.createElement(c, d);
+		final Element n1 = JASDD.createElement(c, false, false);
+		final Element n2 = JASDD.createElement(b, true);
 		final SDD d0 = AbstractSDD.decomposition(v4, n0, n1);
-		final Element n3 = factory.createElement(b, false, d0);
-		final Element n4 = factory.createElement(a, AbstractSDD.decomposition(v5, n2, n3));
-		final Element n5 = factory.createElement(a, false, d0);
+		final Element n3 = JASDD.createElement(b, false, d0);
+		final Element n4 = JASDD.createElement(a, AbstractSDD.decomposition(v5, n2, n3));
+		final Element n5 = JASDD.createElement(a, false, d0);
 
 		return AbstractSDD.decomposition(v6, n4, n5);
 	}
 
 	@Test
 	public void trimTrue() {
-		final DecompositionSDD sdd = factory.createDecomposition((InternalVTree) vtree1(), factory.createElement(true, true));
-		Assert.assertEquals(factory.createTrue(), sdd.trimmed());
+		final DecompositionSDD sdd = JASDD.createDecomposition((InternalVTree) vtree1(), JASDD.createElement(true, true));
+		Assert.assertEquals(JASDD.createTrue(), sdd.trimmed());
 	}
 
 	@Test
 	public void notConstant() {
-		Assert.assertEquals(factory.createFalse(), factory.createTrue().not());
+		Assert.assertEquals(JASDD.createFalse(), JASDD.createTrue().not());
 	}
 
 	@Test

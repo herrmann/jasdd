@@ -1,5 +1,6 @@
 package jasdd.bool;
 
+import jasdd.JASDD;
 import jasdd.logic.BooleanOperator;
 import jasdd.vtree.InternalVTree;
 
@@ -11,7 +12,7 @@ import jasdd.vtree.InternalVTree;
 public abstract class AbstractSDD implements SDD {
 
 	public static SDD decomposition(final InternalVTree node, final Element... elements) {
-		return CachingSDDFactory.getInstance().createDecomposition(node, elements);
+		return JASDD.createDecomposition(node, elements);
 	}
 
 	public boolean isTrivial() {
@@ -45,7 +46,7 @@ public abstract class AbstractSDD implements SDD {
 
 	@Override
 	public SDD not() {
-		return apply(CachingSDDFactory.getInstance().createTrue(), new XorOperator());
+		return apply(JASDD.createTrue(), new XorOperator());
 	}
 
 }

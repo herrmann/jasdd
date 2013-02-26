@@ -1,5 +1,6 @@
 package jasdd.bool;
 
+import jasdd.JASDD;
 import jasdd.logic.Disjunction;
 import jasdd.logic.Formula;
 import jasdd.logic.Literal;
@@ -150,14 +151,13 @@ public class DecompositionSDD extends AbstractSDD {
 	}
 
 	public static DecompositionSDD buildNormalized(final InternalVTree vtree, final Literal lit) {
-		final SDDFactory factory = CachingSDDFactory.getInstance();
 		final Variable v = lit.getVariable();
 		// Case 1: left vtree is the variable itself
 		final VTree left = vtree.getLeft();
 		if (left instanceof VariableLeaf) {
 			final Variable treeVar = ((VariableLeaf) left).getVariable();
 			if (treeVar.equals(v)) {
-				return factory.createDecomposition(vtree, factory.shannon(v, lit.getSign(), !lit.getSign()));
+				return JASDD.createDecomposition(vtree, JASDD.shannon(v, lit.getSign(), !lit.getSign()));
 			}
 		}
 		// Case 2: right vtree is the variable itself
@@ -165,19 +165,19 @@ public class DecompositionSDD extends AbstractSDD {
 		if (right instanceof VariableLeaf) {
 			final Variable treeVar = ((VariableLeaf) right).getVariable();
 			if (treeVar.equals(v)) {
-				return factory.createDecomposition(vtree, factory.createElement(true, lit));
+				return JASDD.createDecomposition(vtree, JASDD.createElement(true, lit));
 			}
 		}
 		// Case 3: variable is in the left vtree
 		if (left.variables().contains(v)) {
 			final SDD top = buildNormalized((InternalVTree) left, lit);
 			final SDD bottom = buildNormalized((InternalVTree) left, lit.opposite());
-			return factory.createDecomposition(vtree, factory.createElement(top, true), factory.createElement(bottom, false));
+			return JASDD.createDecomposition(vtree, JASDD.createElement(top, true), JASDD.createElement(bottom, false));
 		}
 		// Case 4: variable is in the right vtree
 		if (right.variables().contains(v)) {
 			final SDD sub = buildNormalized((InternalVTree) right, lit);
-			return factory.createDecomposition(vtree, factory.createElement(true, sub));
+			return JASDD.createDecomposition(vtree, JASDD.createElement(true, sub));
 		}
 		// Case 5: there's no case 5. What went wrong?
 		throw new IllegalArgumentException("Variable " + v.toString() + " is not in the vtree " + vtree.toString());
@@ -189,9 +189,8 @@ public class DecompositionSDD extends AbstractSDD {
 		for (final Element element : getElements()) {
 			elements.add(element.trimmed());
 		}
-		final SDDFactory factory = CachingSDDFactory.getInstance();
-		final ConstantSDD trueNode = factory.createTrue();
-		final ConstantSDD falseNode = factory.createFalse();
+		final ConstantSDD trueNode = JASDD.createTrue();
+		final ConstantSDD falseNode = JASDD.createFalse();
 		if (elements.size() == 1 && elements.get(0).getPrime().equals(trueNode)) {
 			return elements.get(0).getSub();
 		} else if (elements.size() == 2 && elements.get(0).getSub().equals(trueNode) && elements.get(1).getSub().equals(falseNode)) {
@@ -199,7 +198,7 @@ public class DecompositionSDD extends AbstractSDD {
 		} else {
 			final Element[] elems = new Element[elements.size()];
 			elements.toArray(elems);
-			return factory.createDecomposition(getVTree(), elems);
+			return JASDD.createDecomposition(getVTree(), elems);
 		}
 	}
 

@@ -1,14 +1,11 @@
 package jasdd.rddlsim;
 
+import jasdd.JASDD;
 import jasdd.algebraic.ASDD;
-import jasdd.algebraic.ASDDFactory;
-import jasdd.algebraic.CachingASDDFactory;
 import jasdd.algebraic.AlgebraicElement;
 import jasdd.algebraic.DecompositionASDD;
 import jasdd.bool.DecompositionSDD;
-import jasdd.bool.SDDFactory;
 import jasdd.bool.SDD;
-import jasdd.bool.CachingSDDFactory;
 import jasdd.logic.Variable;
 import jasdd.logic.VariableRegistry;
 import jasdd.viz.GraphvizDumper;
@@ -79,10 +76,9 @@ public class FormatConverter {
 	}
 
 	private ASDD<Double> addToAsdd(final VariableRegistry vars, AVTree tree, final ADDNode add) {
-		final ASDDFactory algFactory = CachingASDDFactory.getInstance();
 		if (add instanceof ADDDNode) {
 			final ADDDNode dnode = ((ADDDNode) add);
-			return algFactory.createTerminal(dnode._dLower);
+			return JASDD.createTerminal(dnode._dLower);
 		} else if (add instanceof ADDINode) {
 			final ADDINode inode = ((ADDINode) add);
 			final String varName = varNameInAdd(inode._nTestVarID);
@@ -100,8 +96,8 @@ public class FormatConverter {
 			final ADDNode high = context.getNode(inode._nHigh);
 			final ASDD<Double> left = addToAsdd(vars, subtree, high);
 			final ASDD<Double> right = addToAsdd(vars, subtree, low);
-			final AlgebraicElement<Double>[] elems = algFactory.shannon(var, left, right);
-			return algFactory.createDecomposition((InternalAVTree) tree, elems);
+			final AlgebraicElement<Double>[] elems = JASDD.shannon(var, left, right);
+			return JASDD.createDecomposition((InternalAVTree) tree, elems);
 		}
 		return null;
 	}
@@ -125,11 +121,10 @@ public class FormatConverter {
 				final InternalVTree subtree = (InternalVTree) ((InternalAVTree) tree).getLeft();
 				final Variable leftVar = ((VariableLeaf) subtree.getLeft()).getVariable();
 				final Variable rightVar = ((VariableLeaf) subtree.getRight()).getVariable();
-				final SDDFactory factory = CachingSDDFactory.getInstance();
-				final DecompositionSDD partitionHighHigh = factory.createDecomposition(subtree, factory.shannon(leftVar, rightVar, false)); // A /\ B
-				final DecompositionSDD partitionHighLow = factory.createDecomposition(subtree, factory.shannon(leftVar, rightVar, false, false)); // A /\ ~B
-				final DecompositionSDD partitionLowHigh = factory.createDecomposition(subtree, factory.shannon(leftVar, false, rightVar)); // ~A /\ B
-				final DecompositionSDD partitionLowLow = factory.createDecomposition(subtree, factory.shannon(leftVar, false, rightVar, false)); // ~A /\ ~B
+				final DecompositionSDD partitionHighHigh = JASDD.createDecomposition(subtree, JASDD.shannon(leftVar, rightVar, false)); // A /\ B
+				final DecompositionSDD partitionHighLow = JASDD.createDecomposition(subtree, JASDD.shannon(leftVar, rightVar, false, false)); // A /\ ~B
+				final DecompositionSDD partitionLowHigh = JASDD.createDecomposition(subtree, JASDD.shannon(leftVar, false, rightVar)); // ~A /\ B
+				final DecompositionSDD partitionLowLow = JASDD.createDecomposition(subtree, JASDD.shannon(leftVar, false, rightVar, false)); // ~A /\ ~B
 
 				final ASDD<Double> subHighHigh = pairwise(vars, ((InternalAVTree) tree).getRight(), highHigh2);
 				final ASDD<Double> subHighLow = pairwise(vars, ((InternalAVTree) tree).getRight(), highLow2);
@@ -142,7 +137,7 @@ public class FormatConverter {
 				cluster(elements, subLowHigh, partitionLowHigh);
 				cluster(elements, subLowLow, partitionLowLow);
 
-				return CachingASDDFactory.getInstance().createDecomposition((InternalAVTree) tree, compress(elements));
+				return JASDD.createDecomposition((InternalAVTree) tree, compress(elements));
 			}
 		}
 		return null;
@@ -159,9 +154,9 @@ public class FormatConverter {
 				while (iter.hasNext()) {
 					prime = prime.or(iter.next());
 				}
-				partitions[i++] = CachingASDDFactory.getInstance().createElement(prime, elem.getKey());
+				partitions[i++] = JASDD.createElement(prime, elem.getKey());
 			} else {
-				partitions[i++] = CachingASDDFactory.getInstance().createElement(elem.getValue().iterator().next(), elem.getKey());
+				partitions[i++] = JASDD.createElement(elem.getValue().iterator().next(), elem.getKey());
 			}
 		}
 		return partitions;

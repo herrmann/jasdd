@@ -1,5 +1,6 @@
 package jasdd.bool;
 
+import jasdd.JASDD;
 import jasdd.logic.BooleanOperator;
 import jasdd.logic.Literal;
 import jasdd.logic.Variable;
@@ -60,23 +61,22 @@ public class OperatorApplication {
 	}
 
 	private SDD apply(final ConstantSDD sdd1, final ConstantSDD sdd2, final BooleanOperator op) {
-		return CachingSDDFactory.getInstance().createConstant(op.apply(sdd1.getSign(), sdd2.getSign()));
+		return JASDD.createConstant(op.apply(sdd1.getSign(), sdd2.getSign()));
 	}
 
 	private SDD apply(final LiteralSDD sdd1, final ConstantSDD sdd2, final BooleanOperator op) {
-		final SDDFactory factory = CachingSDDFactory.getInstance();
 		if (op.equals(AND)) {
 			if (sdd2.getSign()) {
-				return factory.createLiteral(sdd1);
+				return JASDD.createLiteral(sdd1);
 			} else {
-				return factory.createConstant(false);
+				return JASDD.createConstant(false);
 			}
 		}
 		if (op.equals(OR)) {
 			if (sdd2.getSign()) {
-				return factory.createConstant(true);
+				return JASDD.createConstant(true);
 			} else {
-				return factory.createLiteral(sdd1);
+				return JASDD.createLiteral(sdd1);
 			}
 		}
 		return null;
@@ -86,28 +86,27 @@ public class OperatorApplication {
 		final Literal literal = sdd1.getLiteral();
 		final Literal otherLiteral = sdd2.getLiteral();
 		if (literal.equals(otherLiteral)) {
-			return CachingSDDFactory.getInstance().createLiteral(sdd1);
+			return JASDD.createLiteral(sdd1);
 		} else if (literal.equals(otherLiteral.opposite())) {
 			if (op.equals(AND)) {
-				return CachingSDDFactory.getInstance().createConstant(false);
+				return JASDD.createConstant(false);
 			}
 			if (op.equals(OR)) {
-				return CachingSDDFactory.getInstance().createConstant(true);
+				return JASDD.createConstant(true);
 			}
 		} else {
 			// TODO: Respect and match vtrees
-			final SDDFactory factory = CachingSDDFactory.getInstance();
 			if (op.equals(AND)) {
 				// createDecomposition takes care of caching elements
-				final Element elem1 = factory.createElement(literal, otherLiteral);
-				final Element elem2 = factory.createElement(literal.opposite(), false);
-				return CachingSDDFactory.getInstance().createDecomposition(null, elem1, elem2);
+				final Element elem1 = JASDD.createElement(literal, otherLiteral);
+				final Element elem2 = JASDD.createElement(literal.opposite(), false);
+				return JASDD.createDecomposition(null, elem1, elem2);
 			}
 			if (op.equals(OR)) {
 				// createDecomposition takes care of caching elements
-				final Element elem1 = factory.createElement(literal, true);
-				final Element elem2 = factory.createElement(literal.opposite(), otherLiteral);
-				return CachingSDDFactory.getInstance().createDecomposition(null, elem1, elem2);
+				final Element elem1 = JASDD.createElement(literal, true);
+				final Element elem2 = JASDD.createElement(literal.opposite(), otherLiteral);
+				return JASDD.createDecomposition(null, elem1, elem2);
 			}
 		}
 		return null;
@@ -116,16 +115,16 @@ public class OperatorApplication {
 	private SDD apply(final DecompositionSDD sdd1, final ConstantSDD sdd2, final BooleanOperator op) {
 		if (op.equals(AND)) {
 			if (sdd2.getSign()) {
-				return CachingSDDFactory.getInstance().createDecomposition(sdd1);
+				return JASDD.createDecomposition(sdd1);
 			} else {
-				return CachingSDDFactory.getInstance().createConstant(false);
+				return JASDD.createConstant(false);
 			}
 		}
 		if (op.equals(OR)) {
 			if (sdd2.getSign()) {
-				return CachingSDDFactory.getInstance().createConstant(true);
+				return JASDD.createConstant(true);
 			} else {
-				return CachingSDDFactory.getInstance().createDecomposition(sdd1);
+				return JASDD.createDecomposition(sdd1);
 			}
 		}
 		return null;
@@ -133,16 +132,15 @@ public class OperatorApplication {
 
 	private SDD apply(final DecompositionSDD sdd1, final LiteralSDD sdd2, final BooleanOperator op) {
 		final Variable variable = sdd2.getLiteral().getVariable();
-		final SDDFactory factory = CachingSDDFactory.getInstance();
 		DecompositionSDD decomp;
 		if (sdd1.getVTree().getLeft().variables().contains(variable)) {
 			final Literal literal = sdd2.getLiteral();
 			// createDecomposition takes care of caching elements
-			decomp = factory.createDecomposition(sdd1.getVTree(),
-					factory.createElement(variable, literal.getSign()),
-					factory.createElement(variable, false, literal.opposite().getSign()));
+			decomp = JASDD.createDecomposition(sdd1.getVTree(),
+					JASDD.createElement(variable, literal.getSign()),
+					JASDD.createElement(variable, false, literal.opposite().getSign()));
 		} else {
-			decomp = factory.createDecomposition(sdd1.getVTree(), factory.createElement(true, sdd2.getLiteral()));
+			decomp = JASDD.createDecomposition(sdd1.getVTree(), JASDD.createElement(true, sdd2.getLiteral()));
 		}
 		return apply(sdd1, decomp, op);
 	}
@@ -167,7 +165,7 @@ public class OperatorApplication {
 						elements.remove(elem);
 						prime = or(elem.getPrime(), prime);
 					}
-					final Element element = CachingSDDFactory.getInstance().createElement(prime, sub);
+					final Element element = JASDD.createElement(prime, sub);
 					elements.add(element);
 					subs.put(sub, element);
 				}
@@ -175,13 +173,12 @@ public class OperatorApplication {
 		}
 		final int size = elements.size();
 		// Apply light trimming if possible
-		final SDDFactory factory = CachingSDDFactory.getInstance();
-		if (size == 1 && elements.get(0).getPrime().equals(factory.createTrue()) && elements.get(0).getSub() instanceof ConstantSDD) {
-			return factory.createConstant(((ConstantSDD) elements.get(0).getSub()).getSign());
+		if (size == 1 && elements.get(0).getPrime().equals(JASDD.createTrue()) && elements.get(0).getSub() instanceof ConstantSDD) {
+			return JASDD.createConstant(((ConstantSDD) elements.get(0).getSub()).getSign());
 		} else {
 			final Element[] elems = new Element[size];
 			elements.toArray(elems);
-			return factory.createDecomposition(sdd1.getVTree(), elems);
+			return JASDD.createDecomposition(sdd1.getVTree(), elems);
 		}
 	}
 

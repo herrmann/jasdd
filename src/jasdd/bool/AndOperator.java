@@ -1,5 +1,6 @@
 package jasdd.bool;
 
+import jasdd.JASDD;
 import jasdd.logic.BooleanOperator;
 
 /**
@@ -10,15 +11,14 @@ import jasdd.logic.BooleanOperator;
 public class AndOperator implements BooleanOperator {
 
 	public SDD apply(final ConstantSDD s1, final ConstantSDD s2) {
-		return CachingSDDFactory.getInstance().createConstant(s1.getSign() && s2.getSign());
+		return JASDD.createConstant(s1.getSign() && s2.getSign());
 	}
 
 	public SDD apply(final ConstantSDD s1, final LiteralSDD s2) {
-		final SDDFactory factory = CachingSDDFactory.getInstance();
 		if (s1.getSign()) {
-			return factory.createLiteral(s2);
+			return JASDD.createLiteral(s2);
 		} else {
-			return factory.createFalse();
+			return JASDD.createFalse();
 		}
 	}
 

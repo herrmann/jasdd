@@ -1,5 +1,6 @@
 package jasdd.bool;
 
+import jasdd.JASDD;
 import jasdd.logic.Conjunction;
 import jasdd.logic.Formula;
 import jasdd.logic.Literal;
@@ -26,7 +27,7 @@ public class Element implements Sentence, StringBuildable {
 	}
 
 	private Element(final Variable v1, final boolean s1, final Variable v2, final boolean s2) {
-		this(CachingSDDFactory.getInstance().createLiteral(v1, s1), CachingSDDFactory.getInstance().createLiteral(v2, s2));
+		this(JASDD.createLiteral(v1, s1), JASDD.createLiteral(v2, s2));
 	}
 
 	private Element(final Variable v1, final Variable v2) {
@@ -54,27 +55,27 @@ public class Element implements Sentence, StringBuildable {
 	}
 
 	private Element(final Variable v1, final boolean s1, final boolean s2) {
-		this(CachingSDDFactory.getInstance().createLiteral(v1, s1), CachingSDDFactory.getInstance().createConstant(s2));
+		this(JASDD.createLiteral(v1, s1), JASDD.createConstant(s2));
 	}
 
 	private Element(final boolean s1, final Variable v2, final boolean s2) {
-		this(CachingSDDFactory.getInstance().createConstant(s1), CachingSDDFactory.getInstance().createLiteral(v2, s2));
+		this(JASDD.createConstant(s1), JASDD.createLiteral(v2, s2));
 	}
 
 	private Element(final boolean s1, final boolean s2) {
-		this(CachingSDDFactory.getInstance().createConstant(s1), CachingSDDFactory.getInstance().createConstant(s2));
+		this(JASDD.createConstant(s1), JASDD.createConstant(s2));
 	}
 
 	private Element(final SDD prime, final boolean s2) {
-		this(prime, CachingSDDFactory.getInstance().createConstant(s2));
+		this(prime, JASDD.createConstant(s2));
 	}
 
 	private Element(final boolean s1, final SDD sub) {
-		this(CachingSDDFactory.getInstance().createConstant(s1), sub);
+		this(JASDD.createConstant(s1), sub);
 	}
 
 	private Element(final SDD prime, final Variable v2, final boolean s2) {
-		this(prime, CachingSDDFactory.getInstance().createLiteral(v2, s2));
+		this(prime, JASDD.createLiteral(v2, s2));
 	}
 
 	private Element(final SDD prime, final Variable v2) {
@@ -82,7 +83,7 @@ public class Element implements Sentence, StringBuildable {
 	}
 
 	private Element(final Variable v1, final boolean s1, final SDD sub) {
-		this(CachingSDDFactory.getInstance().createLiteral(v1, s1), sub);
+		this(JASDD.createLiteral(v1, s1), sub);
 	}
 
 	private Element(final Variable v1, final SDD sub) {
@@ -178,8 +179,7 @@ public class Element implements Sentence, StringBuildable {
 	}
 
 	public Element trimmed() {
-		final SDDFactory factory = CachingSDDFactory.getInstance();
-		return factory.createElement(getPrime().trimmed(), getSub().trimmed());
+		return JASDD.createElement(getPrime().trimmed(), getSub().trimmed());
 	}
 
 	public void accept(final SDDVisitor visitor) {

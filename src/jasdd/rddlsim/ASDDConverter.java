@@ -1,16 +1,13 @@
 package jasdd.rddlsim;
 
+import jasdd.JASDD;
 import jasdd.algebraic.ASDD;
-import jasdd.algebraic.ASDDFactory;
-import jasdd.algebraic.CachingASDDFactory;
 import jasdd.algebraic.AlgebraicElement;
 import jasdd.algebraic.AlgebraicTerminal;
 import jasdd.bool.AndOperator;
 import jasdd.bool.DecompositionSDD;
-import jasdd.bool.SDDFactory;
 import jasdd.bool.OperatorApplication;
 import jasdd.bool.SDD;
-import jasdd.bool.CachingSDDFactory;
 import jasdd.logic.Variable;
 import jasdd.vtree.AVTree;
 import jasdd.vtree.InternalAVTree;
@@ -95,10 +92,9 @@ public class ASDDConverter {
 			fringe.add(var.getIndex());
 		}
 		final Map<Integer, Boolean> assignments = new HashMap<Integer, Boolean>();
-		final ASDDFactory algFactory = CachingASDDFactory.getInstance();
 		final List<AlgebraicElement<Double>> elems = new ArrayList<AlgebraicElement<Double>>();
 		dissect(elems, avtree, nodeId, fringe, assignments);
-		return algFactory.createDecomposition(avtree, elems);
+		return JASDD.createDecomposition(avtree, elems);
 	}
 
 	public void dissect(final List<AlgebraicElement<Double>> elems, final InternalAVTree avtree, final int nodeId, final Set<Integer> fringe, final Map<Integer, Boolean> assignments) {
@@ -115,27 +111,26 @@ public class ASDDConverter {
 			} else {
 				final SDD prime = createPartition(avtree.getLeft(), assignments);
 				final ASDD<Double> sub = dissect((AVTree) avtree.getRight(), nodeId);
-				elems.add(CachingASDDFactory.getInstance().createElement(prime, sub));
+				elems.add(JASDD.createElement(prime, sub));
 			}
 		} else if (node instanceof ADDDNode) {
 			final ADDDNode inode = (ADDDNode) node;
 			final SDD prime = createPartition(avtree.getLeft(), assignments);
-			final AlgebraicTerminal<Double> sub = CachingASDDFactory.getInstance().createTerminal(inode._dLower);
-			elems.add(CachingASDDFactory.getInstance().createElement(prime, sub));
+			final AlgebraicTerminal<Double> sub = JASDD.createTerminal(inode._dLower);
+			elems.add(JASDD.createElement(prime, sub));
 		}
 	}
 
 	private SDD createPartition(final VTree vtree, final Map<Integer, Boolean> assignments) {
-		final SDDFactory factory = CachingSDDFactory.getInstance();
 		if (vtree instanceof VariableLeaf) {
 			final int index = ((VariableLeaf) vtree).getVariable().getIndex(); 
 			if (assignments.containsKey(index)) {
-				return factory.createLiteral(index, assignments.get(index));
+				return JASDD.createLiteral(index, assignments.get(index));
 			} else {
-				return factory.createTrue();
+				return JASDD.createTrue();
 			}
 		} else {
-			SDD sdd = factory.createTrue();
+			SDD sdd = JASDD.createTrue();
 			for (final Entry<Integer, Boolean> entry : assignments.entrySet()) {
 				final int index = entry.getKey();
 				final boolean sign = entry.getValue();
@@ -153,14 +148,14 @@ public class ASDDConverter {
 			if (avtree.isLeaf()) {
 				final ADDDNode dnode = (ADDDNode) node;
 				final double value = dnode._dLower;
-				final AlgebraicTerminal<Double> asdd = CachingASDDFactory.getInstance().createTerminal(value);
+				final AlgebraicTerminal<Double> asdd = JASDD.createTerminal(value);
 				return asdd;
 			} else {
-				final SDD prime = CachingSDDFactory.getInstance().createTrue();
+				final SDD prime = JASDD.createTrue();
 				final AVTree rightTree = ((InternalAVTree) avtree).getRight();
 				final ASDD<Double> sub = dissect(rightTree, nodeId);
-				final AlgebraicElement<Double> elem = CachingASDDFactory.getInstance().createElement(prime, sub);
-				return CachingASDDFactory.getInstance().createDecomposition((InternalAVTree) avtree, elem);
+				final AlgebraicElement<Double> elem = JASDD.createElement(prime, sub);
+				return JASDD.createDecomposition((InternalAVTree) avtree, elem);
 			}
 		} else if (node instanceof ADDINode) {
 			if (avtree.isLeaf()) {

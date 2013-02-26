@@ -1,5 +1,6 @@
 package jasdd.bool;
 
+import jasdd.JASDD;
 import jasdd.logic.Formula;
 import jasdd.logic.Literal;
 import jasdd.logic.Variable;
@@ -66,9 +67,8 @@ public class LiteralSDD extends TerminalSDD {
 	@Override
 	public Collection<Element> expansion() {
 		final Collection<Element> expansion = new ArrayList<Element>(2);
-		final SDDFactory factory = CachingSDDFactory.getInstance();
-		expansion.add(factory.createElement(getLiteral(), true));
-		expansion.add(factory.createElement(getLiteral().opposite(), false));
+		expansion.add(JASDD.createElement(getLiteral(), true));
+		expansion.add(JASDD.createElement(getLiteral().opposite(), false));
 		return expansion;
 	}
 

@@ -1,5 +1,6 @@
 package jasdd.bool;
 
+import jasdd.JASDD;
 import jasdd.logic.Constant;
 import jasdd.logic.Formula;
 import jasdd.logic.Variable;
@@ -55,7 +56,7 @@ public class ConstantSDD extends TerminalSDD {
 	@Override
 	public Collection<Element> expansion() {
 		final Collection<Element> expansion = new ArrayList<Element>(1);
-		expansion.add(CachingSDDFactory.getInstance().createElement(true, getSign()));
+		expansion.add(JASDD.createElement(true, getSign()));
 		return expansion;
 	}
 

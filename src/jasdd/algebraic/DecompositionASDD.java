@@ -1,5 +1,6 @@
 package jasdd.algebraic;
 
+import jasdd.JASDD;
 import jasdd.bool.DecompositionSDD;
 import jasdd.bool.Element;
 import jasdd.bool.OperatorApplication;
@@ -48,7 +49,7 @@ public class DecompositionASDD<T> implements ASDD<T> {
 			final ASDD<T> sub = element.getSub();
 			if (sub.equals(newElement.getSub())) {
 				final SDD newPrime = new OperatorApplication(element.getPrime(), newElement.getPrime(), new OrOperator()).apply();
-				newElement = CachingASDDFactory.getInstance().createElement(newPrime, sub);
+				newElement = JASDD.createElement(newPrime, sub);
 				elements.remove(element);
 				break;
 			}
