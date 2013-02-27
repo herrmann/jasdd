@@ -30,7 +30,7 @@ import dd.discrete.ADDNode;
 
 /**
  * Utility methods for converting rddlsim ADDs to ASDDs.
- * 
+ *
  * @author Ricardo Herrmann
  */
 public class ASDDConverter {
@@ -110,7 +110,7 @@ public class ASDDConverter {
 				dissect(elems, avtree, inode._nHigh, fringe, assignmentsCopy);
 			} else {
 				final SDD prime = createPartition(avtree.getLeft(), assignments);
-				final ASDD<Double> sub = dissect((AVTree) avtree.getRight(), nodeId);
+				final ASDD<Double> sub = dissect(avtree.getRight(), nodeId);
 				elems.add(JASDD.createElement(prime, sub));
 			}
 		} else if (node instanceof ADDDNode) {
@@ -123,7 +123,7 @@ public class ASDDConverter {
 
 	private SDD createPartition(final VTree vtree, final Map<Integer, Boolean> assignments) {
 		if (vtree instanceof VariableLeaf) {
-			final int index = ((VariableLeaf) vtree).getVariable().getIndex(); 
+			final int index = ((VariableLeaf) vtree).getVariable().getIndex();
 			if (assignments.containsKey(index)) {
 				return JASDD.createLiteral(index, assignments.get(index));
 			} else {
