@@ -22,7 +22,7 @@ import java.util.List;
 
 /**
  * Façade for the commonly used facilities provided by JASDD.
- * 
+ *
  * @author Ricardo Herrmann
  */
 public class JASDD {
@@ -217,6 +217,22 @@ public class JASDD {
 
 	public static <T> AlgebraicElement<T> createElement(final Variable v1, final ASDD<T> sub) {
 		return getAlgFactory().createElement(v1, sub);
+	}
+
+	public static DecompositionSDD buildNormalized(final InternalVTree vtree, final Variable v, final boolean sign) {
+		return DecompositionSDD.buildNormalized(vtree, v, sign);
+	}
+
+	public static DecompositionSDD buildNormalized(final InternalVTree vtree, final Variable v) {
+		return DecompositionSDD.buildNormalized(vtree, v);
+	}
+
+	public static DecompositionSDD buildNormalized(final InternalVTree vtree, final int index) {
+		return DecompositionSDD.buildNormalized(vtree, index);
+	}
+
+	public static DecompositionSDD buildNormalized(final InternalVTree vtree, final Literal lit) {
+		return DecompositionSDD.buildNormalized(vtree, lit);
 	}
 
 }
