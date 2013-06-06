@@ -1,28 +1,74 @@
 package jasdd.test;
 
 import jasdd.JASDD;
+import jasdd.algebraic.ASDD;
+import jasdd.algebraic.DecompositionASDD;
 import jasdd.bool.DecompositionSDD;
 import jasdd.bool.SDD;
+import jasdd.logic.Variable;
 import jasdd.logic.VariableRegistry;
+import jasdd.rddlsim.ASDDConverter;
 import jasdd.viz.GraphvizDumper;
+import jasdd.vtree.InternalAVTree;
 import jasdd.vtree.InternalVTree;
 import jasdd.vtree.Tree;
 import jasdd.vtree.VTree;
 import jasdd.vtree.VTreeUtils;
+import jasdd.vtree.ValueLeaf;
 import jasdd.vtree.VariableLeaf;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import org.junit.Test;
 
+import dd.discrete.ADD;
+
 /**
  * CNF to SDD conversion tests
- *  
+ *
  * @author Ricardo Herrmann
  */
 public class ConversionTest {
+
+	@Test
+	public void fromConstantADD() {
+	    final ArrayList<String> order = new ArrayList<String>();
+	    final ADD context = new ADD(order);
+	    final int node = context.getConstantNode(1.0);
+	    context.getNode(node);
+	}
+
+	@Test
+	public void fromADD() throws FileNotFoundException {
+	    final ArrayList<String> order = new ArrayList<String>();
+	    order.add("A");
+	    order.add("B");
+	    final ADD context = new ADD(order);
+	    final int nodeId = context.getVarNode("A", 1.0, 2.0);
+	    final ASDDConverter converter = new ASDDConverter(context);
+	    final VariableRegistry vars = new VariableRegistry();
+	    final Variable a = vars.register("A");
+	    final Variable b = vars.register("B");
+
+	    final InternalAVTree subavtree = new InternalAVTree(a, new ValueLeaf());
+		final InternalAVTree avtree = new InternalAVTree(b, subavtree);
+
+	    final ASDD<Double> asdd = converter.convert(nodeId, avtree, vars);
+
+	    @SuppressWarnings("unchecked")
+		final DecompositionASDD<Double> result =
+	    JASDD.createDecomposition(avtree,
+	    	JASDD.createElement(
+	    		JASDD.createTrue(),
+	    		JASDD.createDecomposition(subavtree,
+	    			JASDD.shannon(a,
+	    				JASDD.createTerminal(2.0),
+	    				JASDD.createTerminal(1.0)))));
+	    GraphvizDumper.dump(result, vars, "expected.gv");
+	}
 
 	@Test
 	public void fromCnf() throws FileNotFoundException {

@@ -4,17 +4,21 @@ import jasdd.JASDD;
 import jasdd.algebraic.ASDD;
 import jasdd.algebraic.AlgebraicElement;
 import jasdd.algebraic.AlgebraicTerminal;
+import jasdd.algebraic.DecompositionASDD;
 import jasdd.bool.AndOperator;
 import jasdd.bool.DecompositionSDD;
 import jasdd.bool.OperatorApplication;
 import jasdd.bool.SDD;
 import jasdd.logic.Variable;
+import jasdd.logic.VariableRegistry;
+import jasdd.viz.GraphvizDumper;
 import jasdd.vtree.AVTree;
 import jasdd.vtree.InternalAVTree;
 import jasdd.vtree.InternalVTree;
 import jasdd.vtree.VTree;
 import jasdd.vtree.VariableLeaf;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -166,6 +170,39 @@ public class ASDDConverter {
 			}
 		}
 		throw new RuntimeException("This shouldn't happen");
+	}
+
+	public ASDD<Double> convert(final int nodeId, final AVTree avtree, /* remove this param */ final VariableRegistry vars) throws FileNotFoundException {
+		final ADDNode node = context.getNode(nodeId);
+		if (node instanceof ADDDNode) {
+			if (avtree.isLeaf()) {
+				final ADDDNode dnode = (ADDDNode) node;
+				final double value = dnode._dLower;
+				final AlgebraicTerminal<Double> asdd = JASDD.createTerminal(value);
+				return asdd;
+			} else {
+				final SDD prime = JASDD.createTrue();
+				final AVTree rightTree = ((InternalAVTree) avtree).getRight();
+				final ASDD<Double> sub = dissect(rightTree, nodeId);
+				final AlgebraicElement<Double> elem = JASDD.createElement(prime, sub);
+				return JASDD.createDecomposition((InternalAVTree) avtree, elem);
+			}
+		} else if (node instanceof ADDINode) {
+			final ADDINode inode = (ADDINode) node;
+			final int varId = inode._nTestVarID;
+
+			final ASDD<Double> low = convert(inode._nLow, avtree, vars);
+			GraphvizDumper.dump((DecompositionASDD<Double>) low, vars, "fn_low.gv");
+
+			final ASDD<Double> high = convert(inode._nHigh, avtree, vars);
+			GraphvizDumper.dump((DecompositionASDD<Double>) high, vars, "fn_high.gv");
+
+			final Variable a = vars.register("A");
+		    final InternalVTree vtree = new InternalVTree(vars.register("B"), new InternalVTree(a, vars.register("V")));
+			final DecompositionSDD lowPartition = JASDD.buildNormalized(vtree, a);
+			GraphvizDumper.dump(lowPartition, vars, "fn_high_part.gv");
+		}
+		return null;
 	}
 
 }
