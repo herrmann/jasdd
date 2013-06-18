@@ -8,7 +8,7 @@ import java.util.Set;
 
 /**
  * An internal node of a variable partitioning tree.
- *  
+ *
  * @author Ricardo Herrmann
  */
 public class InternalVTree extends InternalTree<VTree> implements VTree {
@@ -74,6 +74,48 @@ public class InternalVTree extends InternalTree<VTree> implements VTree {
 	@Override
 	public VariableLeaf rightmostLeaf() {
 		return (VariableLeaf) getRight().rightmostLeaf();
+	}
+
+	/**
+	 * Creates a new internal node sharing this node's left and right sub-vtrees
+	 * but in swapped order.
+	 *
+	 * @return an internal node with swapped left and right sub-vtrees
+	 */
+	public InternalVTree swap() {
+		return new InternalVTree(getRight(), getLeft());
+	}
+
+	/**
+	 * Creates a new internal node corresponding to the structure of the
+	 * original vtree after rotating the root node right and sharing sub-vtrees.
+	 *
+	 * @return an internal node with the vtree rotated right
+	 */
+	public InternalVTree rotateRight() {
+		final VTree sub = getLeft();
+		if (sub instanceof Leaf) {
+			throw new IllegalArgumentException("The given vtree cannot be rotated further to the right.");
+		} else {
+			final InternalVTree left = (InternalVTree) sub;
+			return new InternalVTree(left.getLeft(), new InternalVTree(left.getRight(), getRight()));
+		}
+	}
+
+	/**
+	 * Creates a new internal node corresponding to the structure of the
+	 * original vtree after rotating the root node left and sharing sub-vtrees.
+	 *
+	 * @return an internal node with the vtree rotated left
+	 */
+	public InternalVTree rotateLeft() {
+		final VTree sub = getRight();
+		if (sub instanceof Leaf) {
+			throw new IllegalArgumentException("The given vtree cannot be rotated further to the right.");
+		} else {
+			final InternalVTree right = (InternalVTree) sub;
+			return new InternalVTree(new InternalVTree(getLeft(), right.getLeft()), right.getRight());
+		}
 	}
 
 }

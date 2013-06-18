@@ -10,7 +10,7 @@ import java.util.List;
 
 /**
  * Utility methods for building specific types of vtrees.
- * 
+ *
  * @author Ricardo Herrmann
  */
 public class VTreeUtils {
@@ -28,6 +28,23 @@ public class VTreeUtils {
 			return leaf;
 		} else {
 			return new InternalVTree(leaf, buildRightLinear(vars, current + 1, names));
+		}
+	}
+
+	public static VTree buildLeftLinear(final VariableRegistry vars, final String... names) {
+		if (names.length == 0) {
+			throw new IllegalArgumentException("List of variable names cannot be empty");
+		}
+		return buildLeftLinear(vars, names.length - 1, names);
+	}
+
+	private static VTree buildLeftLinear(final VariableRegistry vars, final int current, final String... names) {
+		final VariableLeaf leaf = new VariableLeaf(vars.register(names[current]));
+		if (current == 0) {
+			return leaf;
+		} else {
+			final VTree blah = buildLeftLinear(vars, current - 1, names);
+			return new InternalVTree(blah, leaf);
 		}
 	}
 

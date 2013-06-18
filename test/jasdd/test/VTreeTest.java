@@ -26,7 +26,7 @@ import org.junit.Test;
 
 /**
  * VTree construction tests.
- * 
+ *
  * @author Ricardo Herrmann
  */
 public class VTreeTest {
@@ -190,7 +190,7 @@ public class VTreeTest {
 	}
 
 	// From http://oeis.org/A000108
-	private long[] catalanNumbers = new long[] { 1, 1, 2, 5, 14, 42, 132, 429,
+	private final long[] catalanNumbers = new long[] { 1, 1, 2, 5, 14, 42, 132, 429,
 			1430, 4862, 16796, 58786, 208012, 742900, 2674440, 9694845,
 			35357670, 129644790, 477638700, 1767263190, 6564120420L,
 			24466267020L, 91482563640L, 343059613650L, 1289904147324L,
@@ -261,7 +261,7 @@ public class VTreeTest {
 		leaves[n] = new ValueLeaf();
 
 		final Map<Tree, Integer> ids = new HashMap<Tree, Integer>();
-	
+
 		int i = 0;
 		for (final Tree tree : VTreeUtils.dissections(leaves)) {
 			ids.put(tree, i++);
@@ -281,6 +281,36 @@ public class VTreeTest {
 			}
 		}
 		// System.out.println();
+	}
+
+	@Test
+	public void rotateLeft() {
+		final VariableRegistry vars = new VariableRegistry();
+		final InternalVTree vtree = (InternalVTree) VTreeUtils.buildRightLinear(vars, "A", "B", "C");
+		final InternalVTree rotated = vtree.rotateLeft();
+		Assert.assertEquals("((A,B),C)", rotated.toString(vars));
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void cannotRotateRight() {
+		final VariableRegistry vars = new VariableRegistry();
+		final InternalVTree vtree = (InternalVTree) VTreeUtils.buildRightLinear(vars, "A", "B", "C");
+		vtree.rotateRight();
+	}
+
+	@Test
+	public void rotateRight() {
+		final VariableRegistry vars = new VariableRegistry();
+		final InternalVTree vtree = (InternalVTree) VTreeUtils.buildLeftLinear(vars, "A", "B", "C");
+		final InternalVTree rotated = vtree.rotateRight();
+		Assert.assertEquals("(A,(B,C))", rotated.toString(vars));
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void cannotRotateLeft() {
+		final VariableRegistry vars = new VariableRegistry();
+		final InternalVTree vtree = (InternalVTree) VTreeUtils.buildLeftLinear(vars, "A", "B", "C");
+		vtree.rotateLeft();
 	}
 
 }
