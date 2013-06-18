@@ -1,14 +1,15 @@
 package jasdd.vtree;
 
 import jasdd.logic.Variable;
+import jasdd.logic.VariableRegistry;
 
 import java.util.HashSet;
 import java.util.Set;
 
 
 /**
- * The special rightmost node of an algebraic vtree. 
- * 
+ * The special rightmost node of an algebraic vtree.
+ *
  * @author Ricardo Herrmann
  */
 public class ValueLeaf implements AVTree, RightLinearAVTree, Leaf {
@@ -29,13 +30,16 @@ public class ValueLeaf implements AVTree, RightLinearAVTree, Leaf {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
+	public boolean equals(final Object obj) {
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		return true;
 	}
 
@@ -57,6 +61,11 @@ public class ValueLeaf implements AVTree, RightLinearAVTree, Leaf {
 	@Override
 	public ValueLeaf rightmostLeaf() {
 		return this;
+	}
+
+	@Override
+	public StringBuilder toStringBuilder(final VariableRegistry vars) {
+		return toStringBuilder();
 	}
 
 }

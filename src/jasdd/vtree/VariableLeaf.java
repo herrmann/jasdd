@@ -1,6 +1,7 @@
 package jasdd.vtree;
 
 import jasdd.logic.Variable;
+import jasdd.logic.VariableRegistry;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -8,12 +9,12 @@ import java.util.Set;
 
 /**
  * Leaf node of a variable partition tree.
- * 
+ *
  * @author Ricardo Herrmann
  */
 public class VariableLeaf implements VTree, RightLinearVTree, Leaf {
 
-	private Variable variable;
+	private final Variable variable;
 
 	public VariableLeaf(final Variable variable) {
 		this.variable = variable;
@@ -64,19 +65,24 @@ public class VariableLeaf implements VTree, RightLinearVTree, Leaf {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
+	public boolean equals(final Object obj) {
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
-		VariableLeaf other = (VariableLeaf) obj;
+		}
+		final VariableLeaf other = (VariableLeaf) obj;
 		if (variable == null) {
-			if (other.variable != null)
+			if (other.variable != null) {
 				return false;
-		} else if (!variable.equals(other.variable))
+			}
+		} else if (!variable.equals(other.variable)) {
 			return false;
+		}
 		return true;
 	}
 
@@ -95,6 +101,11 @@ public class VariableLeaf implements VTree, RightLinearVTree, Leaf {
 	@Override
 	public VariableLeaf rightmostLeaf() {
 		return this;
+	}
+
+	@Override
+	public StringBuilder toStringBuilder(final VariableRegistry vars) {
+		return new StringBuilder(vars.name(variable));
 	}
 
 }
