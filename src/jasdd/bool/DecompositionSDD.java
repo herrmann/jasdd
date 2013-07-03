@@ -8,6 +8,7 @@ import jasdd.logic.Variable;
 import jasdd.visitor.SDDVisitor;
 import jasdd.viz.GraphvizDumper;
 import jasdd.vtree.InternalVTree;
+import jasdd.vtree.Rotatable;
 import jasdd.vtree.VTree;
 import jasdd.vtree.VariableLeaf;
 
@@ -20,13 +21,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-
 /**
  * SDD for a (X,Y)-decomposition of a boolean function.
  *
  * @author Ricardo Herrmann
  */
-public class DecompositionSDD extends AbstractSDD {
+public class DecompositionSDD extends AbstractSDD implements Rotatable<DecompositionSDD> {
 
 	private InternalVTree vtree;
 	private final List<Element> elements = new ArrayList<Element>();
@@ -323,6 +323,49 @@ public class DecompositionSDD extends AbstractSDD {
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public boolean canRotateLeft() {
+		return getVTree().canRotateLeft();
+	}
+
+	@Override
+	public boolean canRotateRight() {
+		return getVTree().canRotateRight();
+	}
+
+	@Override
+	public DecompositionSDD rotateLeft() {
+		if (!canRotateLeft()) {
+			throw new UnsupportedOperationException("SDD cannot be further rotated left");
+		}
+		final ArrayList<Element> elems = new ArrayList<Element>();
+		for (final Element elemA : getElements()) {
+			final SDD primeA = elemA.getPrime();
+			try {
+				final DecompositionSDD sub = (DecompositionSDD) elemA.getSub();
+				for (final Element elemB : sub.getElements()) {
+					final SDD primeB = elemB.getPrime();
+					final SDD subB = elemB.getSub();
+					final SDD prime = primeA.and(primeB);
+					elems.add(new Element(prime, subB));
+				}
+			} catch (final ClassCastException e) {
+				throw new IllegalStateException("Decomposition SDD is in a corrupted internal state");
+			}
+		}
+		final Element[] elements = new Element[elems.size()];
+		elems.toArray(elements);
+		return new DecompositionSDD(getVTree().rotateLeft(), elements);
+	}
+
+	@Override
+	public DecompositionSDD rotateRight() {
+		if (!canRotateRight()) {
+			throw new UnsupportedOperationException("SDD cannot be further rotated right");
+		}
+		return null;
 	}
 
 }

@@ -425,6 +425,17 @@ public class TestSDD {
 	@Test
 	public void normalizedConstructionFromDnf3() {
 		final VariableRegistry vars = new VariableRegistry();
+		final SDD sdd = exampleDnf3(vars);
+		try {
+			GraphvizDumper.dump((DecompositionSDD) sdd, vars, "dnf3.dot");
+		} catch (final FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Assert.assertEquals(7, sdd.size());
+	}
+
+	private SDD exampleDnf3(final VariableRegistry vars) {
 		final InternalVTree vtree = (InternalVTree) VTreeUtils.buildRightLinear(vars, "A", "B", "C", "D");
 		final SDD sddA = DecompositionSDD.buildNormalized(vtree, vars.register("A"));
 		final SDD sddB = DecompositionSDD.buildNormalized(vtree, vars.register("B"));
@@ -433,13 +444,7 @@ public class TestSDD {
 		final SDD sdd1 = sddA.and(sddB);
 		final SDD sdd2 = sddC.and(sddD);
 		final SDD sdd = sdd1.or(sdd2);
-		try {
-			GraphvizDumper.dump((DecompositionSDD) sdd, vars, "dnf3.dot");
-		} catch (final FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		Assert.assertEquals(7, sdd.size());
+		return sdd;
 	}
 
 	@Test
@@ -597,6 +602,15 @@ public class TestSDD {
 				Assert.assertTrue(subSub instanceof Literal);
 			}
 		}
+	}
+
+	@Test
+	public void rotateLeft() throws FileNotFoundException {
+		final VariableRegistry vars = new VariableRegistry();
+		final DecompositionSDD sdd = (DecompositionSDD) exampleDnf3(vars);
+		final DecompositionSDD rotated = sdd.rotateLeft();
+		GraphvizDumper.dump(rotated, vars, "rotated.gv");
+		Assert.assertNotNull(rotated);
 	}
 
 }
