@@ -13,7 +13,7 @@ import java.util.Map;
 
 /**
  * Boolean operator application with node sharing and cached computation.
- * 
+ *
  * @author Ricardo Herrmann
  */
 public class OperatorApplication {
@@ -21,8 +21,9 @@ public class OperatorApplication {
 	private static final BooleanOperator AND = new AndOperator();
 	private static final BooleanOperator OR = new OrOperator();
 
-	private SDD originalSdd1, originalSdd2, result;
-	private BooleanOperator originalOp;
+	private final SDD originalSdd1, originalSdd2;
+	private SDD result;
+	private final BooleanOperator originalOp;
 
 	public OperatorApplication(final SDD sdd1, final SDD sdd2, final BooleanOperator op) {
 		originalSdd1 = sdd1;
