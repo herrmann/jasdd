@@ -26,7 +26,7 @@ import java.util.Set;
  *
  * @author Ricardo Herrmann
  */
-public class DecompositionSDD extends AbstractSDD implements Rotatable<DecompositionSDD> {
+public class DecompositionSDD extends AbstractSDD implements Rotatable<SDD> {
 
 	private InternalVTree vtree;
 	private final List<Element> elements = new ArrayList<Element>();
@@ -336,11 +336,12 @@ public class DecompositionSDD extends AbstractSDD implements Rotatable<Decomposi
 	}
 
 	@Override
-	public DecompositionSDD rotateLeft() {
+	public SDD rotateLeft() {
 		if (!canRotateLeft()) {
 			throw new UnsupportedOperationException("SDD cannot be further rotated left");
 		}
-		final ArrayList<Element> elems = new ArrayList<Element>();
+		final InternalVTree rotatedVTree = getVTree().rotateLeft();
+		final ArrayList<Element> elements = new ArrayList<Element>();
 		for (final Element elemA : getElements()) {
 			final SDD primeA = elemA.getPrime();
 			try {
@@ -349,15 +350,25 @@ public class DecompositionSDD extends AbstractSDD implements Rotatable<Decomposi
 					final SDD primeB = elemB.getPrime();
 					final SDD subB = elemB.getSub();
 					final SDD prime = primeA.and(primeB);
-					elems.add(new Element(prime, subB));
+					if (prime instanceof DecompositionSDD) {
+						((DecompositionSDD) prime).vtree = (InternalVTree) rotatedVTree.getLeft();
+					}
+					elements.add(JASDD.createElement(prime, subB));
 				}
 			} catch (final ClassCastException e) {
 				throw new IllegalStateException("Decomposition SDD is in a corrupted internal state");
 			}
 		}
-		final Element[] elements = new Element[elems.size()];
-		elems.toArray(elements);
-		return new DecompositionSDD(getVTree().rotateLeft(), elements);
+		final int size = elements.size();
+		// Apply light trimming if possible
+		if (size == 1 && elements.get(0).getPrime().equals(JASDD.createTrue()) && elements.get(0).getSub() instanceof ConstantSDD) {
+			return JASDD.createConstant(((ConstantSDD) elements.get(0).getSub()).getSign());
+		} else {
+			final Element[] elems = new Element[size];
+			elements.toArray(elems);
+			final DecompositionSDD sdd = JASDD.createDecomposition(rotatedVTree, elems);
+			return sdd;
+		}
 	}
 
 	@Override
