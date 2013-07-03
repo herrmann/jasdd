@@ -12,7 +12,7 @@ import java.util.Set;
  *
  * @author Ricardo Herrmann
  */
-public class VariableLeaf implements VTree, RightLinearVTree, Leaf {
+public class VariableLeaf extends Leaf implements VTree, RightLinearVTree {
 
 	private final Variable variable;
 

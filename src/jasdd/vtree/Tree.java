@@ -6,8 +6,6 @@ import jasdd.util.StringBuildable;
 
 import java.util.Set;
 
-
-
 /**
  * Super type for algebraic and regular vtrees.
  *
@@ -24,5 +22,9 @@ public interface Tree extends StringBuildable {
 	Leaf rightmostLeaf();
 
 	StringBuilder toStringBuilder(VariableRegistry vars);
+
+	boolean canRotateLeft();
+
+	boolean canRotateRight();
 
 }

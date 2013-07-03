@@ -312,4 +312,76 @@ public class VTreeTest {
 		vtree.rotateLeft();
 	}
 
+	@Test
+	public void leafCannotRotateLeft() {
+		final Tree tree = new VariableLeaf(0);
+		Assert.assertFalse(tree.canRotateLeft());
+	}
+
+	@Test
+	public void leafCannotRotateRight() {
+		final Tree tree = new VariableLeaf(0);
+		Assert.assertFalse(tree.canRotateRight());
+	}
+
+	@Test
+	public void valueLeafCannotRotateLeft() {
+		final Tree tree = new ValueLeaf();
+		Assert.assertFalse(tree.canRotateLeft());
+	}
+
+	@Test
+	public void valueLeafCannotRotateRight() {
+		final Tree tree = new ValueLeaf();
+		Assert.assertFalse(tree.canRotateRight());
+	}
+
+	@Test
+	public void shortVTreeCannotRotateLeft() {
+		final Tree tree = new InternalVTree(new VariableLeaf(0), new VariableLeaf(1));
+		Assert.assertFalse(tree.canRotateLeft());
+	}
+
+	@Test
+	public void shortVTreeCannotRotateRight() {
+		final Tree tree = new InternalVTree(new VariableLeaf(0), new VariableLeaf(1));
+		Assert.assertFalse(tree.canRotateRight());
+	}
+
+	@Test
+	public void tallVTreeCanRotateLeft() {
+		final Tree tree = new InternalVTree(new VariableLeaf(0), new InternalVTree(new VariableLeaf(1), new VariableLeaf(2)));
+		Assert.assertTrue(tree.canRotateLeft());
+	}
+
+	@Test
+	public void tallVTreeCanRotateRight() {
+		final Tree tree = new InternalVTree(new InternalVTree(new VariableLeaf(0), new VariableLeaf(1)), new VariableLeaf(2));
+		Assert.assertTrue(tree.canRotateRight());
+	}
+
+	@Test
+	public void shortAVTreeCannotRotateLeft() {
+		final Tree tree = new InternalAVTree(new VariableLeaf(0), new ValueLeaf());
+		Assert.assertFalse(tree.canRotateLeft());
+	}
+
+	@Test
+	public void shortAVTreeCannotRotateRight() {
+		final Tree tree = new InternalAVTree(new VariableLeaf(0), new ValueLeaf());
+		Assert.assertFalse(tree.canRotateRight());
+	}
+
+	@Test
+	public void tallAVTreeCanRotateLeft() {
+		final Tree tree = new InternalAVTree(new VariableLeaf(0), new InternalAVTree(new VariableLeaf(1), new ValueLeaf()));
+		Assert.assertTrue(tree.canRotateLeft());
+	}
+
+	@Test
+	public void tallAVTreeCanRotateRight() {
+		final Tree tree = new InternalAVTree(new InternalVTree(new VariableLeaf(0), new VariableLeaf(1)), new ValueLeaf());
+		Assert.assertTrue(tree.canRotateRight());
+	}
+
 }

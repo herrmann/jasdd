@@ -7,7 +7,7 @@ import java.util.Set;
 
 /**
  * Internal node of an algebraic vtree.
- * 
+ *
  * @author Ricardo Herrmann
  */
 public class InternalAVTree extends InternalTree<AVTree> implements AVTree {
@@ -46,6 +46,16 @@ public class InternalAVTree extends InternalTree<AVTree> implements AVTree {
 	@Override
 	public ValueLeaf rightmostLeaf() {
 		return (ValueLeaf) getRight().rightmostLeaf();
+	}
+
+	@Override
+	public boolean canRotateLeft() {
+		return !getRight().isLeaf();
+	}
+
+	@Override
+	public boolean canRotateRight() {
+		return !getLeft().isLeaf();
 	}
 
 }

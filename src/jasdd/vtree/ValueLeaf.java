@@ -12,7 +12,7 @@ import java.util.Set;
  *
  * @author Ricardo Herrmann
  */
-public class ValueLeaf implements AVTree, RightLinearAVTree, Leaf {
+public class ValueLeaf extends Leaf implements AVTree, RightLinearAVTree {
 
 	@Override
 	public boolean isLeaf() {

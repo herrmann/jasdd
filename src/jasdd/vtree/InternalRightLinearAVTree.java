@@ -8,7 +8,7 @@ import java.util.Set;
 
 /**
  * Special kind of internal algebraic vtree node which supports only variable nodes on the left side.
- * 
+ *
  * @author Ricardo Herrmann
  */
 public class InternalRightLinearAVTree extends InternalTree<RightLinearAVTree> implements RightLinearAVTree {
@@ -42,6 +42,16 @@ public class InternalRightLinearAVTree extends InternalTree<RightLinearAVTree> i
 	@Override
 	public ValueLeaf rightmostLeaf() {
 		return (ValueLeaf) getRight().rightmostLeaf();
+	}
+
+	@Override
+	public boolean canRotateLeft() {
+		return !getRight().isLeaf();
+	}
+
+	@Override
+	public boolean canRotateRight() {
+		return false;
 	}
 
 }
