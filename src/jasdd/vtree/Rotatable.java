@@ -5,7 +5,7 @@ package jasdd.vtree;
  *
  * @author Ricardo Herrmann
  */
-public interface Rotatable<T extends Rotatable<T>> {
+public interface Rotatable<T> {
 
 	boolean canRotateLeft();
 
