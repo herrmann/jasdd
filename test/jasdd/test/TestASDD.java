@@ -22,8 +22,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import junit.framework.Assert;
-
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -295,6 +294,11 @@ public class TestASDD {
 		Assert.assertEquals(function, leftLinearExample().extractFunction());
 	}
 
+	/**
+	 * Acceptable numeric error when comparing double precision numbers in tests.
+	 */
+	private final double epsilon = 0.000001;
+
 	@Test
 	public void evaluate1() {
 		final VariableRegistry vars = new VariableRegistry();
@@ -302,7 +306,7 @@ public class TestASDD {
 		final Set<Variable> trueLiterals = new HashSet<Variable>();
 		trueLiterals.add(vars.register("A"));
 		final double value = result.eval(trueLiterals);
-		Assert.assertEquals(1.0, value);
+		Assert.assertEquals(1.0, value, epsilon);
 	}
 
 	@Test
@@ -312,7 +316,7 @@ public class TestASDD {
 		final Set<Variable> trueLiterals = new HashSet<Variable>();
 		trueLiterals.add(vars.register("B"));
 		final double value = result.eval(trueLiterals);
-		Assert.assertEquals(1.0, value);
+		Assert.assertEquals(1.0, value, epsilon);
 	}
 
 	@Test
@@ -321,7 +325,7 @@ public class TestASDD {
 		final ASDD<Double> result = leftLinearExample(vars);
 		final Set<Variable> trueLiterals = new HashSet<Variable>();
 		final double value = result.eval(trueLiterals);
-		Assert.assertEquals(0.0, value);
+		Assert.assertEquals(0.0, value, epsilon);
 	}
 
 	@Test
@@ -332,7 +336,7 @@ public class TestASDD {
 		trueLiterals.add(vars.register("A"));
 		trueLiterals.add(vars.register("B"));
 		final double value = result.eval(trueLiterals);
-		Assert.assertEquals(2.0, value);
+		Assert.assertEquals(2.0, value, epsilon);
 	}
 
 	@Test
@@ -342,7 +346,7 @@ public class TestASDD {
 		final Set<Variable> trueLiterals = new HashSet<Variable>();
 		trueLiterals.add(vars.register("A"));
 		final double value = result.eval(trueLiterals);
-		Assert.assertEquals(1.0, value);
+		Assert.assertEquals(1.0, value, epsilon);
 	}
 
 	@Test
@@ -352,7 +356,7 @@ public class TestASDD {
 		final Set<Variable> trueLiterals = new HashSet<Variable>();
 		trueLiterals.add(vars.register("B"));
 		final double value = result.eval(trueLiterals);
-		Assert.assertEquals(1.0, value);
+		Assert.assertEquals(1.0, value, epsilon);
 	}
 
 	@Test
@@ -361,7 +365,7 @@ public class TestASDD {
 		final ASDD<Double> result = rightLinearExample(vars);
 		final Set<Variable> trueLiterals = new HashSet<Variable>();
 		final double value = result.eval(trueLiterals);
-		Assert.assertEquals(0.0, value);
+		Assert.assertEquals(0.0, value, epsilon);
 	}
 
 	@Test
@@ -372,7 +376,7 @@ public class TestASDD {
 		trueLiterals.add(vars.register("A"));
 		trueLiterals.add(vars.register("B"));
 		final double value = result.eval(trueLiterals);
-		Assert.assertEquals(2.0, value);
+		Assert.assertEquals(2.0, value, epsilon);
 	}
 
 }
