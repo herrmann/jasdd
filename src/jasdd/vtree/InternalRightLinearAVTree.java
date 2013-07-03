@@ -11,6 +11,7 @@ import java.util.Set;
  *
  * @author Ricardo Herrmann
  */
+@Deprecated
 public class InternalRightLinearAVTree extends InternalTree<RightLinearAVTree> implements RightLinearAVTree {
 
 	public InternalRightLinearAVTree(final VTree left, final RightLinearAVTree right) {
@@ -52,6 +53,18 @@ public class InternalRightLinearAVTree extends InternalTree<RightLinearAVTree> i
 	@Override
 	public boolean canRotateRight() {
 		return false;
+	}
+
+	@Override
+	public Tree rotateLeft() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Tree rotateRight() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

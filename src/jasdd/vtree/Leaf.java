@@ -17,4 +17,14 @@ public abstract class Leaf implements Tree {
 		return false;
 	}
 
+	@Override
+	public Tree rotateLeft() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Tree rotateRight() {
+		throw new UnsupportedOperationException();
+	}
+
 }

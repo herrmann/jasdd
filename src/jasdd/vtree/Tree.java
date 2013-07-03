@@ -11,7 +11,7 @@ import java.util.Set;
  *
  * @author Ricardo Herrmann
  */
-public interface Tree extends StringBuildable {
+public interface Tree extends Rotatable<Tree>, StringBuildable {
 
 	boolean isLeaf();
 
@@ -22,9 +22,5 @@ public interface Tree extends StringBuildable {
 	Leaf rightmostLeaf();
 
 	StringBuilder toStringBuilder(VariableRegistry vars);
-
-	boolean canRotateLeft();
-
-	boolean canRotateRight();
 
 }

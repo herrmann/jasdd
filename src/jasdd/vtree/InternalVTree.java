@@ -92,6 +92,7 @@ public class InternalVTree extends InternalTree<VTree> implements VTree {
 	 *
 	 * @return an internal node with the vtree rotated right
 	 */
+	@Override
 	public InternalVTree rotateRight() {
 		if (!canRotateRight()) {
 			throw new IllegalArgumentException("The given vtree cannot be rotated further to the right.");
@@ -107,6 +108,7 @@ public class InternalVTree extends InternalTree<VTree> implements VTree {
 	 *
 	 * @return an internal node with the vtree rotated left
 	 */
+	@Override
 	public InternalVTree rotateLeft() {
 		if (!canRotateLeft()) {
 			throw new IllegalArgumentException("The given vtree cannot be rotated further to the right.");
