@@ -17,8 +17,11 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 /**
@@ -345,8 +348,8 @@ public class DecompositionSDD extends AbstractSDD implements Rotatable<SDD> {
 		final InternalVTree rotatedVTree = getVTree().rotateLeft();
 		final InternalVTree leftVTree = (InternalVTree) rotatedVTree.getLeft();
 
-		// Accumulated elements for the rotated decomposition
-		final ArrayList<Element> elements = new ArrayList<Element>();
+		// Accumulated partition for subs in the rotated decomposition
+		final Map<SDD, SDD> cache = new HashMap<SDD, SDD>();
 
 		for (final Element elemA : getElements()) {
 			final SDD primeA = normalizeIfTerminal(elemA.getPrime(), leftVTree);
@@ -356,26 +359,43 @@ public class DecompositionSDD extends AbstractSDD implements Rotatable<SDD> {
 				final SDD primeB = normalizeIfTerminal(elemB.getPrime(), leftVTree);
 				final SDD subB = elemB.getSub();
 				// Normalize for rotated vtree before conjunction
+				// TODO: avoid construction of negative partition
 				final DecompositionSDD a = nestDecomposition(rotatedVTree, primeA);
 				final DecompositionSDD b = nestDecomposition(rotatedVTree, primeB);
-				final DecompositionSDD prime = (DecompositionSDD) a.and(b);
-				for (final Element e : prime.getElements()) {
-					if (e.getSub().equals(JASDD.createTrue())) {
-						final Element elem = JASDD.createElement(e.getPrime(), subB);
-						elements.add(elem);
-						break;
+				final SDD prime = a.and(b);
+				if (prime.isConsistent()) {
+					for (final Element e : ((DecompositionSDD) prime).getElements()) {
+						if (e.getSub().equals(JASDD.createTrue())) {
+							final SDD partition = e.getPrime();
+							// Compress
+							if (cache.containsKey(subB)) {
+								final SDD cachedSub = cache.get(subB);
+								final SDD newPart = cachedSub.or(partition);
+								cache.put(subB, newPart);
+							} else {
+								cache.put(subB, partition);
+							}
+							break;
+						}
 					}
 				}
 			}
 		}
 
-		final int size = elements.size();
+		final int size = cache.size();
+		final Entry<SDD, SDD> first = cache.entrySet().iterator().next();
 		// Apply light trimming if possible
-		if (size == 1 && elements.get(0).getPrime().equals(JASDD.createTrue()) && elements.get(0).getSub() instanceof ConstantSDD) {
-			return JASDD.createConstant(((ConstantSDD) elements.get(0).getSub()).getSign());
+		if (size == 1 && first.getValue().equals(JASDD.createTrue()) && first.getKey() instanceof ConstantSDD) {
+			return JASDD.createConstant(((ConstantSDD) first.getKey()).getSign());
 		} else {
+			int i = 0;
 			final Element[] elems = new Element[size];
-			elements.toArray(elems);
+			for (final Entry<SDD, SDD> entry : cache.entrySet()) {
+				final SDD sub = entry.getKey();
+				final SDD prime = entry.getValue();
+				final Element elem = JASDD.createElement(prime, sub);
+				elems[i++] = elem;
+			}
 			final DecompositionSDD sdd = JASDD.createDecomposition(rotatedVTree, elems);
 			return sdd;
 		}
