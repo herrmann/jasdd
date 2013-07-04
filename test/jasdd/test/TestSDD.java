@@ -608,9 +608,21 @@ public class TestSDD {
 	public void rotateLeft() throws FileNotFoundException {
 		final VariableRegistry vars = new VariableRegistry();
 		final DecompositionSDD sdd = (DecompositionSDD) exampleDnf3(vars);
-		final DecompositionSDD rotated = sdd.rotateLeft();
+
+		final DecompositionSDD rotated = (DecompositionSDD) sdd.rotateLeft();
 		GraphvizDumper.dump(rotated, vars, "rotated.gv");
 		Assert.assertNotNull(rotated);
+
+		final DecompositionSDD rotated2 = (DecompositionSDD) rotated.rotateLeft();
+		GraphvizDumper.dump(rotated2, vars, "rotated2.gv");
+		Assert.assertNotNull(rotated2);
+	}
+
+	@Test
+	public void rotateNormalizedLeft() throws FileNotFoundException {
+		final VariableRegistry vars = new VariableRegistry();
+		final DecompositionSDD sdd = (DecompositionSDD) exampleNormalized();
+		GraphvizDumper.dump((DecompositionSDD) sdd.rotateLeft(), vars, "rotated_norm.gv");
 	}
 
 }

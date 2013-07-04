@@ -340,25 +340,35 @@ public class DecompositionSDD extends AbstractSDD implements Rotatable<SDD> {
 		if (!canRotateLeft()) {
 			throw new UnsupportedOperationException("SDD cannot be further rotated left");
 		}
+
+		// Rotated vtree references
 		final InternalVTree rotatedVTree = getVTree().rotateLeft();
+		final InternalVTree leftVTree = (InternalVTree) rotatedVTree.getLeft();
+
+		// Accumulated elements for the rotated decomposition
 		final ArrayList<Element> elements = new ArrayList<Element>();
+
 		for (final Element elemA : getElements()) {
-			final SDD primeA = elemA.getPrime();
-			try {
-				final DecompositionSDD sub = (DecompositionSDD) elemA.getSub();
-				for (final Element elemB : sub.getElements()) {
-					final SDD primeB = elemB.getPrime();
-					final SDD subB = elemB.getSub();
-					final SDD prime = primeA.and(primeB);
-					if (prime instanceof DecompositionSDD) {
-						((DecompositionSDD) prime).vtree = (InternalVTree) rotatedVTree.getLeft();
+			final SDD primeA = normalizeIfTerminal(elemA.getPrime(), leftVTree);
+			// Lazily normalize terminal subs
+			final DecompositionSDD sub = normalizeIfTerminal(elemA.getSub(), leftVTree);
+			for (final Element elemB : sub.getElements()) {
+				final SDD primeB = normalizeIfTerminal(elemB.getPrime(), leftVTree);
+				final SDD subB = elemB.getSub();
+				// Normalize for rotated vtree before conjunction
+				final DecompositionSDD a = nestDecomposition(rotatedVTree, primeA);
+				final DecompositionSDD b = nestDecomposition(rotatedVTree, primeB);
+				final DecompositionSDD prime = (DecompositionSDD) a.and(b);
+				for (final Element e : prime.getElements()) {
+					if (e.getSub().equals(JASDD.createTrue())) {
+						final Element elem = JASDD.createElement(e.getPrime(), subB);
+						elements.add(elem);
+						break;
 					}
-					elements.add(JASDD.createElement(prime, subB));
 				}
-			} catch (final ClassCastException e) {
-				throw new IllegalStateException("Decomposition SDD is in a corrupted internal state");
 			}
 		}
+
 		final int size = elements.size();
 		// Apply light trimming if possible
 		if (size == 1 && elements.get(0).getPrime().equals(JASDD.createTrue()) && elements.get(0).getSub() instanceof ConstantSDD) {
@@ -368,6 +378,26 @@ public class DecompositionSDD extends AbstractSDD implements Rotatable<SDD> {
 			elements.toArray(elems);
 			final DecompositionSDD sdd = JASDD.createDecomposition(rotatedVTree, elems);
 			return sdd;
+		}
+	}
+
+	private DecompositionSDD nestDecomposition(final InternalVTree vtree, final SDD sdd) {
+		return JASDD.createDecomposition(vtree, JASDD.createElement(sdd, true), JASDD.createElement(sdd.not(), false));
+	}
+
+	public DecompositionSDD normalizeIfTerminal(final SDD sdd, final InternalVTree vtree) {
+		if (sdd instanceof ConstantSDD) {
+			// Lazily normalize terminal subs
+			return JASDD.createDecomposition(vtree, JASDD.createElement(true, sdd));
+		} else if (sdd instanceof LiteralSDD) {
+			return JASDD.buildNormalized(vtree, ((LiteralSDD) sdd).getLiteral());
+		} else {
+			final DecompositionSDD decomp = (DecompositionSDD) sdd;
+			if (vtree.getLeft().equals(decomp.getVTree())) {
+				return nestDecomposition(vtree, decomp);
+			} else {
+				return decomp;
+			}
 		}
 	}
 
