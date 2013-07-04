@@ -9,14 +9,14 @@ import java.util.Map;
 
 /**
  * Creates and caches different types of SDDs.
- * 
+ *
  * @author Ricardo Herrmann
  */
 public class CachingSDDFactory implements SDDFactory {
-	
+
 	private static SDDFactory instance;
 
-	private Map<SDD, SDD> cache = new HashMap<SDD, SDD>();
+	private final Map<SDD, SDD> cache = new HashMap<SDD, SDD>();
 
 	private final Map<Element, Element> elementCache = new HashMap<Element, Element>();
 
@@ -66,6 +66,11 @@ public class CachingSDDFactory implements SDDFactory {
 	@Override
 	public LiteralSDD createLiteral(final Variable variable, final boolean sign) {
 		return (LiteralSDD) cache(new LiteralSDD(variable, sign));
+	}
+
+	@Override
+	public LiteralSDD createLiteral(final Literal lit) {
+		return (LiteralSDD) cache(new LiteralSDD(lit));
 	}
 
 	/* (non-Javadoc)
@@ -247,7 +252,7 @@ public class CachingSDDFactory implements SDDFactory {
 	 * @see jasdd.bool.SDDFactory#createElement(jasdd.logic.Literal, boolean)
 	 */
 	@Override
-	public Element createElement(final Literal l1, boolean s2) {
+	public Element createElement(final Literal l1, final boolean s2) {
 		return createElement(l1.getVariable(), l1.getSign(), s2);
 	}
 

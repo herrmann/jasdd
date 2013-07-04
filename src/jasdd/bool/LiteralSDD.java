@@ -40,6 +40,12 @@ public class LiteralSDD extends TerminalSDD {
 		this(variable, true);
 	}
 
+	/* package */ LiteralSDD(final Literal lit) {
+		// TODO: reorganize constructors to use literal constructor
+		// TODO: clone by using the literal constructor from Literal
+		this(lit.getVariable(), lit.getSign());
+	}
+
 	public Literal getLiteral() {
 		return literal;
 	}

@@ -51,6 +51,10 @@ public class JASDD {
 		return getFactory().createLiteral(variable, sign);
 	}
 
+	public static LiteralSDD createLiteral(final Literal lit) {
+		return getFactory().createLiteral(lit);
+	}
+
 	public static DecompositionSDD createDecomposition(final InternalVTree node, final Element... elements) {
 		return getFactory().createDecomposition(node, elements);
 	}

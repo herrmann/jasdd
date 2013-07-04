@@ -19,7 +19,7 @@ public interface SDDFactory {
 
 	/**
 	 * Base factory method for Elements.
-	 * 
+	 *
 	 * @param prime the prime SDD
 	 * @param sub the sub SDD
 	 * @return the cached instance of the Element
@@ -90,5 +90,7 @@ public interface SDDFactory {
 	LiteralSDD createLiteral(int index);
 
 	LiteralSDD createLiteral(Variable variable);
+
+	LiteralSDD createLiteral(Literal lit);
 
 }
