@@ -415,6 +415,8 @@ public class DecompositionSDD extends AbstractSDD implements Rotatable<SDD> {
 			final DecompositionSDD decomp = (DecompositionSDD) sdd;
 			if (vtree.getLeft().equals(decomp.getVTree())) {
 				return nestDecomposition(vtree, decomp);
+			} else if (vtree.getRight().equals(decomp.getVTree())) {
+				return JASDD.createDecomposition(vtree, JASDD.createElement(true, decomp));
 			} else {
 				return decomp;
 			}
