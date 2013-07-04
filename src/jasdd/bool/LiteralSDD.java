@@ -148,4 +148,9 @@ public class LiteralSDD extends TerminalSDD {
 		}
 	}
 
+	@Override
+	public LiteralSDD not() {
+		return JASDD.createLiteral(getLiteral().opposite());
+	}
+
 }

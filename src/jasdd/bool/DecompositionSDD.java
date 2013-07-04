@@ -379,4 +379,14 @@ public class DecompositionSDD extends AbstractSDD implements Rotatable<SDD> {
 		return null;
 	}
 
+	@Override
+	public DecompositionSDD not() {
+		final Element[] elems = new Element[getElements().size()];
+		int i = 0;
+		for (final Element elem : getElements()) {
+			elems[i++] = elem.not();
+		}
+		return JASDD.createDecomposition(getVTree(), elems);
+	}
+
 }

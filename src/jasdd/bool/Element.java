@@ -198,4 +198,8 @@ public class Element implements Sentence, StringBuildable {
 		return getPrime().eval(trueLiterals) && getSub().eval(trueLiterals);
 	}
 
+	public Element not() {
+		return JASDD.createElement(getPrime(), getSub().not());
+	}
+
 }

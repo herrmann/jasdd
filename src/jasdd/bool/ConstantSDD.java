@@ -116,4 +116,9 @@ public class ConstantSDD extends TerminalSDD {
 		return sign;
 	}
 
+	@Override
+	public ConstantSDD not() {
+		return JASDD.createConstant(!getSign());
+	}
+
 }

@@ -6,7 +6,7 @@ import jasdd.vtree.InternalVTree;
 
 /**
  * Base class with utility methods for all kinds of SDDs.
- * 
+ *
  * @author Ricardo Herrmann
  */
 public abstract class AbstractSDD implements SDD {
@@ -42,11 +42,6 @@ public abstract class AbstractSDD implements SDD {
 	@Override
 	public SDD xor(final SDD sdd) {
 		return apply(sdd, new XorOperator());
-	}
-
-	@Override
-	public SDD not() {
-		return apply(JASDD.createTrue(), new XorOperator());
 	}
 
 }
