@@ -450,7 +450,16 @@ public class TestSDD {
 	@Test
 	public void normalizedConstructionFromCnf4() {
 		final VariableRegistry vars = new VariableRegistry();
+		final DecompositionSDD sdd = exampleCnf4(vars);
+		try {
+			GraphvizDumper.dump(sdd, vars, "cnf4.gv");
+		} catch (final FileNotFoundException ex) {
+			// TODO Auto-generated catch block
+			ex.printStackTrace();
+		}
+	}
 
+	private DecompositionSDD exampleCnf4(final VariableRegistry vars) {
 		final Variable a = vars.register("A");
 		final Variable b = vars.register("B");
 		final Variable c = vars.register("C");
@@ -474,14 +483,8 @@ public class TestSDD {
 		final SDD sdd3 = sddA.or(sddB).or(sddNotE);
 		final SDD sdd4 = sddB.or(sddF);
 
-		final SDD sdd = sdd1.and(sdd2).and(sdd3).and(sdd4);
-
-		try {
-			GraphvizDumper.dump((DecompositionSDD) sdd, vars, "cnf4.dot");
-		} catch (final FileNotFoundException ex) {
-			// TODO Auto-generated catch block
-			ex.printStackTrace();
-		}
+		final DecompositionSDD sdd = (DecompositionSDD) sdd1.and(sdd2).and(sdd3).and(sdd4);
+		return sdd;
 	}
 
 	private VTree vtree1() {
@@ -623,6 +626,19 @@ public class TestSDD {
 		final VariableRegistry vars = new VariableRegistry();
 		final DecompositionSDD sdd = (DecompositionSDD) exampleNormalized();
 		GraphvizDumper.dump((DecompositionSDD) sdd.rotateLeft(), vars, "rotated_norm.gv");
+	}
+
+	@Test
+	public void rotateLeftFromNiceVTree() {
+		final VariableRegistry vars = new VariableRegistry();
+		final DecompositionSDD sdd1 = exampleCnf4(vars);
+		final DecompositionSDD sdd2 = (DecompositionSDD) sdd1.rotateLeft();
+		final DecompositionSDD sdd3 = (DecompositionSDD) sdd2.rotateLeft();
+		final DecompositionSDD sdd4 = (DecompositionSDD) sdd3.rotateLeft();
+		Assert.assertEquals(20, sdd1.size());
+		Assert.assertEquals(24, sdd2.size());
+		Assert.assertEquals(32, sdd3.size());
+		Assert.assertEquals(43, sdd4.size());
 	}
 
 }
