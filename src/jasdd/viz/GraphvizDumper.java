@@ -214,7 +214,7 @@ public class GraphvizDumper {
 	}
 
 	private static String letter(final Variable variable) {
-		return "" + (char) ('A' + variable.getIndex() - 1);
+		return "" + (char) ('A' + variable.getIndex());
 	}
 
 	public static void dump(final VTree vtree, final VariableRegistry vars, final String fileName) throws FileNotFoundException {
