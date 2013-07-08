@@ -20,9 +20,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.Stack;
 
 /**
  * SDD for a (X,Y)-decomposition of a boolean function.
@@ -439,6 +441,52 @@ public class DecompositionSDD extends AbstractSDD implements Rotatable<SDD> {
 			elems[i++] = elem.not();
 		}
 		return JASDD.createDecomposition(getVTree(), elems);
+	}
+
+	public DecompositionSDD swap() {
+		final List<List<Element>> partitions = new ArrayList<List<Element>>();
+		for (final Element element : getElements()) {
+			final List<Element> partition = new ArrayList<Element>(2);
+			partition.add(element);
+			partition.add(JASDD.createElement(JASDD.createFalse(), element.getSub().not()));
+			partitions.add(partition);
+		}
+		final List<Element> newElements = new ArrayList<Element>();
+		crossProduct(partitions, partitions.listIterator(0), new Stack<Element>(), newElements);
+		// TODO: avoid copy
+		final Element[] elems = new Element[newElements.size()];
+		newElements.toArray(elems);
+		return JASDD.createDecomposition(getVTree().swap(), elems);
+	}
+
+	private void crossProduct(final List<List<Element>> partitions, final ListIterator<List<Element>> iter, final Stack<Element> stack, final List<Element> newElements) {
+		if (iter.hasNext()) {
+			final List<Element> partition = iter.next();
+			for (final Element sdd : partition) {
+				stack.push(sdd);
+				crossProduct(partitions, partitions.listIterator(iter.nextIndex()), stack, newElements);
+				stack.pop();
+			}
+		} else {
+			SDD sddSub = JASDD.createTrue();
+			for (final Element part : stack) {
+				if (sddSub.isConsistent()) {
+					sddSub = sddSub.and(part.getSub());
+				} else {
+					break;
+				}
+			}
+			if (sddSub.isConsistent()) {
+				SDD sddPrime = JASDD.createFalse();
+				for (final Element part : stack) {
+					final SDD prime = part.getPrime();
+					if (prime.isConsistent()) {
+						sddPrime = sddPrime.or(prime);
+					}
+				}
+				newElements.add(JASDD.createElement(sddSub, sddPrime));
+			}
+		}
 	}
 
 }

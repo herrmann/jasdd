@@ -641,4 +641,56 @@ public class TestSDD {
 		Assert.assertEquals(43, sdd4.size());
 	}
 
+	@Test
+	public void simpleSwap() {
+		final VariableRegistry vars = new VariableRegistry();
+		final Variable a = vars.register("A");
+		final Variable b = vars.register("B");
+		final InternalVTree vtree = new InternalVTree(a, b);
+		// A xor B
+		final DecompositionSDD sdd = JASDD.createDecomposition(vtree, JASDD.createElement(a, b, false), JASDD.createElement(a, false, b));
+		final DecompositionSDD swapped = sdd.swap();
+		Assert.assertEquals(vtree.swap(), swapped.getVTree());
+		// B xor A
+		final DecompositionSDD swap = JASDD.createDecomposition(vtree.swap(), JASDD.createElement(b, a, false), JASDD.createElement(b, false, a));
+		Assert.assertEquals(swap, swapped);
+	}
+
+	@Test
+	public void darwicheSwap() {
+		final VariableRegistry vars = new VariableRegistry();
+		final Variable a = vars.register("A");
+		final Variable b = vars.register("B");
+		final Variable c = vars.register("C");
+		final Variable d = vars.register("D");
+
+		final InternalVTree vl = new InternalVTree(b, a);
+		final InternalVTree vr = new InternalVTree(d, c);
+		final InternalVTree root = new InternalVTree(vl, vr);
+
+		final Element n0 = JASDD.createElement(b, a);
+		final Element n1 = JASDD.createElement(b, false, false);
+		final Element n2 = JASDD.createElement(b, a, false);
+		final Element n3 = JASDD.createElement(true, c);
+		final Element n4 = JASDD.createElement(b, false, true);
+		final Element n5 = JASDD.createElement(b, false);
+		final Element n6 = JASDD.createElement(d, c);
+		final Element n7 = JASDD.createElement(d, false, false);
+
+		final Element n8 = JASDD.createElement(AbstractSDD.decomposition(vl, n0, n1), true);
+		final Element n9 = JASDD.createElement(AbstractSDD.decomposition(vl, n1, n2), AbstractSDD.decomposition(vr, n3));
+		final Element n10 = JASDD.createElement(AbstractSDD.decomposition(vl, n4, n5), AbstractSDD.decomposition(vr, n6, n7));
+
+		try {
+			final DecompositionSDD sdd = (DecompositionSDD) AbstractSDD.decomposition(root, n8, n9, n10);
+			GraphvizDumper.dump(sdd, vars, "sdd.gv");
+
+			final DecompositionSDD swap = sdd.swap();
+			GraphvizDumper.dump(swap, vars, "swap.gv");
+
+		} catch (final FileNotFoundException e) {
+			e.printStackTrace();
+		}
+	}
+
 }
