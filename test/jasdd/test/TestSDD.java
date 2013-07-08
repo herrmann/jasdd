@@ -671,6 +671,8 @@ public class TestSDD {
 		// B xor A
 		final DecompositionSDD swap = JASDD.createDecomposition(vtree.swap(), JASDD.createElement(b, a, false), JASDD.createElement(b, false, a));
 		Assert.assertEquals(swap, swapped);
+
+		Assert.assertEquals(sdd, swapped.swap());
 	}
 
 	@Test
@@ -682,6 +684,8 @@ public class TestSDD {
 
 			final DecompositionSDD swap = sdd.swap();
 			GraphvizDumper.dump(swap, vars, "swap.gv");
+
+			Assert.assertEquals(sdd, swap.swap());
 
 		} catch (final FileNotFoundException e) {
 			e.printStackTrace();
