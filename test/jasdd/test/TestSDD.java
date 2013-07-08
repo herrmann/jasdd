@@ -207,12 +207,14 @@ public class TestSDD {
 
 	@Test
 	public void normalization() {
-		exampleNormalized();
+		final VariableRegistry vars = new VariableRegistry();
+		exampleNormalized(vars);
 	}
 
 	@Test
 	public void trimming() {
-		((DecompositionSDD) exampleNormalized()).trimmed();
+		final VariableRegistry vars = new VariableRegistry();
+		exampleNormalized(vars).trimmed();
 	}
 
 	@Test
@@ -530,15 +532,15 @@ public class TestSDD {
 		return AbstractSDD.decomposition(root, n5, n6, n7);
 	}
 
-	private SDD exampleNormalized() {
-		final Variable a = new Variable(1);
-		final Variable b = new Variable(2);
-		final Variable c = new Variable(3);
-		final Variable d = new Variable(4);
+	private DecompositionSDD exampleNormalized(final VariableRegistry vars) {
+		final Variable a = vars.register("A");
+		final Variable b = vars.register("B");
+		final Variable c = vars.register("C");
+		final Variable d = vars.register("D");
 
-		final InternalVTree root = (InternalVTree) vtree1();
-		final InternalVTree vl = (InternalVTree) root.getLeft();
-		final InternalVTree vr = (InternalVTree) root.getRight();
+		final InternalVTree vl = new InternalVTree(b, a);
+		final InternalVTree vr = new InternalVTree(d, c);
+		final InternalVTree root = new InternalVTree(vl, vr);
 
 		final Element n0 = JASDD.createElement(b, a);
 		final Element n1 = JASDD.createElement(b, false, false);
@@ -549,11 +551,11 @@ public class TestSDD {
 		final Element n6 = JASDD.createElement(d, c);
 		final Element n7 = JASDD.createElement(d, false, false);
 
-		final Element n8 = JASDD.createElement(AbstractSDD.decomposition(vl, n0, n1), true);
-		final Element n9 = JASDD.createElement(AbstractSDD.decomposition(vl, n1, n2), AbstractSDD.decomposition(vr, n3));
-		final Element n10 = JASDD.createElement(AbstractSDD.decomposition(vl, n4, n5), AbstractSDD.decomposition(vr, n6, n7));
+		final Element n8 = JASDD.createElement(JASDD.createDecomposition(vl, n0, n1), true);
+		final Element n9 = JASDD.createElement(JASDD.createDecomposition(vl, n1, n2), JASDD.createDecomposition(vr, n3));
+		final Element n10 = JASDD.createElement(JASDD.createDecomposition(vl, n4, n5), JASDD.createDecomposition(vr, n6, n7));
 
-		return AbstractSDD.decomposition(root, n8, n9, n10);
+		return JASDD.createDecomposition(root, n8, n9, n10);
 	}
 
 	private SDD exampleBDD() {
@@ -624,7 +626,7 @@ public class TestSDD {
 	@Test
 	public void rotateNormalizedLeft() throws FileNotFoundException {
 		final VariableRegistry vars = new VariableRegistry();
-		final DecompositionSDD sdd = (DecompositionSDD) exampleNormalized();
+		final DecompositionSDD sdd = exampleNormalized(vars);
 		GraphvizDumper.dump((DecompositionSDD) sdd.rotateLeft(), vars, "rotated_norm.gv");
 	}
 
@@ -659,30 +661,8 @@ public class TestSDD {
 	@Test
 	public void darwicheSwap() {
 		final VariableRegistry vars = new VariableRegistry();
-		final Variable a = vars.register("A");
-		final Variable b = vars.register("B");
-		final Variable c = vars.register("C");
-		final Variable d = vars.register("D");
-
-		final InternalVTree vl = new InternalVTree(b, a);
-		final InternalVTree vr = new InternalVTree(d, c);
-		final InternalVTree root = new InternalVTree(vl, vr);
-
-		final Element n0 = JASDD.createElement(b, a);
-		final Element n1 = JASDD.createElement(b, false, false);
-		final Element n2 = JASDD.createElement(b, a, false);
-		final Element n3 = JASDD.createElement(true, c);
-		final Element n4 = JASDD.createElement(b, false, true);
-		final Element n5 = JASDD.createElement(b, false);
-		final Element n6 = JASDD.createElement(d, c);
-		final Element n7 = JASDD.createElement(d, false, false);
-
-		final Element n8 = JASDD.createElement(AbstractSDD.decomposition(vl, n0, n1), true);
-		final Element n9 = JASDD.createElement(AbstractSDD.decomposition(vl, n1, n2), AbstractSDD.decomposition(vr, n3));
-		final Element n10 = JASDD.createElement(AbstractSDD.decomposition(vl, n4, n5), AbstractSDD.decomposition(vr, n6, n7));
-
 		try {
-			final DecompositionSDD sdd = (DecompositionSDD) AbstractSDD.decomposition(root, n8, n9, n10);
+			final DecompositionSDD sdd = exampleNormalized(vars);
 			GraphvizDumper.dump(sdd, vars, "sdd.gv");
 
 			final DecompositionSDD swap = sdd.swap();
