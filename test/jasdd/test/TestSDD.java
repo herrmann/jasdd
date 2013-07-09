@@ -641,6 +641,14 @@ public class TestSDD {
 		Assert.assertEquals(24, sdd2.size());
 		Assert.assertEquals(32, sdd3.size());
 		Assert.assertEquals(43, sdd4.size());
+
+		final DecompositionSDD reconstructed = sdd4.rotateRight().rotateRight().rotateRight();
+		try {
+			GraphvizDumper.dump(reconstructed, vars, "reconstruction.gv");
+		} catch (final FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@Test
@@ -669,6 +677,19 @@ public class TestSDD {
 			GraphvizDumper.dump(swap, vars, "swap.gv");
 
 		} catch (final FileNotFoundException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Test
+	public void rotateRight() {
+		final VariableRegistry vars = new VariableRegistry();
+		final DecompositionSDD sdd = exampleNormalized(vars);
+		final DecompositionSDD right = sdd.rotateRight();
+		try {
+			GraphvizDumper.dump(right, vars, "right.gv");
+		} catch (final FileNotFoundException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

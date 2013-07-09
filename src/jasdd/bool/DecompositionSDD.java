@@ -5,6 +5,7 @@ import jasdd.logic.Disjunction;
 import jasdd.logic.Formula;
 import jasdd.logic.Literal;
 import jasdd.logic.Variable;
+import jasdd.util.Pair;
 import jasdd.visitor.SDDVisitor;
 import jasdd.viz.GraphvizDumper;
 import jasdd.vtree.InternalVTree;
@@ -19,6 +20,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -430,7 +432,61 @@ public class DecompositionSDD extends AbstractSDD implements Rotatable<SDD> {
 		if (!canRotateRight()) {
 			throw new UnsupportedOperationException("SDD cannot be further rotated right");
 		}
-		return null;
+		final List<Pair<SDD, List<Element>>> partitions = new ArrayList<Pair<SDD, List<Element>>>();
+		for (final Element element : getElements()) {
+			// TODO: normalize on demand
+			final DecompositionSDD prime = (DecompositionSDD) element.getPrime();
+			final List<Element> partition = new ArrayList<Element>();
+			for (final Element primeElement : prime.getElements()) {
+				partition.add(primeElement);
+			}
+			partitions.add(Pair.create(element.getSub(), partition));
+		}
+		final List<Element> newElements = new ArrayList<Element>();
+		final InternalVTree newVTree = getVTree().rotateRight();
+		rightCrossProduct(partitions, partitions.listIterator(0), new Stack<Element>(), newElements, newVTree);
+		// TODO: avoid copy
+		final Element[] elems = new Element[newElements.size()];
+		newElements.toArray(elems);
+		return JASDD.createDecomposition(newVTree, elems);
+	}
+
+	private void rightCrossProduct(final List<Pair<SDD, List<Element>>> partitions, final ListIterator<Pair<SDD, List<Element>>> iter, final Stack<Element> stack, final List<Element> newElements, final InternalVTree newVTree) {
+		if (iter.hasNext()) {
+			final Pair<SDD, List<Element>> partition = iter.next();
+			for (final Element element : partition.getSecond()) {
+				stack.push(element);
+				rightCrossProduct(partitions, partitions.listIterator(iter.nextIndex()), stack, newElements, newVTree);
+				stack.pop();
+			}
+		} else {
+			SDD prime = JASDD.createTrue();
+			for (final Element element : stack) {
+				if (prime.isConsistent()) {
+					prime = prime.and(element.getPrime());
+				} else {
+					break;
+				}
+			}
+			if (prime.isConsistent()) {
+				SDD sub = JASDD.createFalse();
+				final Iterator<Pair<SDD, List<Element>>> iterC = partitions.iterator();
+				for (final Element element : stack) {
+					final SDD b = element.getSub();
+					final SDD c = iterC.next().getFirst();
+					final DecompositionSDD normB = normalizeIfTerminal(b, (InternalVTree) newVTree.getRight());
+					final DecompositionSDD normC = normalizeIfTerminal(c, (InternalVTree) newVTree.getRight());
+					final SDD sdd = normB.and(normC);
+					sub = sub.or(sdd);
+				}
+				SDD normA = prime;
+				if (!newVTree.getLeft().isLeaf()) {
+					normA = normalizeIfTerminal(normA, (InternalVTree) newVTree.getLeft());
+				}
+				final Element elem = JASDD.createElement(normA, sub);
+				newElements.add(elem);
+			}
+		}
 	}
 
 	@Override
@@ -452,19 +508,19 @@ public class DecompositionSDD extends AbstractSDD implements Rotatable<SDD> {
 			partitions.add(partition);
 		}
 		final List<Element> newElements = new ArrayList<Element>();
-		crossProduct(partitions, partitions.listIterator(0), new Stack<Element>(), newElements);
+		swapCrossProduct(partitions, partitions.listIterator(0), new Stack<Element>(), newElements);
 		// TODO: avoid copy
 		final Element[] elems = new Element[newElements.size()];
 		newElements.toArray(elems);
 		return JASDD.createDecomposition(getVTree().swap(), elems);
 	}
 
-	private void crossProduct(final List<List<Element>> partitions, final ListIterator<List<Element>> iter, final Stack<Element> stack, final List<Element> newElements) {
+	private void swapCrossProduct(final List<List<Element>> partitions, final ListIterator<List<Element>> iter, final Stack<Element> stack, final List<Element> newElements) {
 		if (iter.hasNext()) {
 			final List<Element> partition = iter.next();
-			for (final Element sdd : partition) {
-				stack.push(sdd);
-				crossProduct(partitions, partitions.listIterator(iter.nextIndex()), stack, newElements);
+			for (final Element element : partition) {
+				stack.push(element);
+				swapCrossProduct(partitions, partitions.listIterator(iter.nextIndex()), stack, newElements);
 				stack.pop();
 			}
 		} else {
