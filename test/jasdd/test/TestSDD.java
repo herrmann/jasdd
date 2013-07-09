@@ -642,9 +642,15 @@ public class TestSDD {
 		Assert.assertEquals(32, sdd3.size());
 		Assert.assertEquals(43, sdd4.size());
 
-		final DecompositionSDD reconstructed = sdd4.rotateRight().rotateRight().rotateRight();
+		final DecompositionSDD sdd5 = sdd4.rotateRight();
+		final DecompositionSDD sdd6 = sdd5.rotateRight();
+		final DecompositionSDD sdd7 = sdd6.rotateRight();
+		Assert.assertEquals(32, sdd5.size());
+		Assert.assertEquals(24, sdd6.size());
+		Assert.assertEquals(20, sdd7.size());
+
 		try {
-			GraphvizDumper.dump(reconstructed, vars, "reconstruction.gv");
+			GraphvizDumper.dump(sdd7, vars, "reconstruction.gv");
 		} catch (final FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
