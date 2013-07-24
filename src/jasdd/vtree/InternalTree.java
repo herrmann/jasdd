@@ -130,6 +130,44 @@ public abstract class InternalTree<T extends Tree> implements Internal<T> {
 	}
 
 	@Override
+	public Tree rotateLeft(final Iterator<Direction> path) {
+		if (path.hasNext()) {
+			final Direction direction = path.next();
+			switch (direction) {
+			case LEFT:
+				return build((VTree) getLeft().rotateLeft(path), getRight());
+			case RIGHT:
+				@SuppressWarnings("unchecked")
+				final T sub = (T) getRight().rotateLeft(path);
+				return build(getLeft(), sub);
+			default:
+				throw new IllegalStateException();
+			}
+		} else {
+			return rotateLeft();
+		}
+	}
+
+	@Override
+	public Tree rotateRight(final Iterator<Direction> path) {
+		if (path.hasNext()) {
+			final Direction direction = path.next();
+			switch (direction) {
+			case LEFT:
+				return build((VTree) getLeft().rotateRight(path), getRight());
+			case RIGHT:
+				@SuppressWarnings("unchecked")
+				final T sub = (T) getRight().rotateRight(path);
+				return build(getLeft(), sub);
+			default:
+				throw new IllegalStateException();
+			}
+		} else {
+			return rotateRight();
+		}
+	}
+
+	@Override
 	public boolean canRotateLeft(final Direction... path) {
 		return canRotateLeft(Arrays.asList(path).iterator());
 	}
@@ -137,16 +175,6 @@ public abstract class InternalTree<T extends Tree> implements Internal<T> {
 	@Override
 	public boolean canRotateRight(final Direction... path) {
 		return canRotateRight(Arrays.asList(path).iterator());
-	}
-
-	@Override
-	public Tree rotateLeft(final Iterator<Direction> path) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public Tree rotateRight(final Iterator<Direction> path) {
-		throw new UnsupportedOperationException();
 	}
 
 	@Override

@@ -401,4 +401,19 @@ public class VTreeTest {
 		Assert.assertEquals("(A,((C,D),(E,B)))", ((InternalVTree) rotated.rotateRight(Rotatable.Direction.RIGHT)).toString(vars));
 	}
 
+	@Test
+	public void algebraicPathRotation() {
+		final VariableRegistry vars = new VariableRegistry();
+		final InternalAVTree root = new InternalAVTree(
+			vars.register("A"),
+			new InternalAVTree(
+				VTreeUtils.buildRightLinear(vars, "B", "C", "D"),
+				new ValueLeaf()
+			)
+		);
+		Assert.assertTrue(root.canRotateLeft(Rotatable.Direction.RIGHT, Rotatable.Direction.LEFT));
+		final InternalAVTree rotated = (InternalAVTree) root.rotateLeft(Rotatable.Direction.RIGHT, Rotatable.Direction.LEFT);
+		Assert.assertEquals("(A,(((B,C),D),VALUE))", rotated.toString(vars));
+	}
+
 }

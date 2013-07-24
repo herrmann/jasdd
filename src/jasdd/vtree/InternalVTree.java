@@ -3,7 +3,6 @@ package jasdd.vtree;
 import jasdd.logic.Variable;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 
@@ -132,40 +131,6 @@ public class InternalVTree extends InternalTree<VTree> implements VTree {
 	@Override
 	public boolean canRotateRight() {
 		return !getLeft().isLeaf();
-	}
-
-	@Override
-	public InternalVTree rotateLeft(final Iterator<Direction> path) {
-		if (path.hasNext()) {
-			final Direction direction = path.next();
-			switch (direction) {
-			case LEFT:
-				return new InternalVTree((VTree) getLeft().rotateLeft(path), getRight());
-			case RIGHT:
-				return new InternalVTree(getLeft(), (VTree) getRight().rotateLeft(path));
-			default:
-				throw new IllegalStateException();
-			}
-		} else {
-			return rotateLeft();
-		}
-	}
-
-	@Override
-	public InternalVTree rotateRight(final Iterator<Direction> path) {
-		if (path.hasNext()) {
-			final Direction direction = path.next();
-			switch (direction) {
-			case LEFT:
-				return new InternalVTree((VTree) getLeft().rotateRight(path), getRight());
-			case RIGHT:
-				return new InternalVTree(getLeft(), (VTree) getRight().rotateRight(path));
-			default:
-				throw new IllegalStateException();
-			}
-		} else {
-			return rotateRight();
-		}
 	}
 
 }
