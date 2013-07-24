@@ -1,5 +1,7 @@
 package jasdd.vtree;
 
+import jasdd.util.CloneableIterator;
+
 import java.util.Iterator;
 
 /**
@@ -40,12 +42,12 @@ public abstract class Leaf implements Tree {
 	}
 
 	@Override
-	public Tree rotateLeft(final Iterator<Direction> path) {
+	public Tree rotateLeft(final CloneableIterator<Direction> path) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public Tree rotateRight(final Iterator<Direction> path) {
+	public Tree rotateRight(final CloneableIterator<Direction> path) {
 		throw new UnsupportedOperationException();
 	}
 

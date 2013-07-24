@@ -1,6 +1,8 @@
 package jasdd.vtree;
 
 import jasdd.logic.VariableRegistry;
+import jasdd.util.CloneableArrayIterator;
+import jasdd.util.CloneableIterator;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -130,7 +132,7 @@ public abstract class InternalTree<T extends Tree> implements Internal<T> {
 	}
 
 	@Override
-	public Tree rotateLeft(final Iterator<Direction> path) {
+	public Tree rotateLeft(final CloneableIterator<Direction> path) {
 		if (path.hasNext()) {
 			final Direction direction = path.next();
 			switch (direction) {
@@ -149,7 +151,7 @@ public abstract class InternalTree<T extends Tree> implements Internal<T> {
 	}
 
 	@Override
-	public Tree rotateRight(final Iterator<Direction> path) {
+	public Tree rotateRight(final CloneableIterator<Direction> path) {
 		if (path.hasNext()) {
 			final Direction direction = path.next();
 			switch (direction) {
@@ -221,12 +223,12 @@ public abstract class InternalTree<T extends Tree> implements Internal<T> {
 
 	@Override
 	public Tree rotateLeft(final Direction... path) {
-		return rotateLeft(Arrays.asList(path).iterator());
+		return rotateLeft(CloneableArrayIterator.build(path));
 	}
 
 	@Override
 	public Tree rotateRight(final Direction... path) {
-		return rotateRight(Arrays.asList(path).iterator());
+		return rotateRight(CloneableArrayIterator.build(path));
 	}
 
 }

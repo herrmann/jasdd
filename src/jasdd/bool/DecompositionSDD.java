@@ -5,6 +5,8 @@ import jasdd.logic.Disjunction;
 import jasdd.logic.Formula;
 import jasdd.logic.Literal;
 import jasdd.logic.Variable;
+import jasdd.util.CloneableArrayIterator;
+import jasdd.util.CloneableIterator;
 import jasdd.util.Pair;
 import jasdd.visitor.SDDVisitor;
 import jasdd.viz.GraphvizDumper;
@@ -578,23 +580,81 @@ public class DecompositionSDD extends AbstractSDD implements Rotatable<SDD> {
 	}
 
 	@Override
-	public boolean canRotateLeft(final Iterator<jasdd.vtree.Rotatable.Direction> path) {
-		return false;
+	public boolean canRotateLeft(final Iterator<Direction> path) {
+		return getVTree().canRotateLeft(path);
 	}
 
 	@Override
-	public boolean canRotateRight(final Iterator<jasdd.vtree.Rotatable.Direction> path) {
-		return false;
+	public boolean canRotateRight(final Iterator<Direction> path) {
+		return getVTree().canRotateRight(path);
 	}
 
 	@Override
-	public SDD rotateLeft(final Iterator<jasdd.vtree.Rotatable.Direction> path) {
-		throw new UnsupportedOperationException();
+	public SDD rotateLeft(final CloneableIterator<Direction> path) {
+		if (path.hasNext()) {
+			final CloneableIterator<Direction> originalPath = path.clone();
+			final Direction direction = path.next();
+			final List<Element> newElements = new ArrayList<Element>();
+			if (Direction.LEFT == direction) {
+				for (final Element element : getElements()) {
+					SDD prime = element.getPrime();
+					if (prime instanceof DecompositionSDD) {
+						prime = ((DecompositionSDD) prime).rotateLeft(path.clone());
+					}
+					final Element elem = JASDD.createElement(prime, element.getSub());
+					newElements.add(elem);
+				}
+			} else if (Direction.RIGHT == direction) {
+				for (final Element element : getElements()) {
+					SDD sub = element.getSub();
+					if (sub instanceof DecompositionSDD) {
+						sub = ((DecompositionSDD) sub).rotateLeft(path.clone());
+					}
+					final Element elem = JASDD.createElement(element.getPrime(), sub);
+					newElements.add(elem);
+				}
+			}
+			// TODO: reuse sub-vtrees
+			final Element[] elems = new Element[newElements.size()];
+			newElements.toArray(elems);
+			return JASDD.createDecomposition((InternalVTree) getVTree().rotateLeft(originalPath), elems);
+		} else {
+			return rotateLeft();
+		}
 	}
 
 	@Override
-	public SDD rotateRight(final Iterator<jasdd.vtree.Rotatable.Direction> path) {
-		throw new UnsupportedOperationException();
+	public SDD rotateRight(final CloneableIterator<Direction> path) {
+		if (path.hasNext()) {
+			final CloneableIterator<Direction> originalPath = path.clone();
+			final Direction direction = path.next();
+			final List<Element> newElements = new ArrayList<Element>();
+			if (Direction.LEFT == direction) {
+				for (final Element element : getElements()) {
+					SDD prime = element.getPrime();
+					if (prime instanceof DecompositionSDD) {
+						prime = ((DecompositionSDD) prime).rotateRight(path.clone());
+					}
+					final Element elem = JASDD.createElement(prime, element.getSub());
+					newElements.add(elem);
+				}
+			} else if (Direction.RIGHT == direction) {
+				for (final Element element : getElements()) {
+					SDD sub = element.getSub();
+					if (sub instanceof DecompositionSDD) {
+						sub = ((DecompositionSDD) sub).rotateRight(path.clone());
+					}
+					final Element elem = JASDD.createElement(element.getPrime(), sub);
+					newElements.add(elem);
+				}
+			}
+			// TODO: reuse sub-vtrees
+			final Element[] elems = new Element[newElements.size()];
+			newElements.toArray(elems);
+			return JASDD.createDecomposition((InternalVTree) getVTree().rotateRight(originalPath), elems);
+		} else {
+			return rotateRight();
+		}
 	}
 
 	@Override
@@ -609,12 +669,12 @@ public class DecompositionSDD extends AbstractSDD implements Rotatable<SDD> {
 
 	@Override
 	public SDD rotateLeft(final Direction... path) {
-		return rotateLeft(Arrays.asList(path).iterator());
+		return rotateLeft(CloneableArrayIterator.build(path));
 	}
 
 	@Override
 	public SDD rotateRight(final Direction... path) {
-		return rotateRight(Arrays.asList(path).iterator());
+		return rotateRight(CloneableArrayIterator.build(path));
 	}
 
 }

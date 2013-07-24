@@ -13,6 +13,7 @@ import jasdd.logic.Variable;
 import jasdd.logic.VariableRegistry;
 import jasdd.viz.GraphvizDumper;
 import jasdd.vtree.InternalVTree;
+import jasdd.vtree.Rotatable;
 import jasdd.vtree.VTree;
 import jasdd.vtree.VTreeUtils;
 import jasdd.vtree.VariableLeaf;
@@ -698,6 +699,16 @@ public class TestSDD {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	@Test
+	public void subRotate() {
+		final VariableRegistry vars = new VariableRegistry();
+		final DecompositionSDD sdd = exampleCnf4(vars);
+		final DecompositionSDD sdd2 = (DecompositionSDD) sdd.rotateLeft(Rotatable.Direction.RIGHT, Rotatable.Direction.RIGHT);
+		final DecompositionSDD sdd3 = (DecompositionSDD) sdd2.rotateRight(Rotatable.Direction.RIGHT, Rotatable.Direction.RIGHT);
+		Assert.assertEquals(sdd.size(), sdd3.size());
+		Assert.assertEquals(sdd.getVTree(), sdd3.getVTree());
 	}
 
 }

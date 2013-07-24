@@ -1,5 +1,7 @@
 package jasdd.vtree;
 
+import jasdd.util.CloneableIterator;
+
 import java.util.Iterator;
 
 /**
@@ -33,8 +35,8 @@ public interface Rotatable<T> {
 
 	T rotateRight(Direction... path);
 
-	T rotateLeft(Iterator<Direction> path);
+	T rotateLeft(CloneableIterator<Direction> path);
 
-	T rotateRight(Iterator<Direction> path);
+	T rotateRight(CloneableIterator<Direction> path);
 
 }
