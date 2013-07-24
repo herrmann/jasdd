@@ -396,6 +396,9 @@ public class VTreeTest {
 			)
 		);
 		Assert.assertTrue(root.canRotateLeft(Rotatable.Direction.RIGHT, Rotatable.Direction.LEFT));
+		final InternalVTree rotated = (InternalVTree) root.rotateLeft(Rotatable.Direction.RIGHT, Rotatable.Direction.LEFT);
+		Assert.assertEquals("(A,(((C,D),E),B))", rotated.toString(vars));
+		Assert.assertEquals("(A,((C,D),(E,B)))", ((InternalVTree) rotated.rotateRight(Rotatable.Direction.RIGHT)).toString(vars));
 	}
 
 }
