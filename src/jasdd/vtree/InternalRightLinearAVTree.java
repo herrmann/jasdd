@@ -19,6 +19,11 @@ public class InternalRightLinearAVTree extends InternalTree<RightLinearAVTree> i
 	}
 
 	@Override
+	public InternalRightLinearAVTree build(final VTree left, final RightLinearAVTree right) {
+		return new InternalRightLinearAVTree(left, right);
+	}
+
+	@Override
 	public VariableLeaf getLeft() {
 		return (VariableLeaf) super.getLeft();
 	}

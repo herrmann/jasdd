@@ -43,6 +43,11 @@ public class InternalVTree extends InternalTree<VTree> implements VTree {
 	}
 
 	@Override
+	public InternalVTree build(final VTree left, final VTree right) {
+		return new InternalVTree(left, right);
+	}
+
+	@Override
 	public boolean isLeaf() {
 		return false;
 	}
@@ -84,7 +89,7 @@ public class InternalVTree extends InternalTree<VTree> implements VTree {
 	 * @return an internal node with swapped left and right sub-vtrees
 	 */
 	public InternalVTree swap() {
-		return new InternalVTree(getRight(), getLeft());
+		return build(getRight(), getLeft());
 	}
 
 	/**
@@ -99,7 +104,7 @@ public class InternalVTree extends InternalTree<VTree> implements VTree {
 			throw new IllegalArgumentException("The given vtree cannot be rotated further to the right.");
 		} else {
 			final InternalVTree left = (InternalVTree) getLeft();
-			return new InternalVTree(left.getLeft(), new InternalVTree(left.getRight(), getRight()));
+			return build(left.getLeft(), build(left.getRight(), getRight()));
 		}
 	}
 
@@ -115,7 +120,7 @@ public class InternalVTree extends InternalTree<VTree> implements VTree {
 			throw new IllegalArgumentException("The given vtree cannot be rotated further to the right.");
 		} else {
 			final InternalVTree right = (InternalVTree) getRight();
-			return new InternalVTree(new InternalVTree(getLeft(), right.getLeft()), right.getRight());
+			return build(build(getLeft(), right.getLeft()), right.getRight());
 		}
 	}
 

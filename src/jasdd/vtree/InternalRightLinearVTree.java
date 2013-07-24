@@ -19,6 +19,11 @@ public class InternalRightLinearVTree extends InternalTree<RightLinearVTree> imp
 	}
 
 	@Override
+	public InternalRightLinearVTree build(final VTree left, final RightLinearVTree right) {
+		return new InternalRightLinearVTree(left, right);
+	}
+
+	@Override
 	public VariableLeaf getLeft() {
 		return null;
 	}

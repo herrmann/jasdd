@@ -9,6 +9,8 @@ import jasdd.logic.VariableRegistry;
  */
 public interface Internal<T> extends Tree {
 
+	T build(VTree left, T right);
+
 	VTree getLeft();
 
 	T getRight();

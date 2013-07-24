@@ -29,6 +29,11 @@ public class InternalAVTree extends InternalTree<AVTree> implements AVTree {
 	}
 
 	@Override
+	public InternalAVTree build(final VTree left, final AVTree right) {
+		return new InternalAVTree(left, right);
+	}
+
+	@Override
 	public boolean isLeaf() {
 		return false;
 	}
@@ -60,7 +65,7 @@ public class InternalAVTree extends InternalTree<AVTree> implements AVTree {
 			throw new IllegalArgumentException("The given vtree cannot be rotated further to the right.");
 		} else {
 			final InternalVTree left = (InternalVTree) getLeft();
-			return new InternalAVTree(left.getLeft(), new InternalAVTree(left.getRight(), getRight()));
+			return build(left.getLeft(), build(left.getRight(), getRight()));
 		}
 	}
 
@@ -76,7 +81,7 @@ public class InternalAVTree extends InternalTree<AVTree> implements AVTree {
 			throw new IllegalArgumentException("The given vtree cannot be rotated further to the right.");
 		} else {
 			final InternalAVTree right = (InternalAVTree) getRight();
-			return new InternalAVTree(new InternalVTree(getLeft(), right.getLeft()), right.getRight());
+			return build(new InternalVTree(getLeft(), right.getLeft()), right.getRight());
 		}
 	}
 
