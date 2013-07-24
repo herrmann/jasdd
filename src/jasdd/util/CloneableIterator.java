@@ -10,4 +10,7 @@ import java.util.Iterator;
  * @param <E> type of elements
  */
 public interface CloneableIterator<E> extends Iterator<E>, Cloneable {
+
+	CloneableIterator<E> clone();
+
 }
