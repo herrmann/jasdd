@@ -91,46 +91,4 @@ public class InternalVTree extends InternalTree<VTree> implements VTree {
 		return build(getRight(), getLeft());
 	}
 
-	/**
-	 * Creates a new internal node corresponding to the structure of the
-	 * original vtree after rotating the root node right and sharing sub-vtrees.
-	 *
-	 * @return an internal node with the vtree rotated right
-	 */
-	@Override
-	public InternalVTree rotateRight() {
-		if (!canRotateRight()) {
-			throw new IllegalArgumentException("The given vtree cannot be rotated further to the right.");
-		} else {
-			final InternalVTree left = (InternalVTree) getLeft();
-			return build(left.getLeft(), build(left.getRight(), getRight()));
-		}
-	}
-
-	/**
-	 * Creates a new internal node corresponding to the structure of the
-	 * original vtree after rotating the root node left and sharing sub-vtrees.
-	 *
-	 * @return an internal node with the vtree rotated left
-	 */
-	@Override
-	public InternalVTree rotateLeft() {
-		if (!canRotateLeft()) {
-			throw new IllegalArgumentException("The given vtree cannot be rotated further to the right.");
-		} else {
-			final InternalVTree right = (InternalVTree) getRight();
-			return build(build(getLeft(), right.getLeft()), right.getRight());
-		}
-	}
-
-	@Override
-	public boolean canRotateLeft() {
-		return !getRight().isLeaf();
-	}
-
-	@Override
-	public boolean canRotateRight() {
-		return !getLeft().isLeaf();
-	}
-
 }

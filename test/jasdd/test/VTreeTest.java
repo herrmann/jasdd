@@ -7,9 +7,11 @@ import jasdd.rddlsim.ASDDConverter.VariableAssignment;
 import jasdd.vtree.DissectionIterator;
 import jasdd.vtree.InternalAVTree;
 import jasdd.vtree.InternalRightLinearAVTree;
+import jasdd.vtree.InternalTree;
 import jasdd.vtree.InternalVTree;
 import jasdd.vtree.Rotatable;
 import jasdd.vtree.Tree;
+import jasdd.vtree.VTree;
 import jasdd.vtree.VTreeUtils;
 import jasdd.vtree.ValueLeaf;
 import jasdd.vtree.VariableLeaf;
@@ -287,7 +289,7 @@ public class VTreeTest {
 	public void rotateLeft() {
 		final VariableRegistry vars = new VariableRegistry();
 		final InternalVTree vtree = (InternalVTree) VTreeUtils.buildRightLinear(vars, "A", "B", "C");
-		final InternalVTree rotated = vtree.rotateLeft();
+		final InternalTree<VTree> rotated = vtree.rotateLeft();
 		Assert.assertEquals("((A,B),C)", rotated.toString(vars));
 	}
 
@@ -302,7 +304,7 @@ public class VTreeTest {
 	public void rotateRight() {
 		final VariableRegistry vars = new VariableRegistry();
 		final InternalVTree vtree = (InternalVTree) VTreeUtils.buildLeftLinear(vars, "A", "B", "C");
-		final InternalVTree rotated = vtree.rotateRight();
+		final InternalTree<VTree> rotated = vtree.rotateRight();
 		Assert.assertEquals("(A,(B,C))", rotated.toString(vars));
 	}
 

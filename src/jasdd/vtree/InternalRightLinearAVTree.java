@@ -61,13 +61,13 @@ public class InternalRightLinearAVTree extends InternalTree<RightLinearAVTree> i
 	}
 
 	@Override
-	public Tree rotateLeft() {
+	public InternalTree<RightLinearAVTree> rotateLeft() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Tree rotateRight() {
+	public InternalTree<RightLinearAVTree> rotateRight() {
 		// TODO Auto-generated method stub
 		return null;
 	}

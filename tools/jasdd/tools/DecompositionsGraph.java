@@ -5,6 +5,7 @@ import jasdd.bool.SDD;
 import jasdd.logic.Variable;
 import jasdd.logic.VariableRegistry;
 import jasdd.util.Pair;
+import jasdd.vtree.InternalTree;
 import jasdd.vtree.InternalVTree;
 import jasdd.vtree.VTree;
 
@@ -68,17 +69,17 @@ public class DecompositionsGraph {
 			sizes.put(vtree, size);
 			outNodes.println(vtree.toString(vars) + " " + size);
 			if (vtree.canRotateLeft()) {
-				final InternalVTree left = vtree.rotateLeft();
+				final InternalTree<VTree> left = vtree.rotateLeft();
 				if (!sizes.containsKey(left)) {
 					queue.push((DecompositionSDD) sdd.rotateLeft());
-					addEdge(vtree, left, Operation.RL);
+					addEdge(vtree, (InternalVTree) left, Operation.RL);
 				}
 			}
 			if (vtree.canRotateRight()) {
-				final InternalVTree right = vtree.rotateRight();
+				final InternalTree<VTree> right = vtree.rotateRight();
 				if (!sizes.containsKey(right)) {
 					queue.push(sdd.rotateRight());
-					addEdge(vtree, right, Operation.RR);
+					addEdge(vtree, (InternalVTree) right, Operation.RR);
 				}
 			}
 			if (!sizes.containsKey(vtree.swap())) {

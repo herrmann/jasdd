@@ -8,6 +8,7 @@ import jasdd.logic.Variable;
 import jasdd.util.Pair;
 import jasdd.visitor.SDDVisitor;
 import jasdd.viz.GraphvizDumper;
+import jasdd.vtree.InternalTree;
 import jasdd.vtree.InternalVTree;
 import jasdd.vtree.Rotatable;
 import jasdd.vtree.VTree;
@@ -350,7 +351,7 @@ public class DecompositionSDD extends AbstractSDD implements Rotatable<SDD> {
 		}
 
 		// Rotated vtree references
-		final InternalVTree rotatedVTree = getVTree().rotateLeft();
+		final InternalTree<VTree> rotatedVTree = getVTree().rotateLeft();
 		final InternalVTree leftVTree = (InternalVTree) rotatedVTree.getLeft();
 
 		// Accumulated partition for subs in the rotated decomposition
@@ -365,8 +366,8 @@ public class DecompositionSDD extends AbstractSDD implements Rotatable<SDD> {
 				final SDD subB = elemB.getSub();
 				// Normalize for rotated vtree before conjunction
 				// TODO: avoid construction of negative partition
-				final DecompositionSDD a = nestDecomposition(rotatedVTree, primeA);
-				final DecompositionSDD b = nestDecomposition(rotatedVTree, primeB);
+				final DecompositionSDD a = nestDecomposition((InternalVTree) rotatedVTree, primeA);
+				final DecompositionSDD b = nestDecomposition((InternalVTree) rotatedVTree, primeB);
 				final SDD prime = a.and(b);
 				if (prime.isConsistent()) {
 					for (final Element e : ((DecompositionSDD) prime).getElements()) {
@@ -401,7 +402,7 @@ public class DecompositionSDD extends AbstractSDD implements Rotatable<SDD> {
 				final Element elem = JASDD.createElement(prime, sub);
 				elems[i++] = elem;
 			}
-			final DecompositionSDD sdd = JASDD.createDecomposition(rotatedVTree, elems);
+			final DecompositionSDD sdd = JASDD.createDecomposition((InternalVTree) rotatedVTree, elems);
 			return sdd;
 		}
 	}
@@ -444,13 +445,13 @@ public class DecompositionSDD extends AbstractSDD implements Rotatable<SDD> {
 			partitions.add(Pair.create(element.getSub(), partition));
 		}
 		final List<Element> newElements = new ArrayList<Element>();
-		final InternalVTree newVTree = getVTree().rotateRight();
-		rightCrossProduct(partitions, partitions.listIterator(0), new Stack<Element>(), newElements, newVTree);
+		final InternalTree<VTree> newVTree = getVTree().rotateRight();
+		rightCrossProduct(partitions, partitions.listIterator(0), new Stack<Element>(), newElements, (InternalVTree) newVTree);
 		// TODO: avoid copy
 		final List<Element> compressed = compress(newElements);
 		final Element[] elems = new Element[compressed.size()];
 		compressed.toArray(elems);
-		return JASDD.createDecomposition(newVTree, elems);
+		return JASDD.createDecomposition((InternalVTree) newVTree, elems);
 	}
 
 	/**

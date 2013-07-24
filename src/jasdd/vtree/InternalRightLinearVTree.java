@@ -80,13 +80,13 @@ public class InternalRightLinearVTree extends InternalTree<RightLinearVTree> imp
 	}
 
 	@Override
-	public Tree rotateLeft() {
+	public InternalTree<RightLinearVTree> rotateLeft() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Tree rotateRight() {
+	public InternalTree<RightLinearVTree> rotateRight() {
 		// TODO Auto-generated method stub
 		return null;
 	}
