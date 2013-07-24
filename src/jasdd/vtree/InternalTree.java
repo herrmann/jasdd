@@ -2,6 +2,9 @@ package jasdd.vtree;
 
 import jasdd.logic.VariableRegistry;
 
+import java.util.Arrays;
+import java.util.Iterator;
+
 /**
  * Helper base class for internal vtree nodes.
  *
@@ -96,6 +99,64 @@ public abstract class InternalTree<T extends Tree> implements Internal<T> {
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public boolean canRotateLeft(final Iterator<Direction> path) {
+		if (path.hasNext()) {
+			final Direction direction = path.next();
+			switch (direction) {
+			case LEFT:
+				return getLeft().canRotateLeft(path);
+			case RIGHT:
+				return getRight().canRotateLeft(path);
+			}
+		}
+		return canRotateLeft();
+	}
+
+	@Override
+	public boolean canRotateRight(final Iterator<Direction> path) {
+		if (path.hasNext()) {
+			final Direction direction = path.next();
+			switch (direction) {
+			case LEFT:
+				return getLeft().canRotateRight(path);
+			case RIGHT:
+				return getRight().canRotateRight(path);
+			}
+		}
+		return canRotateRight();
+	}
+
+	@Override
+	public boolean canRotateLeft(final Direction... path) {
+		return canRotateLeft(Arrays.asList(path).iterator());
+	}
+
+	@Override
+	public boolean canRotateRight(final Direction... path) {
+		return canRotateRight(Arrays.asList(path).iterator());
+	}
+
+	@Override
+	public Tree rotateLeft(final Iterator<Direction> path) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Tree rotateRight(final Iterator<Direction> path) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Tree rotateLeft(final Direction... path) {
+		return rotateLeft(Arrays.asList(path).iterator());
+	}
+
+	@Override
+	public Tree rotateRight(final Direction... path) {
+		return rotateRight(Arrays.asList(path).iterator());
 	}
 
 }

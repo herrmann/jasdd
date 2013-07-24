@@ -385,4 +385,17 @@ public class VTreeTest {
 		Assert.assertTrue(tree.canRotateRight());
 	}
 
+	@Test
+	public void pathRotation() {
+		final VariableRegistry vars = new VariableRegistry();
+		final InternalVTree root = new InternalVTree(
+			vars.register("A"),
+			new InternalVTree(
+				VTreeUtils.buildRightLinear(vars, "C", "D", "E"),
+				vars.register("B")
+			)
+		);
+		Assert.assertTrue(root.canRotateLeft(Rotatable.Direction.RIGHT, Rotatable.Direction.LEFT));
+	}
+
 }

@@ -16,6 +16,7 @@ import jasdd.vtree.VariableLeaf;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -573,6 +574,46 @@ public class DecompositionSDD extends AbstractSDD implements Rotatable<SDD> {
 				newElements.add(JASDD.createElement(sddSub, sddPrime));
 			}
 		}
+	}
+
+	@Override
+	public boolean canRotateLeft(final Iterator<jasdd.vtree.Rotatable.Direction> path) {
+		return false;
+	}
+
+	@Override
+	public boolean canRotateRight(final Iterator<jasdd.vtree.Rotatable.Direction> path) {
+		return false;
+	}
+
+	@Override
+	public SDD rotateLeft(final Iterator<jasdd.vtree.Rotatable.Direction> path) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public SDD rotateRight(final Iterator<jasdd.vtree.Rotatable.Direction> path) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public boolean canRotateLeft(final Direction... path) {
+		return canRotateLeft(Arrays.asList(path).iterator());
+	}
+
+	@Override
+	public boolean canRotateRight(final Direction... path) {
+		return canRotateRight(Arrays.asList(path).iterator());
+	}
+
+	@Override
+	public SDD rotateLeft(final Direction... path) {
+		return rotateLeft(Arrays.asList(path).iterator());
+	}
+
+	@Override
+	public SDD rotateRight(final Direction... path) {
+		return rotateRight(Arrays.asList(path).iterator());
 	}
 
 }
