@@ -231,4 +231,13 @@ public abstract class InternalTree<T extends Tree> implements Internal<T> {
 		return rotateRight(CloneableArrayIterator.build(path));
 	}
 
+	public Tree rotate(final Direction operation, final CloneableIterator<Direction> path) {
+		if (Direction.LEFT == operation) {
+			return rotateLeft(path);
+		} else if (Direction.RIGHT == operation) {
+			return rotateRight(path);
+		}
+		throw new IllegalStateException();
+	}
+
 }

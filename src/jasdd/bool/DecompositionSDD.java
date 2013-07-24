@@ -589,8 +589,7 @@ public class DecompositionSDD extends AbstractSDD implements Rotatable<SDD> {
 		return getVTree().canRotateRight(path);
 	}
 
-	@Override
-	public SDD rotateLeft(final CloneableIterator<Direction> path) {
+	public SDD rotate(final Direction operation, final CloneableIterator<Direction> path) {
 		if (path.hasNext()) {
 			final CloneableIterator<Direction> originalPath = path.clone();
 			final Direction direction = path.next();
@@ -599,7 +598,7 @@ public class DecompositionSDD extends AbstractSDD implements Rotatable<SDD> {
 				for (final Element element : getElements()) {
 					SDD prime = element.getPrime();
 					if (prime instanceof DecompositionSDD) {
-						prime = ((DecompositionSDD) prime).rotateLeft(path.clone());
+						prime = ((DecompositionSDD) prime).rotate(operation, path.clone());
 					}
 					final Element elem = JASDD.createElement(prime, element.getSub());
 					newElements.add(elem);
@@ -608,7 +607,7 @@ public class DecompositionSDD extends AbstractSDD implements Rotatable<SDD> {
 				for (final Element element : getElements()) {
 					SDD sub = element.getSub();
 					if (sub instanceof DecompositionSDD) {
-						sub = ((DecompositionSDD) sub).rotateLeft(path.clone());
+						sub = ((DecompositionSDD) sub).rotate(operation, path.clone());
 					}
 					final Element elem = JASDD.createElement(element.getPrime(), sub);
 					newElements.add(elem);
@@ -617,44 +616,26 @@ public class DecompositionSDD extends AbstractSDD implements Rotatable<SDD> {
 			// TODO: reuse sub-vtrees
 			final Element[] elems = new Element[newElements.size()];
 			newElements.toArray(elems);
-			return JASDD.createDecomposition((InternalVTree) getVTree().rotateLeft(originalPath), elems);
+			final InternalVTree newVTree = (InternalVTree) getVTree().rotate(operation, originalPath);
+			return JASDD.createDecomposition(newVTree, elems);
 		} else {
-			return rotateLeft();
+			if (Direction.LEFT == operation) {
+				return rotateLeft();
+			} else if (Direction.RIGHT == operation) {
+				return rotateRight();
+			}
 		}
+		throw new IllegalStateException();
+	}
+
+	@Override
+	public SDD rotateLeft(final CloneableIterator<Direction> path) {
+		return rotate(Direction.LEFT, path);
 	}
 
 	@Override
 	public SDD rotateRight(final CloneableIterator<Direction> path) {
-		if (path.hasNext()) {
-			final CloneableIterator<Direction> originalPath = path.clone();
-			final Direction direction = path.next();
-			final List<Element> newElements = new ArrayList<Element>();
-			if (Direction.LEFT == direction) {
-				for (final Element element : getElements()) {
-					SDD prime = element.getPrime();
-					if (prime instanceof DecompositionSDD) {
-						prime = ((DecompositionSDD) prime).rotateRight(path.clone());
-					}
-					final Element elem = JASDD.createElement(prime, element.getSub());
-					newElements.add(elem);
-				}
-			} else if (Direction.RIGHT == direction) {
-				for (final Element element : getElements()) {
-					SDD sub = element.getSub();
-					if (sub instanceof DecompositionSDD) {
-						sub = ((DecompositionSDD) sub).rotateRight(path.clone());
-					}
-					final Element elem = JASDD.createElement(element.getPrime(), sub);
-					newElements.add(elem);
-				}
-			}
-			// TODO: reuse sub-vtrees
-			final Element[] elems = new Element[newElements.size()];
-			newElements.toArray(elems);
-			return JASDD.createDecomposition((InternalVTree) getVTree().rotateRight(originalPath), elems);
-		} else {
-			return rotateRight();
-		}
+		return rotate(Direction.RIGHT, path);
 	}
 
 	@Override
