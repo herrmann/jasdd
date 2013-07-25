@@ -11,10 +11,6 @@ import java.util.Iterator;
  */
 public interface Rotatable<T> {
 
-	enum Direction {
-		LEFT, RIGHT
-	};
-
 	boolean canRotateLeft();
 
 	boolean canRotateRight();

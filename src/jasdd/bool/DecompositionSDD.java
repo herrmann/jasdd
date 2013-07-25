@@ -10,6 +10,7 @@ import jasdd.util.CloneableIterator;
 import jasdd.util.Pair;
 import jasdd.visitor.SDDVisitor;
 import jasdd.viz.GraphvizDumper;
+import jasdd.vtree.Direction;
 import jasdd.vtree.InternalTree;
 import jasdd.vtree.InternalVTree;
 import jasdd.vtree.Rotatable;

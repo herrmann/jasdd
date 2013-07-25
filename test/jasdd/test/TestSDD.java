@@ -12,8 +12,8 @@ import jasdd.logic.Literal;
 import jasdd.logic.Variable;
 import jasdd.logic.VariableRegistry;
 import jasdd.viz.GraphvizDumper;
+import jasdd.vtree.Direction;
 import jasdd.vtree.InternalVTree;
-import jasdd.vtree.Rotatable;
 import jasdd.vtree.VTree;
 import jasdd.vtree.VTreeUtils;
 import jasdd.vtree.VariableLeaf;
@@ -705,8 +705,8 @@ public class TestSDD {
 	public void subRotate() {
 		final VariableRegistry vars = new VariableRegistry();
 		final DecompositionSDD sdd = exampleCnf4(vars);
-		final DecompositionSDD sdd2 = (DecompositionSDD) sdd.rotateLeft(Rotatable.Direction.RIGHT, Rotatable.Direction.RIGHT);
-		final DecompositionSDD sdd3 = (DecompositionSDD) sdd2.rotateRight(Rotatable.Direction.RIGHT, Rotatable.Direction.RIGHT);
+		final DecompositionSDD sdd2 = (DecompositionSDD) sdd.rotateLeft(Direction.RIGHT, Direction.RIGHT);
+		final DecompositionSDD sdd3 = (DecompositionSDD) sdd2.rotateRight(Direction.RIGHT, Direction.RIGHT);
 		Assert.assertEquals(sdd.size(), sdd3.size());
 		Assert.assertEquals(sdd.getVTree(), sdd3.getVTree());
 	}
@@ -715,8 +715,8 @@ public class TestSDD {
 	public void subSwap() {
 		final VariableRegistry vars = new VariableRegistry();
 		final DecompositionSDD sdd = exampleCnf4(vars);
-		final DecompositionSDD sdd2 = (DecompositionSDD) sdd.swap(Rotatable.Direction.RIGHT, Rotatable.Direction.RIGHT);
-		final DecompositionSDD sdd3 = (DecompositionSDD) sdd2.swap(Rotatable.Direction.RIGHT, Rotatable.Direction.RIGHT);
+		final DecompositionSDD sdd2 = (DecompositionSDD) sdd.swap(Direction.RIGHT, Direction.RIGHT);
+		final DecompositionSDD sdd3 = (DecompositionSDD) sdd2.swap(Direction.RIGHT, Direction.RIGHT);
 		Assert.assertEquals(sdd.size(), sdd3.size());
 		Assert.assertEquals(sdd.getVTree(), sdd3.getVTree());
 	}
@@ -725,9 +725,9 @@ public class TestSDD {
 	public void zigZag() {
 		final VariableRegistry vars = new VariableRegistry();
 		final DecompositionSDD sdd = exampleCnf4(vars);
-		final DecompositionSDD sdd2 = (DecompositionSDD) sdd.swap(Rotatable.Direction.RIGHT);
-		final DecompositionSDD sdd3 = (DecompositionSDD) sdd2.rotateRight(Rotatable.Direction.RIGHT, Rotatable.Direction.LEFT);
-		final DecompositionSDD sdd4 = (DecompositionSDD) sdd3.swap(Rotatable.Direction.RIGHT, Rotatable.Direction.LEFT, Rotatable.Direction.RIGHT);
+		final DecompositionSDD sdd2 = (DecompositionSDD) sdd.swap(Direction.RIGHT);
+		final DecompositionSDD sdd3 = (DecompositionSDD) sdd2.rotateRight(Direction.RIGHT, Direction.LEFT);
+		final DecompositionSDD sdd4 = (DecompositionSDD) sdd3.swap(Direction.RIGHT, Direction.LEFT, Direction.RIGHT);
 		Assert.assertEquals(33, sdd4.size());
 	}
 

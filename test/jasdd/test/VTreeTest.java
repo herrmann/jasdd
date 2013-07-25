@@ -4,6 +4,7 @@ import jasdd.logic.Variable;
 import jasdd.logic.VariableRegistry;
 import jasdd.rddlsim.ASDDConverter;
 import jasdd.rddlsim.ASDDConverter.VariableAssignment;
+import jasdd.vtree.Direction;
 import jasdd.vtree.DissectionIterator;
 import jasdd.vtree.InternalAVTree;
 import jasdd.vtree.InternalRightLinearAVTree;
@@ -397,10 +398,10 @@ public class VTreeTest {
 				vars.register("B")
 			)
 		);
-		Assert.assertTrue(root.canRotateLeft(Rotatable.Direction.RIGHT, Rotatable.Direction.LEFT));
-		final InternalVTree rotated = (InternalVTree) root.rotateLeft(Rotatable.Direction.RIGHT, Rotatable.Direction.LEFT);
+		Assert.assertTrue(root.canRotateLeft(Direction.RIGHT, Direction.LEFT));
+		final InternalVTree rotated = (InternalVTree) root.rotateLeft(Direction.RIGHT, Direction.LEFT);
 		Assert.assertEquals("(A,(((C,D),E),B))", rotated.toString(vars));
-		Assert.assertEquals("(A,((C,D),(E,B)))", ((InternalVTree) rotated.rotateRight(Rotatable.Direction.RIGHT)).toString(vars));
+		Assert.assertEquals("(A,((C,D),(E,B)))", ((InternalVTree) rotated.rotateRight(Direction.RIGHT)).toString(vars));
 	}
 
 	@Test
@@ -413,8 +414,8 @@ public class VTreeTest {
 				new ValueLeaf()
 			)
 		);
-		Assert.assertTrue(root.canRotateLeft(Rotatable.Direction.RIGHT, Rotatable.Direction.LEFT));
-		final InternalAVTree rotated = (InternalAVTree) root.rotateLeft(Rotatable.Direction.RIGHT, Rotatable.Direction.LEFT);
+		Assert.assertTrue(root.canRotateLeft(Direction.RIGHT, Direction.LEFT));
+		final InternalAVTree rotated = (InternalAVTree) root.rotateLeft(Direction.RIGHT, Direction.LEFT);
 		Assert.assertEquals("(A,(((B,C),D),VALUE))", rotated.toString(vars));
 	}
 
