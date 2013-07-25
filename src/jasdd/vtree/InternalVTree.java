@@ -1,7 +1,10 @@
 package jasdd.vtree;
 
 import jasdd.logic.Variable;
+import jasdd.util.CloneableArrayIterator;
+import jasdd.util.CloneableIterator;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -12,7 +15,7 @@ import java.util.Set;
  *
  * @author Ricardo Herrmann
  */
-public class InternalVTree extends InternalTree<VTree> implements VTree {
+public class InternalVTree extends InternalTree<VTree> implements VTree, Swappable<InternalVTree> {
 
 	public InternalVTree(final VTree left, final VTree right) {
 		super(left, right);
@@ -88,6 +91,7 @@ public class InternalVTree extends InternalTree<VTree> implements VTree {
 	 *
 	 * @return an internal node with swapped left and right sub-vtrees
 	 */
+	@Override
 	public InternalVTree swap() {
 		return build(getRight(), getLeft());
 	}
@@ -111,7 +115,8 @@ public class InternalVTree extends InternalTree<VTree> implements VTree {
 
 	private static final String INVALID_PATH_FOR_SWAPPING = "Invalid path for swapping";
 
-	public InternalVTree swap(final Iterator<Direction> path) {
+	@Override
+	public InternalVTree swap(final CloneableIterator<Direction> path) {
 		if (path.hasNext()) {
 			final Direction direction = path.next();
 			if (Direction.LEFT == direction) {
@@ -134,6 +139,21 @@ public class InternalVTree extends InternalTree<VTree> implements VTree {
 		} else {
 			return swap();
 		}
+	}
+
+	@Override
+	public boolean canSwap() {
+		return true;
+	}
+
+	@Override
+	public boolean canSwap(final Direction... path) {
+		return canSwap(Arrays.asList(path).iterator());
+	}
+
+	@Override
+	public InternalVTree swap(final Direction... path) {
+		return swap(CloneableArrayIterator.build(path));
 	}
 
 }

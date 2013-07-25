@@ -14,6 +14,7 @@ import jasdd.vtree.Direction;
 import jasdd.vtree.InternalTree;
 import jasdd.vtree.InternalVTree;
 import jasdd.vtree.Rotatable;
+import jasdd.vtree.Swappable;
 import jasdd.vtree.VTree;
 import jasdd.vtree.VariableLeaf;
 
@@ -38,7 +39,7 @@ import java.util.Stack;
  *
  * @author Ricardo Herrmann
  */
-public class DecompositionSDD extends AbstractSDD implements Rotatable<SDD> {
+public class DecompositionSDD extends AbstractSDD implements Rotatable<SDD>, Swappable<SDD> {
 
 	private InternalVTree vtree;
 	private final List<Element> elements = new ArrayList<Element>();
@@ -534,6 +535,7 @@ public class DecompositionSDD extends AbstractSDD implements Rotatable<SDD> {
 		return JASDD.createDecomposition(getVTree(), elems);
 	}
 
+	@Override
 	public DecompositionSDD swap() {
 		final List<List<Element>> partitions = new ArrayList<List<Element>>();
 		for (final Element element : getElements()) {
@@ -594,10 +596,12 @@ public class DecompositionSDD extends AbstractSDD implements Rotatable<SDD> {
 		return getVTree().canSwap(path);
 	}
 
+	@Override
 	public SDD swap(final Direction... path) {
 		return swap(CloneableArrayIterator.build(path));
 	}
 
+	@Override
 	public SDD swap(final CloneableIterator<Direction> path) {
 		if (path.hasNext()) {
 			final CloneableIterator<Direction> originalPath = path.clone();
@@ -630,6 +634,21 @@ public class DecompositionSDD extends AbstractSDD implements Rotatable<SDD> {
 		} else {
 			return swap();
 		}
+	}
+
+	@Override
+	public boolean canSwap() {
+		return true;
+	}
+
+	@Override
+	public boolean canSwap(final Direction... path) {
+		return getVTree().canSwap(path);
+	}
+
+	@Override
+	public boolean canSwap(final Iterator<Direction> path) {
+		return getVTree().canSwap(path);
 	}
 
 	public SDD rotate(final Direction operation, final CloneableIterator<Direction> path) {
