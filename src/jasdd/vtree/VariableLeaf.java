@@ -4,6 +4,7 @@ import jasdd.logic.Variable;
 import jasdd.logic.VariableRegistry;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 
@@ -106,6 +107,11 @@ public class VariableLeaf extends Leaf implements VTree, RightLinearVTree {
 	@Override
 	public StringBuilder toStringBuilder(final VariableRegistry vars) {
 		return new StringBuilder(vars.name(variable));
+	}
+
+	@Override
+	public boolean canSwap(final Iterator<Direction> path) {
+		return false;
 	}
 
 }

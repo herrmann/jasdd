@@ -3,6 +3,7 @@ package jasdd.vtree;
 import jasdd.logic.Variable;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 
@@ -89,6 +90,50 @@ public class InternalVTree extends InternalTree<VTree> implements VTree {
 	 */
 	public InternalVTree swap() {
 		return build(getRight(), getLeft());
+	}
+
+	@Override
+	public boolean canSwap(final Iterator<Direction> path) {
+		if (path.hasNext()) {
+			final Direction direction = path.next();
+			switch (direction) {
+			case LEFT:
+				return getLeft().canSwap(path);
+			case RIGHT:
+				return getRight().canSwap(path);
+			default:
+				throw new IllegalStateException();
+			}
+		} else {
+			return true;
+		}
+	}
+
+	private static final String INVALID_PATH_FOR_SWAPPING = "Invalid path for swapping";
+
+	public InternalVTree swap(final Iterator<Direction> path) {
+		if (path.hasNext()) {
+			final Direction direction = path.next();
+			if (Direction.LEFT == direction) {
+				final VTree deep = getLeft();
+				if (deep instanceof InternalVTree) {
+					return build(((InternalVTree) deep).swap(path), getRight());
+				} else {
+					throw new IllegalArgumentException(INVALID_PATH_FOR_SWAPPING);
+				}
+			} else if (Direction.RIGHT == direction) {
+				final VTree deep = getRight();
+				if (deep instanceof InternalVTree) {
+					return build(getLeft(), ((InternalVTree) deep).swap(path));
+				} else {
+					throw new IllegalArgumentException(INVALID_PATH_FOR_SWAPPING);
+				}
+			} else {
+				throw new IllegalStateException();
+			}
+		} else {
+			return swap();
+		}
 	}
 
 }

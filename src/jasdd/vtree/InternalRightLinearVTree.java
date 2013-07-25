@@ -3,6 +3,7 @@ package jasdd.vtree;
 import jasdd.logic.Variable;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 
@@ -89,6 +90,23 @@ public class InternalRightLinearVTree extends InternalTree<RightLinearVTree> imp
 	public InternalTree<RightLinearVTree> rotateRight() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public boolean canSwap(final Iterator<Direction> path) {
+		if (path.hasNext()) {
+			final Direction direction = path.next();
+			switch (direction) {
+			case LEFT:
+				return false;
+			case RIGHT:
+				return getRight().canSwap(path);
+			default:
+				throw new IllegalStateException();
+			}
+		} else {
+			return true;
+		}
 	}
 
 }
