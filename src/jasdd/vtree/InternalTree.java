@@ -221,14 +221,16 @@ public abstract class InternalTree<T extends Tree> implements Internal<T> {
 		return !getLeft().isLeaf();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public Tree rotateLeft(final Direction... path) {
-		return rotateLeft(CloneableArrayIterator.build(path));
+	public InternalTree<T> rotateLeft(final Direction... path) {
+		return (InternalTree<T>) rotateLeft(CloneableArrayIterator.build(path));
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public Tree rotateRight(final Direction... path) {
-		return rotateRight(CloneableArrayIterator.build(path));
+	public InternalTree<T> rotateRight(final Direction... path) {
+		return (InternalTree<T>) rotateRight(CloneableArrayIterator.build(path));
 	}
 
 	public Tree rotate(final Direction operation, final CloneableIterator<Direction> path) {
