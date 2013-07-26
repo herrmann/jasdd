@@ -25,10 +25,8 @@ import java.util.Stack;
  */
 public class DecompositionsGraph {
 
-	enum Operation { RL, RR, SW };
-
 	private static final Map<VTree, Integer> sizes = new HashMap<VTree, Integer>();
-	private static final Map<VTree, List<Pair<InternalVTree, Operation>>> graph = new HashMap<VTree, List<Pair<InternalVTree, Operation>>>();
+	private static final Map<VTree, List<Pair<InternalVTree, EdgeInfo>>> graph = new HashMap<VTree, List<Pair<InternalVTree, EdgeInfo>>>();
 	private static final VariableRegistry vars = new VariableRegistry();
 
 	private static PrintWriter outEdges = null;
@@ -72,19 +70,19 @@ public class DecompositionsGraph {
 				final InternalTree<VTree> left = vtree.rotateLeft();
 				if (!sizes.containsKey(left)) {
 					queue.push((DecompositionSDD) sdd.rotateLeft());
-					addEdge(vtree, (InternalVTree) left, Operation.RL);
+					addEdge(vtree, (InternalVTree) left, Operation.ROTATE_LEFT);
 				}
 			}
 			if (vtree.canRotateRight()) {
 				final InternalTree<VTree> right = vtree.rotateRight();
 				if (!sizes.containsKey(right)) {
 					queue.push(sdd.rotateRight());
-					addEdge(vtree, (InternalVTree) right, Operation.RR);
+					addEdge(vtree, (InternalVTree) right, Operation.ROTATE_RIGHT);
 				}
 			}
 			if (!sizes.containsKey(vtree.swap())) {
 				queue.push(sdd.swap());
-				addEdge(vtree, vtree.swap(), Operation.SW);
+				addEdge(vtree, vtree.swap(), Operation.SWAP);
 			}
 		}
 		outViz.println("}");
@@ -93,13 +91,13 @@ public class DecompositionsGraph {
 	private static void addEdge(final InternalVTree parent, final InternalVTree child, final Operation oper) {
 		outViz.println("\"" + parent.toString(vars) + "\" -> \"" + child.toString(vars) + "\" [label=\"" + oper + "\"]");
 		outEdges.println(parent.toString(vars) + " " + child.toString(vars) + " " + oper);
-		final Pair<InternalVTree, Operation> pair = Pair.create(child, oper);
+		final Pair<InternalVTree, EdgeInfo> pair = Pair.create(child, new EdgeInfo(oper));
 		if (graph.containsKey(parent)) {
-			final List<Pair<InternalVTree, Operation>> list = graph.get(parent);
+			final List<Pair<InternalVTree, EdgeInfo>> list = graph.get(parent);
 			list.add(pair);
 			graph.put(parent, list);
 		} else {
-			final List<Pair<InternalVTree, Operation>> list = new ArrayList<Pair<InternalVTree, Operation>>();
+			final List<Pair<InternalVTree, EdgeInfo>> list = new ArrayList<Pair<InternalVTree, EdgeInfo>>();
 			list.add(pair);
 			graph.put(parent, list);
 		}
