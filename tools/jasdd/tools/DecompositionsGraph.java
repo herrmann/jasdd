@@ -4,17 +4,12 @@ import jasdd.bool.DecompositionSDD;
 import jasdd.bool.SDD;
 import jasdd.logic.Variable;
 import jasdd.logic.VariableRegistry;
-import jasdd.util.Pair;
 import jasdd.vtree.InternalTree;
 import jasdd.vtree.InternalVTree;
 import jasdd.vtree.VTree;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Stack;
 
 /**
@@ -25,9 +20,8 @@ import java.util.Stack;
  */
 public class DecompositionsGraph {
 
-	private static final Map<VTree, Integer> sizes = new HashMap<VTree, Integer>();
-	private static final Map<VTree, List<Pair<InternalVTree, EdgeInfo>>> graph = new HashMap<VTree, List<Pair<InternalVTree, EdgeInfo>>>();
 	private static final VariableRegistry vars = new VariableRegistry();
+	private static final OperationsGraph graph = new OperationsGraph();
 
 	private static PrintWriter outEdges = null;
 	private static PrintWriter outNodes = null;
@@ -64,23 +58,23 @@ public class DecompositionsGraph {
 			final DecompositionSDD sdd = queue.pop();
 			final InternalVTree vtree = sdd.getVTree();
 			final int size = sdd.size();
-			sizes.put(vtree, size);
+			graph.addNode(vtree, size);
 			outNodes.println(vtree.toString(vars) + " " + size);
 			if (vtree.canRotateLeft()) {
 				final InternalTree<VTree> left = vtree.rotateLeft();
-				if (!sizes.containsKey(left)) {
+				if (!graph.contains(left)) {
 					queue.push((DecompositionSDD) sdd.rotateLeft());
 					addEdge(vtree, (InternalVTree) left, Operation.ROTATE_LEFT);
 				}
 			}
 			if (vtree.canRotateRight()) {
 				final InternalTree<VTree> right = vtree.rotateRight();
-				if (!sizes.containsKey(right)) {
+				if (!graph.contains(right)) {
 					queue.push(sdd.rotateRight());
 					addEdge(vtree, (InternalVTree) right, Operation.ROTATE_RIGHT);
 				}
 			}
-			if (!sizes.containsKey(vtree.swap())) {
+			if (!graph.contains(vtree.swap())) {
 				queue.push(sdd.swap());
 				addEdge(vtree, vtree.swap(), Operation.SWAP);
 			}
@@ -91,16 +85,7 @@ public class DecompositionsGraph {
 	private static void addEdge(final InternalVTree parent, final InternalVTree child, final Operation oper) {
 		outViz.println("\"" + parent.toString(vars) + "\" -> \"" + child.toString(vars) + "\" [label=\"" + oper + "\"]");
 		outEdges.println(parent.toString(vars) + " " + child.toString(vars) + " " + oper);
-		final Pair<InternalVTree, EdgeInfo> pair = Pair.create(child, new EdgeInfo(oper));
-		if (graph.containsKey(parent)) {
-			final List<Pair<InternalVTree, EdgeInfo>> list = graph.get(parent);
-			list.add(pair);
-			graph.put(parent, list);
-		} else {
-			final List<Pair<InternalVTree, EdgeInfo>> list = new ArrayList<Pair<InternalVTree, EdgeInfo>>();
-			list.add(pair);
-			graph.put(parent, list);
-		}
+		graph.addEdge(parent, child, new EdgeInfo(oper));
 	}
 
 	private static DecompositionSDD exampleCnf4() {
