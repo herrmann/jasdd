@@ -1,5 +1,7 @@
 package jasdd.tools;
 
+import jasdd.util.CloneableIterator;
+import jasdd.util.CloneableListIterator;
 import jasdd.vtree.Direction;
 
 import java.util.Arrays;
@@ -22,6 +24,10 @@ public class Path {
 
 	public Iterator<Direction> iterator() {
 		return path.iterator();
+	}
+
+	public CloneableIterator<Direction> cloneableIterator() {
+		return new CloneableListIterator<Direction>(path);
 	}
 
 	public boolean isEmpty() {
