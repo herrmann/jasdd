@@ -51,35 +51,47 @@ public class DecompositionsGraph {
 
 	private static void explore() {
 		final DecompositionSDD initial = exampleCnf4();
-		final Stack<DecompositionSDD> queue = new Stack<DecompositionSDD>();
+		final Stack<SDD> queue = new Stack<SDD>();
 		queue.add(initial);
 		outViz.println("digraph decompgraph {");
 		while (!queue.isEmpty()) {
-			final DecompositionSDD sdd = queue.pop();
-			final InternalVTree vtree = sdd.getVTree();
-			final int size = sdd.size();
-			graph.addNode(vtree, size);
-			outNodes.println(vtree.toString(vars) + " " + size);
-			if (vtree.canRotateLeft()) {
-				final InternalTree<VTree> left = vtree.rotateLeft();
-				if (!graph.contains(left)) {
-					queue.push((DecompositionSDD) sdd.rotateLeft());
-					addEdge(vtree, (InternalVTree) left, Operation.ROTATE_LEFT);
-				}
-			}
-			if (vtree.canRotateRight()) {
-				final InternalTree<VTree> right = vtree.rotateRight();
-				if (!graph.contains(right)) {
-					queue.push(sdd.rotateRight());
-					addEdge(vtree, (InternalVTree) right, Operation.ROTATE_RIGHT);
-				}
-			}
-			if (!graph.contains(vtree.swap())) {
-				queue.push(sdd.swap());
-				addEdge(vtree, vtree.swap(), Operation.SWAP);
+			final SDD sdd = queue.pop();
+			if (sdd instanceof DecompositionSDD) {
+				final DecompositionSDD decomp = (DecompositionSDD) sdd;
+				final InternalVTree vtree = decomp.getVTree();
+				final int size = sdd.size();
+				graph.addNode(vtree, size);
+				outNodes.println(vtree.toString(vars) + " " + size);
+				exploreAlternatives(queue, decomp, vtree, new Path());
 			}
 		}
 		outViz.println("}");
+	}
+
+	private static void exploreAlternatives(final Stack<SDD> queue, final DecompositionSDD sdd, final InternalVTree vtree, final Path path) {
+		if (vtree.canSwap(path.iterator())) {
+			final InternalTree<VTree> swapped = vtree.swap(path.cloneableIterator());
+			if (!graph.contains(swapped)) {
+				queue.push(sdd.swap(path.cloneableIterator()));
+				addEdge(vtree, (InternalVTree) swapped, Operation.SWAP);
+			}
+			if (vtree.canRotateLeft(path.iterator())) {
+				@SuppressWarnings("unchecked")
+				final InternalTree<VTree> left = (InternalTree<VTree>) vtree.rotateLeft(path.cloneableIterator());
+				if (!graph.contains(left)) {
+					queue.push(sdd.rotateLeft(path.cloneableIterator()));
+					addEdge(vtree, (InternalVTree) left, Operation.ROTATE_LEFT);
+				}
+			}
+			if (vtree.canRotateRight(path.iterator())) {
+				@SuppressWarnings("unchecked")
+				final InternalTree<VTree> right = (InternalTree<VTree>) vtree.rotateRight(path.cloneableIterator());
+				if (!graph.contains(right)) {
+					queue.push(sdd.rotateRight(path.cloneableIterator()));
+					addEdge(vtree, (InternalVTree) right, Operation.ROTATE_RIGHT);
+				}
+			}
+		}
 	}
 
 	private static void addEdge(final InternalVTree parent, final InternalVTree child, final Operation oper) {
