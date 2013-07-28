@@ -18,6 +18,13 @@ public class Path {
 
 	private final List<Direction> path = new LinkedList<Direction>();
 
+	public Path() {
+	}
+
+	public Path(final List<Direction> path) {
+		this.path.addAll(path);
+	}
+
 	public void add(final Direction... path) {
 		this.path.addAll(Arrays.asList(path));
 	}
@@ -41,6 +48,11 @@ public class Path {
 			sb.append(Direction.LEFT == dir ? "L" : "R");
 		}
 		return sb.toString();
+	}
+
+	@Override
+	protected Path clone() {
+		return new Path(path);
 	}
 
 }
