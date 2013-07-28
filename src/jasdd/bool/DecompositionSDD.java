@@ -374,19 +374,23 @@ public class DecompositionSDD extends AbstractSDD implements Rotatable<SDD>, Swa
 				final DecompositionSDD b = nestDecomposition((InternalVTree) rotatedVTree, primeB);
 				final SDD prime = a.and(b);
 				if (prime.isConsistent()) {
-					for (final Element e : ((DecompositionSDD) prime).getElements()) {
-						if (e.getSub().equals(JASDD.createTrue())) {
-							final SDD partition = e.getPrime();
-							// Compress
-							if (cache.containsKey(subB)) {
-								final SDD cachedSub = cache.get(subB);
-								final SDD newPart = cachedSub.or(partition);
-								cache.put(subB, newPart);
-							} else {
-								cache.put(subB, partition);
+					if (prime instanceof DecompositionSDD) {
+						for (final Element e : ((DecompositionSDD) prime).getElements()) {
+							if (e.getSub().equals(JASDD.createTrue())) {
+								final SDD partition = e.getPrime();
+								// Compress
+								if (cache.containsKey(subB)) {
+									final SDD cachedSub = cache.get(subB);
+									final SDD newPart = cachedSub.or(partition);
+									cache.put(subB, newPart);
+								} else {
+									cache.put(subB, partition);
+								}
+								break;
 							}
-							break;
 						}
+					} else {
+						cache.put(subB, prime);
 					}
 				}
 			}
@@ -441,12 +445,21 @@ public class DecompositionSDD extends AbstractSDD implements Rotatable<SDD>, Swa
 		final List<Pair<SDD, List<Element>>> partitions = new ArrayList<Pair<SDD, List<Element>>>();
 		for (final Element element : getElements()) {
 			// TODO: normalize on demand
-			final DecompositionSDD prime = (DecompositionSDD) element.getPrime();
-			final List<Element> partition = new ArrayList<Element>();
-			for (final Element primeElement : prime.getElements()) {
-				partition.add(primeElement);
+			final SDD prime = element.getPrime();
+			if (prime instanceof DecompositionSDD) {
+				final DecompositionSDD primeDecomp = (DecompositionSDD) prime;
+				final List<Element> partition = new ArrayList<Element>();
+				for (final Element primeElement : primeDecomp.getElements()) {
+					partition.add(primeElement);
+				}
+				partitions.add(Pair.create(element.getSub(), partition));
+			} else if (prime instanceof ConstantSDD) {
+				final List<Element> partition = new ArrayList<Element>();
+				partition.add(JASDD.createElement(true, true));
+				partitions.add(Pair.create(element.getSub(), partition));
+			} else {
+				throw new IllegalStateException("There should be no direct literal SDD in a normalized SDD that can be rotated right.");
 			}
-			partitions.add(Pair.create(element.getSub(), partition));
 		}
 		final List<Element> newElements = new ArrayList<Element>();
 		final InternalTree<VTree> newVTree = getVTree().rotateRight();
