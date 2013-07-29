@@ -17,12 +17,18 @@ import java.util.Map;
  */
 public class OperationsGraph {
 
+	private int count = 0;
+
 	// TODO: create a proper generic Graph class
-	private static final Map<VTree, Integer> sizes = new HashMap<VTree, Integer>();
-	private static final Map<VTree, List<Pair<InternalVTree, EdgeInfo>>> graph = new HashMap<VTree, List<Pair<InternalVTree, EdgeInfo>>>();
+	private final Map<VTree, Integer> ids = new HashMap<VTree, Integer>();
+	private final Map<VTree, Integer> sizes = new HashMap<VTree, Integer>();
+	private final Map<VTree, List<Pair<InternalVTree, EdgeInfo>>> graph = new HashMap<VTree, List<Pair<InternalVTree, EdgeInfo>>>();
 
 	public void addNode(final InternalVTree vtree, final int size) {
-		sizes.put(vtree, size);
+		if (!ids.containsKey(vtree) && !sizes.containsKey(vtree)) {
+			sizes.put(vtree, size);
+			ids.put(vtree, ++count);
+		}
 	}
 
 	public boolean contains(final InternalTree<VTree> vtree) {
@@ -41,6 +47,11 @@ public class OperationsGraph {
 			list.add(pair);
 			graph.put(parent, list);
 		}
+	}
+
+	public int nodeId(final VTree vtree) {
+		final Integer blah = ids.get(vtree);
+		return blah;
 	}
 
 }

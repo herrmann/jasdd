@@ -31,7 +31,9 @@ public class DecompositionsGraph {
 	public static void main(final String[] args) {
 		try {
 			outNodes = new PrintWriter("nodes.dat");
+			outNodes.println("Nodes Id Label Size");
 			outEdges = new PrintWriter("edges.dat");
+			outEdges.println("Source Target Type Id Label Weight");
 			outViz = new PrintWriter("decompgraph.gv");
 			explore();
 		} catch (final FileNotFoundException e) {
@@ -61,12 +63,16 @@ public class DecompositionsGraph {
 				final DecompositionSDD decomp = (DecompositionSDD) sdd;
 				final InternalVTree vtree = decomp.getVTree();
 				final int size = sdd.size();
-				graph.addNode(vtree, size);
-				outNodes.println(vtree.toString(vars) + " " + size);
+				addNode(vtree, size);
 				exploreAlternatives(queue, decomp, vtree, new Path());
 			}
 		}
 		outViz.println("}");
+	}
+
+	private static void addNode(final InternalVTree vtree, final int size) {
+		graph.addNode(vtree, size);
+		outNodes.println(graph.nodeId(vtree) + " " + graph.nodeId(vtree) + " " + vtree.toString(vars) + " " + size);
 	}
 
 	private static void exploreAlternatives(final Stack<SDD> queue, final DecompositionSDD sdd, final InternalVTree vtree, final Path path) {
@@ -74,24 +80,30 @@ public class DecompositionsGraph {
 		if (vtree.canSwap(path.iterator())) {
 			final InternalTree<VTree> swapped = vtree.swap(path.cloneableIterator());
 			if (!graph.contains(swapped) && sdd.canSwap(path.cloneableIterator())) {
-				queue.push(sdd.swap(path.cloneableIterator()));
-				addEdge(vtree, (InternalVTree) swapped, Operation.SWAP, path);
+				final SDD newSdd = sdd.swap(path.cloneableIterator());
+				addNode((InternalVTree) swapped, newSdd.size());
+				queue.push(newSdd);
 			}
+			addEdge(vtree, (InternalVTree) swapped, Operation.SWAP, path);
 			if (vtree.canRotateLeft(path.iterator())) {
 				@SuppressWarnings("unchecked")
 				final InternalTree<VTree> left = (InternalTree<VTree>) vtree.rotateLeft(path.cloneableIterator());
 				if (!graph.contains(left) && sdd.canRotateLeft(path.cloneableIterator())) {
+					final SDD newSdd = sdd.rotateLeft(path.cloneableIterator());
+					addNode((InternalVTree) left, newSdd.size());
 					queue.push(sdd.rotateLeft(path.cloneableIterator()));
-					addEdge(vtree, (InternalVTree) left, Operation.ROTATE_LEFT, path);
 				}
+				addEdge(vtree, (InternalVTree) left, Operation.ROTATE_LEFT, path);
 			}
 			if (vtree.canRotateRight(path.iterator())) {
 				@SuppressWarnings("unchecked")
 				final InternalTree<VTree> right = (InternalTree<VTree>) vtree.rotateRight(path.cloneableIterator());
 				if (!graph.contains(right) && sdd.canRotateRight(path.cloneableIterator())) {
-					queue.push(sdd.rotateRight(path.cloneableIterator()));
-					addEdge(vtree, (InternalVTree) right, Operation.ROTATE_RIGHT, path);
+					final SDD newSdd = sdd.rotateRight(path.cloneableIterator());
+					addNode((InternalVTree) right, newSdd.size());
+					queue.push(newSdd);
 				}
+				addEdge(vtree, (InternalVTree) right, Operation.ROTATE_RIGHT, path);
 			}
 			final Path clonedPath = path.clone();
 			path.add(Direction.LEFT);
@@ -101,10 +113,12 @@ public class DecompositionsGraph {
 		}
 	}
 
+	private static int edgeCount = 0;
+
 	private static void addEdge(final InternalVTree parent, final InternalVTree child, final Operation oper, final Path path) {
 		final EdgeInfo edgeInfo = new EdgeInfo(oper, path);
 		outViz.println("\"" + parent.toString(vars) + "\" -> \"" + child.toString(vars) + "\" [label=\"" + edgeInfo + "\"]");
-		outEdges.println(parent.toString(vars) + " " + child.toString(vars) + " " + edgeInfo);
+		outEdges.println(graph.nodeId(parent) + " " + graph.nodeId(child) + " Directed " + (++edgeCount) + " " + edgeInfo + " 1");
 		graph.addEdge(parent, child, edgeInfo);
 	}
 
