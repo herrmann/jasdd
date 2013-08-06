@@ -5,6 +5,7 @@ import jasdd.logic.Formula;
 import jasdd.logic.Literal;
 import jasdd.logic.Variable;
 import jasdd.visitor.SDDVisitor;
+import jasdd.vtree.InternalVTree;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -151,6 +152,11 @@ public class LiteralSDD extends TerminalSDD {
 	@Override
 	public LiteralSDD not() {
 		return JASDD.createLiteral(getLiteral().opposite());
+	}
+
+	@Override
+	public DecompositionSDD nest(final InternalVTree vtree) {
+		return JASDD.buildNormalized(vtree, getLiteral());
 	}
 
 }

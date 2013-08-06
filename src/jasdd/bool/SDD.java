@@ -6,13 +6,14 @@ import jasdd.logic.Sentence;
 import jasdd.logic.Variable;
 import jasdd.util.StringBuildable;
 import jasdd.visitor.SDDVisitor;
+import jasdd.vtree.InternalVTree;
 
 import java.util.Collection;
 import java.util.Set;
 
 /**
  * Methods shared by all kinds of SDDs.
- * 
+ *
  * @author Ricardo Herrmann
  */
 public interface SDD extends Sentence, StringBuildable {
@@ -40,6 +41,8 @@ public interface SDD extends Sentence, StringBuildable {
 	Formula getFormula();
 
 	boolean eval(Set<Variable> trueLiterals);
+
+	DecompositionSDD nest(InternalVTree vtree);
 
 	/**
 	 * For debugging purposes only.

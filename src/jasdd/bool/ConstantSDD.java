@@ -5,6 +5,7 @@ import jasdd.logic.Constant;
 import jasdd.logic.Formula;
 import jasdd.logic.Variable;
 import jasdd.visitor.SDDVisitor;
+import jasdd.vtree.InternalVTree;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -119,6 +120,11 @@ public class ConstantSDD extends TerminalSDD {
 	@Override
 	public ConstantSDD not() {
 		return JASDD.createConstant(!getSign());
+	}
+
+	@Override
+	public DecompositionSDD nest(final InternalVTree vtree) {
+		return JASDD.createDecomposition(vtree, JASDD.createElement(true, this));
 	}
 
 }

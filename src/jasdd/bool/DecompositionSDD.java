@@ -362,16 +362,16 @@ public class DecompositionSDD extends AbstractSDD implements Rotatable<SDD>, Swa
 		final Map<SDD, SDD> cache = new HashMap<SDD, SDD>();
 
 		for (final Element elemA : getElements()) {
-			final SDD primeA = normalizeIfTerminal(elemA.getPrime(), leftVTree);
+			final SDD primeA = elemA.getPrime().nest(leftVTree);
 			// Lazily normalize terminal subs
-			final DecompositionSDD sub = normalizeIfTerminal(elemA.getSub(), leftVTree);
+			final DecompositionSDD sub = elemA.getSub().nest(leftVTree);
 			for (final Element elemB : sub.getElements()) {
-				final SDD primeB = normalizeIfTerminal(elemB.getPrime(), leftVTree);
+				final SDD primeB = elemB.getPrime().nest(leftVTree);
 				final SDD subB = elemB.getSub();
 				// Normalize for rotated vtree before conjunction
 				// TODO: avoid construction of negative partition
-				final DecompositionSDD a = nestDecomposition((InternalVTree) rotatedVTree, primeA);
-				final DecompositionSDD b = nestDecomposition((InternalVTree) rotatedVTree, primeB);
+				final DecompositionSDD a = primeA.nest((InternalVTree) rotatedVTree);
+				final DecompositionSDD b = primeB.nest((InternalVTree) rotatedVTree);
 				final SDD prime = a.and(b);
 				if (prime.isConsistent()) {
 					if (prime instanceof DecompositionSDD) {
@@ -412,28 +412,6 @@ public class DecompositionSDD extends AbstractSDD implements Rotatable<SDD>, Swa
 			}
 			final DecompositionSDD sdd = JASDD.createDecomposition((InternalVTree) rotatedVTree, elems);
 			return sdd;
-		}
-	}
-
-	private DecompositionSDD nestDecomposition(final InternalVTree vtree, final SDD sdd) {
-		return JASDD.createDecomposition(vtree, JASDD.createElement(sdd, true), JASDD.createElement(sdd.not(), false));
-	}
-
-	public DecompositionSDD normalizeIfTerminal(final SDD sdd, final InternalVTree vtree) {
-		if (sdd instanceof ConstantSDD) {
-			// Lazily normalize terminal subs
-			return JASDD.createDecomposition(vtree, JASDD.createElement(true, sdd));
-		} else if (sdd instanceof LiteralSDD) {
-			return JASDD.buildNormalized(vtree, ((LiteralSDD) sdd).getLiteral());
-		} else {
-			final DecompositionSDD decomp = (DecompositionSDD) sdd;
-			if (vtree.getLeft().equals(decomp.getVTree())) {
-				return nestDecomposition(vtree, decomp);
-			} else if (vtree.getRight().equals(decomp.getVTree())) {
-				return JASDD.createDecomposition(vtree, JASDD.createElement(true, decomp));
-			} else {
-				return decomp;
-			}
 		}
 	}
 
@@ -523,14 +501,14 @@ public class DecompositionSDD extends AbstractSDD implements Rotatable<SDD>, Swa
 				for (final Element element : stack) {
 					final SDD b = element.getSub();
 					final SDD c = iterC.next().getFirst();
-					final DecompositionSDD normB = normalizeIfTerminal(b, (InternalVTree) newVTree.getRight());
-					final DecompositionSDD normC = normalizeIfTerminal(c, (InternalVTree) newVTree.getRight());
+					final DecompositionSDD normB = b.nest((InternalVTree) newVTree.getRight());
+					final DecompositionSDD normC = c.nest((InternalVTree) newVTree.getRight());
 					final SDD sdd = normB.and(normC);
 					sub = sub.or(sdd);
 				}
 				SDD normA = prime;
 				if (!newVTree.getLeft().isLeaf()) {
-					normA = normalizeIfTerminal(normA, (InternalVTree) newVTree.getLeft());
+					normA = normA.nest((InternalVTree) newVTree.getLeft());
 				}
 				final Element elem = JASDD.createElement(normA, sub);
 				newElements.add(elem);
@@ -731,6 +709,18 @@ public class DecompositionSDD extends AbstractSDD implements Rotatable<SDD>, Swa
 	@Override
 	public SDD rotateRight(final Direction... path) {
 		return rotateRight(CloneableArrayIterator.build(path));
+	}
+
+	@Override
+	public DecompositionSDD nest(final InternalVTree vtree) {
+		final InternalVTree subVTree = getVTree();
+		if (vtree.getLeft().equals(subVTree)) {
+			return JASDD.createDecomposition(vtree, JASDD.createElement(this, true), JASDD.createElement(not(), false));
+		} else if (vtree.getRight().equals(subVTree)) {
+			return JASDD.createDecomposition(vtree, JASDD.createElement(true, this));
+		} else {
+			return this;
+		}
 	}
 
 }
