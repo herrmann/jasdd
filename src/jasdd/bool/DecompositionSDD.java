@@ -24,13 +24,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.Stack;
 
@@ -359,7 +356,7 @@ public class DecompositionSDD extends AbstractSDD implements Rotatable<SDD>, Swa
 		final InternalVTree leftVTree = (InternalVTree) rotatedVTree.getLeft();
 
 		// Accumulated partition for subs in the rotated decomposition
-		final Map<SDD, SDD> cache = new HashMap<SDD, SDD>();
+		final CompressedPartition decomp = new CompressedPartition();
 
 		for (final Element elemA : getElements()) {
 			final SDD primeA = elemA.getPrime().nest(leftVTree);
@@ -378,41 +375,17 @@ public class DecompositionSDD extends AbstractSDD implements Rotatable<SDD>, Swa
 						for (final Element e : ((DecompositionSDD) prime).getElements()) {
 							if (e.getSub().equals(JASDD.createTrue())) {
 								final SDD partition = e.getPrime();
-								// Compress
-								if (cache.containsKey(subB)) {
-									final SDD cachedSub = cache.get(subB);
-									final SDD newPart = cachedSub.or(partition);
-									cache.put(subB, newPart);
-								} else {
-									cache.put(subB, partition);
-								}
+								decomp.add(partition, subB);
 								break;
 							}
 						}
 					} else {
-						cache.put(subB, prime);
+						decomp.add(prime, subB);
 					}
 				}
 			}
 		}
-
-		final int size = cache.size();
-		final Entry<SDD, SDD> first = cache.entrySet().iterator().next();
-		// Apply light trimming if possible
-		if (size == 1 && first.getValue().equals(JASDD.createTrue()) && first.getKey() instanceof ConstantSDD) {
-			return JASDD.createConstant(((ConstantSDD) first.getKey()).getSign());
-		} else {
-			int i = 0;
-			final Element[] elems = new Element[size];
-			for (final Entry<SDD, SDD> entry : cache.entrySet()) {
-				final SDD sub = entry.getKey();
-				final SDD prime = entry.getValue();
-				final Element elem = JASDD.createElement(prime, sub);
-				elems[i++] = elem;
-			}
-			final DecompositionSDD sdd = JASDD.createDecomposition((InternalVTree) rotatedVTree, elems);
-			return sdd;
-		}
+		return decomp.decomposition((InternalVTree) rotatedVTree);
 	}
 
 	@Override
@@ -443,39 +416,9 @@ public class DecompositionSDD extends AbstractSDD implements Rotatable<SDD>, Swa
 		final InternalTree<VTree> newVTree = getVTree().rotateRight();
 		rightCrossProduct(partitions, partitions.listIterator(0), new Stack<Element>(), newElements, (InternalVTree) newVTree);
 		// TODO: avoid copy
-		final List<Element> compressed = compress(newElements);
-		final Element[] elems = new Element[compressed.size()];
-		compressed.toArray(elems);
-		return JASDD.createDecomposition((InternalVTree) newVTree, elems);
-	}
-
-	/**
-	 * Compresses a set of elements, assuming all primes respect the same vtree.
-	 *
-	 * @param elements the list of SDD elements to compress
-	 * @return a list with the compression of the input elements
-	 */
-	private List<Element> compress(final List<Element> elements) {
-		final Map<SDD, SDD> cache = new HashMap<SDD, SDD>();
-		for (final Element element : elements) {
-			final SDD prime = element.getPrime();
-			final SDD sub = element.getSub();
-			if (cache.containsKey(sub)) {
-				final SDD oldPrime = cache.get(sub);
-				final SDD newPrime = oldPrime.or(prime);
-				cache.put(sub, newPrime);
-			} else {
-				cache.put(sub, prime);
-			}
-		}
-		final List<Element> newElements = new ArrayList<Element>(cache.size());
-		for (final Entry<SDD, SDD> entry : cache.entrySet()) {
-			final SDD sub = entry.getKey();
-			final SDD prime = entry.getValue();
-			final Element element = JASDD.createElement(prime, sub);
-			newElements.add(element);
-		}
-		return newElements;
+		final CompressedPartition blah = new CompressedPartition();
+		blah.add(newElements);
+		return (DecompositionSDD) blah.decomposition((InternalVTree) newVTree);
 	}
 
 	private void rightCrossProduct(final List<Pair<SDD, List<Element>>> partitions, final ListIterator<Pair<SDD, List<Element>>> iter, final Stack<Element> stack, final List<Element> newElements, final InternalVTree newVTree) {
