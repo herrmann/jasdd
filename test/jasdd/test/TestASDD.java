@@ -379,4 +379,14 @@ public class TestASDD {
 		Assert.assertEquals(2.0, value, epsilon);
 	}
 
+	@Test
+	public void rotateLeft() throws FileNotFoundException {
+		final VariableRegistry vars = new VariableRegistry();
+		final DecompositionASDD<Double> asdd = rightLinearExample(vars);
+		final DecompositionASDD<Double> rotated = (DecompositionASDD<Double>) asdd.rotateLeft();
+		GraphvizDumper.dump(rotated, vars, "algrotated.gv");
+		Assert.assertNotNull(rotated);
+		Assert.assertEquals(9, rotated.size());
+	}
+
 }

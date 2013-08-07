@@ -11,14 +11,19 @@ import jasdd.logic.Constant;
 import jasdd.logic.Disjunction;
 import jasdd.logic.Formula;
 import jasdd.logic.Variable;
+import jasdd.util.CloneableIterator;
 import jasdd.visitor.ASDDVisitor;
+import jasdd.vtree.Direction;
 import jasdd.vtree.InternalAVTree;
+import jasdd.vtree.InternalVTree;
+import jasdd.vtree.Rotatable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -28,7 +33,7 @@ import java.util.Set;
  *
  * @author Ricardo Herrmann
  */
-public class DecompositionASDD<T> implements ASDD<T> {
+public class DecompositionASDD<T> implements ASDD<T>, Rotatable<ASDD<T>> {
 
 	private final InternalAVTree avtree;
 
@@ -231,6 +236,96 @@ public class DecompositionASDD<T> implements ASDD<T> {
 			}
 		}
 		return null;
+	}
+
+	// Rotation ////////////////////////////////////////
+
+	@Override
+	public boolean canRotateLeft() {
+		return getTree().canRotateLeft();
+	}
+
+	@Override
+	public boolean canRotateRight() {
+		return getTree().canRotateRight();
+	}
+
+	@Override
+	public boolean canRotateLeft(final Direction... path) {
+		return getTree().canRotateLeft(path);
+	}
+
+	@Override
+	public boolean canRotateRight(final Direction... path) {
+		return getTree().canRotateRight(path);
+	}
+
+	@Override
+	public boolean canRotateLeft(final Iterator<Direction> path) {
+		return getTree().canRotateLeft(path);
+	}
+
+	@Override
+	public boolean canRotateRight(final Iterator<Direction> path) {
+		return getTree().canRotateRight(path);
+	}
+
+	@Override
+	public ASDD<T> rotateLeft() {
+		if (!canRotateLeft()) {
+			throw new UnsupportedOperationException("ASDD cannot be further rotated left");
+		}
+
+		// Rotated vtree references
+		final InternalAVTree rotatedAVTree = (InternalAVTree) getTree().rotateLeft();
+		final InternalVTree leftVTree = (InternalVTree) rotatedAVTree.getLeft();
+
+		// Accumulated partition for subs in the rotated decomposition
+		final CompressedAlgebraicPartition<T> partition = new CompressedAlgebraicPartition<T>();
+
+		for (final AlgebraicElement<T> elem : getElements()) {
+			final SDD a = elem.getPrime().nest(leftVTree);
+			final ASDD<T> sub = elem.getSub();
+			if (!sub.isTerminal()) {
+				for (final AlgebraicElement<T> subElem : ((DecompositionASDD<T>) sub).getElements()) {
+					final SDD b = subElem.getPrime().nest(leftVTree);
+					final ASDD<T> c = subElem.getSub();
+					final SDD prime = a.and(b);
+					partition.add(prime, c);
+				}
+			}
+		}
+		return partition.decomposition(rotatedAVTree);
+	}
+
+	@Override
+	public ASDD<T> rotateRight() {
+		// TODO
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public ASDD<T> rotateLeft(final Direction... path) {
+		// TODO
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public ASDD<T> rotateRight(final Direction... path) {
+		// TODO
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public ASDD<T> rotateLeft(final CloneableIterator<Direction> path) {
+		// TODO
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public ASDD<T> rotateRight(final CloneableIterator<Direction> path) {
+		// TODO
+		throw new UnsupportedOperationException();
 	}
 
 }
