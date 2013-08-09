@@ -11,12 +11,14 @@ import jasdd.logic.Constant;
 import jasdd.logic.Disjunction;
 import jasdd.logic.Formula;
 import jasdd.logic.Variable;
+import jasdd.util.CloneableArrayIterator;
 import jasdd.util.CloneableIterator;
 import jasdd.visitor.ASDDVisitor;
 import jasdd.vtree.Direction;
 import jasdd.vtree.InternalAVTree;
 import jasdd.vtree.InternalVTree;
 import jasdd.vtree.Rotatable;
+import jasdd.vtree.Swappable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,7 +35,7 @@ import java.util.Set;
  *
  * @author Ricardo Herrmann
  */
-public class DecompositionASDD<T> implements ASDD<T>, Rotatable<ASDD<T>> {
+public class DecompositionASDD<T> implements ASDD<T>, Rotatable<ASDD<T>>, Swappable<ASDD<T>> {
 
 	private final InternalAVTree avtree;
 
@@ -326,6 +328,67 @@ public class DecompositionASDD<T> implements ASDD<T>, Rotatable<ASDD<T>> {
 	public ASDD<T> rotateRight(final CloneableIterator<Direction> path) {
 		// TODO
 		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public boolean canSwap() {
+		return false;
+	}
+
+	@Override
+	public boolean canSwap(final Direction... path) {
+		return getTree().canSwap(path);
+	}
+
+	@Override
+	public boolean canSwap(final Iterator<Direction> path) {
+		return getTree().canSwap(path);
+	}
+
+	@Override
+	public ASDD<T> swap() {
+		throw new UnsupportedOperationException("Algebraic decomposition nodes cannot be swapped.");
+	}
+
+	@Override
+	public ASDD<T> swap(final Direction... path) {
+		return swap(CloneableArrayIterator.build(path));
+	}
+
+	@Override
+	public ASDD<T> swap(final CloneableIterator<Direction> path) {
+		if (path.hasNext()) {
+			final CloneableIterator<Direction> originalPath = path.clone();
+			final Direction direction = path.next();
+			final List<AlgebraicElement<T>> newElements = new ArrayList<AlgebraicElement<T>>();
+			if (Direction.LEFT == direction) {
+				for (final AlgebraicElement<T> element : getElements()) {
+					SDD prime = element.getPrime();
+					if (prime instanceof DecompositionSDD) {
+						prime = ((DecompositionSDD) prime).swap(path.clone());
+					}
+					final AlgebraicElement<T> elem = JASDD.createElement(prime, element.getSub());
+					newElements.add(elem);
+				}
+			} else if (Direction.RIGHT == direction) {
+				for (final AlgebraicElement<T> element : getElements()) {
+					ASDD<T> sub = element.getSub();
+					if (sub instanceof DecompositionASDD<?>) {
+						sub = ((DecompositionASDD<T>) sub).swap(path.clone());
+					}
+					final AlgebraicElement<T> elem = JASDD.createElement(element.getPrime(), sub);
+					newElements.add(elem);
+				}
+			}
+			// TODO: reuse sub-vtrees
+			@SuppressWarnings("unchecked")
+			final AlgebraicElement<T>[] elems = new AlgebraicElement[newElements.size()];
+			newElements.toArray(elems);
+			final InternalAVTree newTree = getTree().swap(originalPath);
+			return JASDD.createDecomposition(newTree, elems);
+		} else {
+			return swap();
+		}
 	}
 
 }

@@ -4,6 +4,7 @@ import jasdd.logic.Variable;
 import jasdd.logic.VariableRegistry;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 
@@ -66,6 +67,11 @@ public class ValueLeaf extends Leaf implements AVTree, RightLinearAVTree {
 	@Override
 	public StringBuilder toStringBuilder(final VariableRegistry vars) {
 		return toStringBuilder();
+	}
+
+	@Override
+	public boolean canSwap(final Iterator<Direction> path) {
+		return false;
 	}
 
 }

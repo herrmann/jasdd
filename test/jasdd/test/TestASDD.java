@@ -12,6 +12,7 @@ import jasdd.logic.Variable;
 import jasdd.logic.VariableRegistry;
 import jasdd.stat.Summary;
 import jasdd.viz.GraphvizDumper;
+import jasdd.vtree.Direction;
 import jasdd.vtree.InternalAVTree;
 import jasdd.vtree.InternalVTree;
 import jasdd.vtree.ValueLeaf;
@@ -387,6 +388,20 @@ public class TestASDD {
 		GraphvizDumper.dump(rotated, vars, "algrotated.gv");
 		Assert.assertNotNull(rotated);
 		Assert.assertEquals(9, rotated.size());
+	}
+
+	@Test(expected = UnsupportedOperationException.class)
+	public void cannotSwap() {
+		rightLinearExample().swap();
+	}
+
+	@Test
+	public void swap() {
+		final DecompositionASDD<Double> asdd = rightLinearExample();
+		final DecompositionASDD<Double> rotated = (DecompositionASDD<Double>) asdd.rotateLeft();
+		final DecompositionASDD<Double> swapped = (DecompositionASDD<Double>) rotated.swap(Direction.LEFT);
+		Assert.assertNotNull(swapped);
+		Assert.assertEquals(9, swapped.size());
 	}
 
 }
