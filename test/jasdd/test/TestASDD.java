@@ -404,4 +404,16 @@ public class TestASDD {
 		Assert.assertEquals(9, swapped.size());
 	}
 
+	@Test
+	public void rotateRight() {
+		final VariableRegistry vars = new VariableRegistry();
+		final DecompositionASDD<Double> asdd = leftLinearExample(vars);
+		final DecompositionASDD<Double> rotated = (DecompositionASDD<Double>) asdd.rotateRight();
+		Assert.assertNotNull(rotated);
+		Assert.assertEquals(6, rotated.size());
+		final DecompositionASDD<Double> back = (DecompositionASDD<Double>) rotated.rotateLeft();
+		Assert.assertNotNull(back);
+		Assert.assertEquals(9, back.size());
+	}
+
 }

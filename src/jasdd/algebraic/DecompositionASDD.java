@@ -1,6 +1,7 @@
 package jasdd.algebraic;
 
 import jasdd.JASDD;
+import jasdd.bool.ConstantSDD;
 import jasdd.bool.DecompositionSDD;
 import jasdd.bool.Element;
 import jasdd.bool.OperatorApplication;
@@ -13,6 +14,7 @@ import jasdd.logic.Formula;
 import jasdd.logic.Variable;
 import jasdd.util.CloneableArrayIterator;
 import jasdd.util.CloneableIterator;
+import jasdd.util.Pair;
 import jasdd.visitor.ASDDVisitor;
 import jasdd.vtree.Direction;
 import jasdd.vtree.InternalAVTree;
@@ -27,8 +29,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.Stack;
 
 /**
  * The algebraic equivalent of a decomposition SDD.
@@ -302,32 +306,100 @@ public class DecompositionASDD<T> implements ASDD<T>, Rotatable<ASDD<T>>, Swappa
 
 	@Override
 	public ASDD<T> rotateRight() {
-		// TODO
-		throw new UnsupportedOperationException();
+		if (!canRotateRight()) {
+			throw new UnsupportedOperationException("ASDD cannot be further rotated right");
+		}
+		final List<Pair<ASDD<T>, List<Element>>> partitions = new ArrayList<Pair<ASDD<T>, List<Element>>>();
+		for (final AlgebraicElement<T> element : getElements()) {
+			// TODO: normalize on demand
+			final SDD prime = element.getPrime();
+			if (prime instanceof DecompositionSDD) {
+				final DecompositionSDD primeDecomp = (DecompositionSDD) prime;
+				final List<Element> partition = new ArrayList<Element>();
+				for (final Element primeElement : primeDecomp.getElements()) {
+					partition.add(primeElement);
+				}
+				partitions.add(Pair.create(element.getSub(), partition));
+			} else if (prime instanceof ConstantSDD) {
+				final List<Element> partition = new ArrayList<Element>();
+				partition.add(JASDD.createElement(true, true));
+				partitions.add(Pair.create(element.getSub(), partition));
+			} else {
+				throw new IllegalStateException("There should be no direct literal SDD in a normalized ASDD that can be rotated right.");
+			}
+		}
+		final List<AlgebraicElement<T>> newElements = new ArrayList<AlgebraicElement<T>>();
+		final InternalAVTree newTree = (InternalAVTree) getTree().rotateRight();
+		rightCrossProduct(partitions, partitions.listIterator(0), new Stack<Element>(), newElements, newTree);
+		// TODO: avoid copy
+		final CompressedAlgebraicPartition<T> blah = new CompressedAlgebraicPartition<T>();
+		blah.add(newElements);
+		return blah.decomposition(newTree);
+	}
+
+	private void rightCrossProduct(final List<Pair<ASDD<T>, List<Element>>> partitions, final ListIterator<Pair<ASDD<T>, List<Element>>> iter, final Stack<Element> stack, final List<AlgebraicElement<T>> newElements, final InternalAVTree newTree) {
+		if (iter.hasNext()) {
+			final Pair<ASDD<T>, List<Element>> partition = iter.next();
+			for (final Element element : partition.getSecond()) {
+				stack.push(element);
+				rightCrossProduct(partitions, partitions.listIterator(iter.nextIndex()), stack, newElements, newTree);
+				stack.pop();
+			}
+		} else {
+			SDD prime = JASDD.createTrue();
+			for (final Element element : stack) {
+				if (prime.isConsistent()) {
+					prime = prime.and(element.getPrime());
+				} else {
+					break;
+				}
+			}
+			if (prime.isConsistent()) {
+				final Iterator<Pair<ASDD<T>, List<Element>>> iterC = partitions.iterator();
+				final ArrayList<AlgebraicElement<T>> subElems = new ArrayList<AlgebraicElement<T>>();
+				for (final Element element : stack) {
+					final SDD b = element.getSub();
+					final ASDD<T> c = iterC.next().getFirst();
+					if (b.isConsistent()) {
+						final AlgebraicElement<T> elem = JASDD.createElement(b, c);
+						subElems.add(elem);
+					}
+				}
+				SDD normPrime = prime;
+				if (!newTree.getLeft().isLeaf()) {
+					normPrime = normPrime.nest((InternalVTree) newTree.getLeft());
+				}
+				@SuppressWarnings("unchecked")
+				final AlgebraicElement<T>[] elemsArray = new AlgebraicElement[subElems.size()];
+				int i = 0;
+				for (final AlgebraicElement<T> e : subElems) {
+					elemsArray[i++] = e;
+				}
+				final DecompositionASDD<T> sub = JASDD.createDecomposition((InternalAVTree) newTree.getRight(), elemsArray);
+				final AlgebraicElement<T> elem = JASDD.createElement(normPrime, sub);
+				newElements.add(elem);
+			}
+		}
 	}
 
 	@Override
 	public ASDD<T> rotateLeft(final Direction... path) {
-		// TODO
-		throw new UnsupportedOperationException();
+		return rotateLeft(CloneableArrayIterator.build(path));
 	}
 
 	@Override
 	public ASDD<T> rotateRight(final Direction... path) {
-		// TODO
-		throw new UnsupportedOperationException();
+		return rotateRight(CloneableArrayIterator.build(path));
 	}
 
 	@Override
 	public ASDD<T> rotateLeft(final CloneableIterator<Direction> path) {
-		// TODO
-		throw new UnsupportedOperationException();
+		return rotate(Direction.LEFT, path);
 	}
 
 	@Override
 	public ASDD<T> rotateRight(final CloneableIterator<Direction> path) {
-		// TODO
-		throw new UnsupportedOperationException();
+		return rotate(Direction.RIGHT, path);
 	}
 
 	@Override
@@ -389,6 +461,46 @@ public class DecompositionASDD<T> implements ASDD<T>, Rotatable<ASDD<T>>, Swappa
 		} else {
 			return swap();
 		}
+	}
+
+	public ASDD<T> rotate(final Direction operation, final CloneableIterator<Direction> path) {
+		if (path.hasNext()) {
+			final CloneableIterator<Direction> originalPath = path.clone();
+			final Direction direction = path.next();
+			final List<AlgebraicElement<T>> newElements = new ArrayList<AlgebraicElement<T>>();
+			if (Direction.LEFT == direction) {
+				for (final AlgebraicElement<T> element : getElements()) {
+					SDD prime = element.getPrime();
+					if (prime instanceof DecompositionSDD) {
+						prime = ((DecompositionSDD) prime).rotate(operation, path.clone());
+					}
+					final AlgebraicElement<T> elem = JASDD.createElement(prime, element.getSub());
+					newElements.add(elem);
+				}
+			} else if (Direction.RIGHT == direction) {
+				for (final AlgebraicElement<T> element : getElements()) {
+					ASDD<T> sub = element.getSub();
+					if (sub instanceof DecompositionASDD) {
+						sub = ((DecompositionASDD<T>) sub).rotate(operation, path.clone());
+					}
+					final AlgebraicElement<T> elem = JASDD.createElement(element.getPrime(), sub);
+					newElements.add(elem);
+				}
+			}
+			// TODO: reuse sub-vtrees
+			@SuppressWarnings("unchecked")
+			final AlgebraicElement<T>[] elems = new AlgebraicElement[newElements.size()];
+			newElements.toArray(elems);
+			final InternalAVTree newTree = (InternalAVTree) getTree().rotate(operation, originalPath);
+			return JASDD.createDecomposition(newTree, elems);
+		} else {
+			if (Direction.LEFT == operation) {
+				return rotateLeft();
+			} else if (Direction.RIGHT == operation) {
+				return rotateRight();
+			}
+		}
+		throw new IllegalStateException();
 	}
 
 }

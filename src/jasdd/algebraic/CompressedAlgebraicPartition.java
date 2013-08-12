@@ -30,6 +30,14 @@ public class CompressedAlgebraicPartition<T> {
 		}
 	}
 
+	public void add(final Iterable<AlgebraicElement<T>> elements) {
+		for (final AlgebraicElement<T> element : elements) {
+			final SDD prime = element.getPrime();
+			final ASDD<T> sub = element.getSub();
+			add(prime, sub);
+		}
+	}
+
 	public ASDD<T> decomposition(final InternalAVTree avtree) {
 		int i = 0;
 		@SuppressWarnings("unchecked")
