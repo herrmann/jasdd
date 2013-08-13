@@ -5,7 +5,7 @@ package jasdd.logic;
  * 
  * @author Ricardo Herrmann
  */
-public class Variable {
+public class Variable implements Comparable<Variable> {
 
 	private int index;
 
@@ -42,6 +42,11 @@ public class Variable {
 		if (index != other.index)
 			return false;
 		return true;
+	}
+
+	@Override
+	public int compareTo(final Variable other) {
+		return Integer.valueOf(getIndex()).compareTo(other.getIndex());
 	}
 
 }

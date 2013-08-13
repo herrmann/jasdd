@@ -7,7 +7,7 @@ import java.util.Set;
  *
  * @author Ricardo Herrmann
  */
-public class Constant extends TerminalFormula {
+public class Constant extends TerminalFormula implements Comparable<Constant> {
 
 	private final boolean sign;
 
@@ -53,6 +53,23 @@ public class Constant extends TerminalFormula {
 	@Override
 	public Set<Set<Literal>> toCnf() {
 		throw new IllegalStateException("Trivial (constant) boolean functions are not allowed in CNF conversions.");
+	}
+
+	@Override
+	public int compareTo(final Constant other) {
+		if (isSign()) {
+			if (other.isSign()) {
+				return 0;
+			} else {
+				return 1;
+			}
+		} else {
+			if (other.isSign()) {
+				return -1;
+			} else {
+				return 0;
+			}
+		}
 	}
 
 }

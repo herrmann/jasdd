@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
 import java.util.Stack;
+import java.util.TreeSet;
 
 /**
  * SDD for a (X,Y)-decomposition of a boolean function.
@@ -281,7 +282,7 @@ public class DecompositionSDD extends AbstractSDD implements Rotatable<SDD>, Swa
 	private Set<Element> getElementsSet() {
 		if (elementsSet == null) {
 			elementsSetCacheMiss++;
-			elementsSet = new HashSet<Element>(elements);
+			elementsSet = new TreeSet<Element>(elements);
 		} else {
 			elementsSetCacheHit++;
 		}
@@ -663,6 +664,42 @@ public class DecompositionSDD extends AbstractSDD implements Rotatable<SDD>, Swa
 			return JASDD.createDecomposition(vtree, JASDD.createElement(true, this));
 		} else {
 			return this;
+		}
+	}
+
+	@Override
+	public int compareTo(final SDD other) {
+		return -other.compareToDecomposition(this);
+	}
+
+	@Override
+	public int compareToConstant(final ConstantSDD other) {
+		return -other.compareToDecomposition(this);
+	}
+
+	@Override
+	public int compareToLiteral(final LiteralSDD other) {
+		return -other.compareToDecomposition(this);
+	}
+
+	@Override
+	public int compareToDecomposition(final DecompositionSDD other) {
+		final Iterator<Element> iter = getElementsSet().iterator();
+		final Iterator<Element> otherIter = other.getElementsSet().iterator();
+		while (iter.hasNext()) {
+			if (otherIter.hasNext()) {
+				final int cmp = iter.next().compareTo(otherIter.next());
+				if (cmp != 0) {
+					return cmp;
+				}
+			} else {
+				return -1;
+			}
+		}
+		if (otherIter.hasNext()) {
+			return 1;
+		} else {
+			return 0;
 		}
 	}
 

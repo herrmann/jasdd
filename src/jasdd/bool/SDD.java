@@ -16,7 +16,7 @@ import java.util.Set;
  *
  * @author Ricardo Herrmann
  */
-public interface SDD extends Sentence, StringBuildable {
+public interface SDD extends Sentence, StringBuildable, ComparableSDD {
 
 	boolean isFalse();
 

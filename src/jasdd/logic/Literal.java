@@ -8,7 +8,7 @@ import java.util.Set;
  *
  * @author Ricardo Herrmann
  */
-public class Literal extends TerminalFormula {
+public class Literal extends TerminalFormula implements Comparable<Literal> {
 
 	private final Variable variable;
 	private final boolean sign;
@@ -93,6 +93,16 @@ public class Literal extends TerminalFormula {
 		disjunction.add(this);
 		conjunction.add(disjunction);
 		return conjunction;
+	}
+
+	@Override
+	public int compareTo(final Literal other) {
+		final int cmp = getVariable().compareTo(other.getVariable());
+		if (cmp != 0) {
+			return cmp;
+		} else {
+			return new Constant(getSign()).compareTo(new Constant(other.getSign()));
+		}
 	}
 
 }

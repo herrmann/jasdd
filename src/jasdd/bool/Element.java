@@ -17,7 +17,7 @@ import java.util.Set;
  *
  * @author Ricardo Herrmann
  */
-public class Element implements Sentence, StringBuildable {
+public class Element implements Sentence, StringBuildable, Comparable<Element> {
 
 	private final SDD prime, sub;
 
@@ -200,6 +200,16 @@ public class Element implements Sentence, StringBuildable {
 
 	public Element not() {
 		return JASDD.createElement(getPrime(), getSub().not());
+	}
+
+	@Override
+	public int compareTo(final Element other) {
+		final int cmp = getPrime().compareTo(other.getPrime());
+		if (cmp != 0) {
+			return cmp;
+		} else {
+			return getSub().compareTo(other.getSub());
+		}
 	}
 
 }

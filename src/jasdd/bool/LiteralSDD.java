@@ -159,4 +159,24 @@ public class LiteralSDD extends TerminalSDD {
 		return JASDD.buildNormalized(vtree, getLiteral());
 	}
 
+	@Override
+	public int compareTo(final SDD other) {
+		return -other.compareToLiteral(this);
+	}
+
+	@Override
+	public int compareToConstant(final ConstantSDD other) {
+		return -other.compareToLiteral(this);
+	}
+
+	@Override
+	public int compareToLiteral(final LiteralSDD other) {
+		return getLiteral().compareTo(other.getLiteral());
+	}
+
+	@Override
+	public int compareToDecomposition(final DecompositionSDD other) {
+		return 1;
+	}
+
 }

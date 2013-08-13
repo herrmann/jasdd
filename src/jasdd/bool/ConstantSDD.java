@@ -127,4 +127,24 @@ public class ConstantSDD extends TerminalSDD {
 		return JASDD.createDecomposition(vtree, JASDD.createElement(true, this));
 	}
 
+	@Override
+	public int compareTo(final SDD other) {
+		return -other.compareToConstant(this);
+	}
+
+	@Override
+	public int compareToConstant(final ConstantSDD other) {
+		return new Constant(getSign()).compareTo(new Constant(other.getSign()));
+	}
+
+	@Override
+	public int compareToLiteral(final LiteralSDD other) {
+		return 1;
+	}
+
+	@Override
+	public int compareToDecomposition(final DecompositionSDD other) {
+		return 1;
+	}
+
 }
