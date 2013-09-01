@@ -51,7 +51,39 @@ public class Utils {
 
 	/**
 	 * Returns a new list with the same elements, in the same order, but merging
-	 * two adjacent elements at a random position merged.
+	 * two adjacent elements at a specified index.
+	 * 
+	 * @param index
+	 *            the index of the left element
+	 * @param merge
+	 *            the pairwise element merging function
+	 * @param elems
+	 *            the list of elements
+	 * @return the new list containing the merged element and the rest of the
+	 *         original ones untouched, in the same order
+	 */
+	public static <T> List<T> mergeAtIndex(final int index, final MergeFunction<T> merge, final List<T> elems) {
+		final int size = elems.size();
+		if (size > 1) {
+			final List<T> newElems = new ArrayList<T>(size - 1);
+			final Iterator<T> iter = elems.iterator();
+			int i = 0;
+			while (iter.hasNext()) {
+				T elem = iter.next();
+				if (index == i++) {
+					elem = merge.apply(elem, iter.next());
+				}
+				newElems.add(elem);
+			}
+			return newElems;
+		} else {
+			return elems;
+		}
+	}
+
+	/**
+	 * Returns a new list with the same elements, in the same order, but merging
+	 * two adjacent elements at a random position.
 	 * 
 	 * @param rng
 	 *            the randomness source
@@ -64,22 +96,8 @@ public class Utils {
 	 */
 	public static <T> List<T> randomlyMergeOne(final Random rng, final MergeFunction<T> merge, final List<T> elems) {
 		final int size = elems.size();
-		if (size > 1) {
-			final List<T> newElems = new ArrayList<T>(size - 1);
-			final int pos = size > 2 ? rng.nextInt(size - 2) : 0;
-			final Iterator<T> iter = elems.iterator();
-			int i = 0;
-			while (iter.hasNext()) {
-				T elem = iter.next();
-				if (pos == i++) {
-					elem = merge.apply(elem, iter.next());
-				}
-				newElems.add(elem);
-			}
-			return newElems;
-		} else {
-			return elems;
-		}
+		final int pos = size > 2 ? rng.nextInt(size - 2) : 0;
+		return mergeAtIndex(pos, merge, elems);
 	}
 
 }
