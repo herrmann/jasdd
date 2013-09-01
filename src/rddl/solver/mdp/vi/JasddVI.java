@@ -60,7 +60,7 @@ import util.Pair;
 import dd.discrete.ADD;
 import dd.discrete.DD;
 
-public class VI extends Policy {
+public class JasddVI extends Policy {
 	
 	public static int SOLVER_TIME_LIMIT = Integer.MAX_VALUE; // Solver time limit (seconds)
 	
@@ -86,9 +86,9 @@ public class VI extends Policy {
 	public Random _rand = new Random();
 		
 	// Constructors
-	public VI () { }
+	public JasddVI () { }
 	
-	public VI(String instance_name) {
+	public JasddVI(String instance_name) {
 		super(instance_name);
 	}
 
@@ -424,7 +424,7 @@ public class VI extends Policy {
 
 			_context.getGraph(_valueDD).launchViewer();
 
-			if (false /* _nIter == _nHorizon - 1 */) {
+			if (_nIter == _nHorizon - 1) {
 				int i = 0;
 				System.err.println("Total variables: " + variables.size());
 				final String name = "life3";
