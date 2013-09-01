@@ -96,7 +96,7 @@ public class Utils {
 	 */
 	public static <T> List<T> randomlyMergeOne(final Random rng, final MergeFunction<T> merge, final List<T> elems) {
 		final int size = elems.size();
-		final int pos = size > 2 ? rng.nextInt(size - 2) : 0;
+		final int pos = size > 2 ? rng.nextInt(size - 1) : 0;
 		return mergeAtIndex(pos, merge, elems);
 	}
 
