@@ -2,6 +2,11 @@ package jasdd.tools;
 
 import jasdd.bool.DecompositionSDD;
 import jasdd.bool.SDD;
+import jasdd.bool.transform.DecompositionTransformation;
+import jasdd.bool.transform.IdentityTransformation;
+import jasdd.bool.transform.LeftRotationTransformation;
+import jasdd.bool.transform.RightRotationTransformation;
+import jasdd.bool.transform.SwapTransformation;
 import jasdd.logic.VariableRegistry;
 import jasdd.util.Utils;
 import jasdd.util.Utils.MergeFunction;
@@ -25,7 +30,24 @@ public class MinimizationFromRandom {
 		final String[] varNames = new String[] { "A", "B", "C", "D", "E", "F" };
 		final InternalVTree vtree = randomVTree(vars, varNames);
 		final DecompositionSDD sdd = example(vars, vtree);
-		System.out.println(vtree + " - " + sdd.size());
+		int best = sdd.size();
+		final DecompositionTransformation[] transformations = new DecompositionTransformation[] {
+			new IdentityTransformation(),
+			new SwapTransformation(),
+			new LeftRotationTransformation(),
+			new RightRotationTransformation()
+		};
+		for (final DecompositionTransformation transformation : transformations) {
+			if (transformation.canTransform(sdd)) {
+				final DecompositionSDD transformed = (DecompositionSDD) transformation.transform(sdd);
+				final int size = transformed.size();
+				if (size < best) {
+					best = size;
+				}
+				System.out.println(transformed.getVTree().toString(vars) + " - " + size + " (" + transformation.getName() + ")");
+			}
+		}
+		System.out.println("Best size: " + best);
 	}
 
 	private static final MergeFunction<VTree> createInternal = new Utils.MergeFunction<VTree>() {
