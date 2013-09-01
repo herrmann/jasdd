@@ -16,4 +16,11 @@ public interface DecompositionTransformation {
 
 	String getName();
 
+	final DecompositionTransformation[] root = new DecompositionTransformation[] {
+		new IdentityTransformation(),
+		new SwapTransformation(),
+		new LeftRotationTransformation(),
+		new RightRotationTransformation()
+	};
+
 }

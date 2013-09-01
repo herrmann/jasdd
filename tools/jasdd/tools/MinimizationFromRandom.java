@@ -3,10 +3,6 @@ package jasdd.tools;
 import jasdd.bool.DecompositionSDD;
 import jasdd.bool.SDD;
 import jasdd.bool.transform.DecompositionTransformation;
-import jasdd.bool.transform.IdentityTransformation;
-import jasdd.bool.transform.LeftRotationTransformation;
-import jasdd.bool.transform.RightRotationTransformation;
-import jasdd.bool.transform.SwapTransformation;
 import jasdd.logic.VariableRegistry;
 import jasdd.util.Utils;
 import jasdd.util.Utils.MergeFunction;
@@ -31,13 +27,7 @@ public class MinimizationFromRandom {
 		final InternalVTree vtree = randomVTree(vars, varNames);
 		final DecompositionSDD sdd = example(vars, vtree);
 		int best = sdd.size();
-		final DecompositionTransformation[] transformations = new DecompositionTransformation[] {
-			new IdentityTransformation(),
-			new SwapTransformation(),
-			new LeftRotationTransformation(),
-			new RightRotationTransformation()
-		};
-		for (final DecompositionTransformation transformation : transformations) {
+		for (final DecompositionTransformation transformation : DecompositionTransformation.root) {
 			if (transformation.canTransform(sdd)) {
 				final DecompositionSDD transformed = (DecompositionSDD) transformation.transform(sdd);
 				final int size = transformed.size();
