@@ -26,18 +26,18 @@ public class MinimizationFromRandom {
 		final String[] varNames = new String[] { "A", "B", "C", "D", "E", "F" };
 		final InternalVTree vtree = randomVTree(vars, varNames);
 		final DecompositionSDD sdd = example(vars, vtree);
-		int best = sdd.size();
+		DecompositionSDD best = sdd;
 		for (final DecompositionTransformation transformation : DecompositionTransformation.root) {
 			if (transformation.canTransform(sdd)) {
 				final DecompositionSDD transformed = (DecompositionSDD) transformation.transform(sdd);
 				final int size = transformed.size();
-				if (size < best) {
-					best = size;
+				if (size < best.size()) {
+					best = transformed;
 				}
 				System.out.println(transformed.getVTree().toString(vars) + " - " + size + " (" + transformation.getName() + ")");
 			}
 		}
-		System.out.println("Best size: " + best);
+		System.out.println("Best size: " + best.size());
 	}
 
 	private static final MergeFunction<VTree> createInternal = new Utils.MergeFunction<VTree>() {
