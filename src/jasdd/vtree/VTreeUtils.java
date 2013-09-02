@@ -2,10 +2,13 @@ package jasdd.vtree;
 
 import jasdd.logic.Variable;
 import jasdd.logic.VariableRegistry;
+import jasdd.util.Utils;
+import jasdd.util.Utils.MergeFunction;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Random;
 
 
 /**
@@ -195,5 +198,26 @@ public class VTreeUtils {
 		}
 		return trees;
 	}
+
+	public static InternalVTree randomVTree(final VariableRegistry vars, final String... varNames) {
+		final Random rng = new Random();
+		Utils.shuffleArray(rng, varNames);
+		List<VTree> vtrees = new ArrayList<VTree>(varNames.length);
+		for (final String varName : varNames) {
+			final VTree vtree = new VariableLeaf(vars.register(varName));
+			vtrees.add(vtree);
+		}
+		for (int i = 0; i < varNames.length - 1; i++) {
+			vtrees = Utils.randomlyMergeOne(rng, createInternal, vtrees);
+		}
+		return (InternalVTree) vtrees.iterator().next();
+	}
+
+	private static final MergeFunction<VTree> createInternal = new Utils.MergeFunction<VTree>() {
+		@Override
+		public VTree apply(final VTree first, final VTree second) {
+			return new InternalVTree(first, second);
+		}
+	};
 
 }
