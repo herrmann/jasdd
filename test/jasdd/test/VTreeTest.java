@@ -2,8 +2,6 @@ package jasdd.test;
 
 import jasdd.logic.Variable;
 import jasdd.logic.VariableRegistry;
-import jasdd.rddlsim.ASDDConverter;
-import jasdd.rddlsim.ASDDConverter.VariableAssignment;
 import jasdd.vtree.Direction;
 import jasdd.vtree.DissectionIterator;
 import jasdd.vtree.InternalAVTree;

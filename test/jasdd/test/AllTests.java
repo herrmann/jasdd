@@ -9,6 +9,6 @@ import org.junit.runners.Suite;
  * @author Ricardo Herrmann
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({UtilsTest.class, LogicTests.class, VTreeTest.class, TestSDD.class, TestASDD.class, ConversionTest.class, RddlsimTest.class})
+@Suite.SuiteClasses({UtilsTest.class, LogicTests.class, VTreeTest.class, TestSDD.class, TestASDD.class, ConversionTest.class})
 public class AllTests {
 }

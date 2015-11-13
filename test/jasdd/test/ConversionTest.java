@@ -7,7 +7,6 @@ import jasdd.bool.DecompositionSDD;
 import jasdd.bool.SDD;
 import jasdd.logic.Variable;
 import jasdd.logic.VariableRegistry;
-import jasdd.rddlsim.ASDDConverter;
 import jasdd.viz.GraphvizDumper;
 import jasdd.vtree.InternalAVTree;
 import jasdd.vtree.InternalVTree;
