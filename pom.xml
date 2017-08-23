@@ -51,7 +51,7 @@
 
 	<build>
 		<sourceDirectory>src</sourceDirectory>
-		<testSourceDirectory>src</testSourceDirectory>
+		<testSourceDirectory>test</testSourceDirectory>
 	</build>
 
 </project>
